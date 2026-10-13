@@ -4,409 +4,449 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Career Compass — เข็มทิศค้นหาตัวตน</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23fff' stroke='%230e2a47' stroke-width='2'/%3E%3Cpath d='M16 8 10.6 10.6 13.4 13.4z' fill='%23ff6b6b'/%3E%3Cpath d='M8 16 13.4 13.4 10.6 10.6z' fill='%234d96ff'/%3E%3C/svg%3E">
+<script>
+  /* ตั้งธีมก่อนวาดหน้า กันจอกะพริบ — ใช้ค่าที่ผู้ใช้เลือกไว้ ไม่งั้นตามระบบ */
+  try{ document.documentElement.dataset.theme = localStorage.getItem('cc_theme') ||
+    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+  catch(e){ document.documentElement.dataset.theme = 'light'; }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Mali:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#0e2a47; --navy-2:#16375c; --teal:#2ec4b6; --amber:#ffb703;
-    --coral:#ff6b6b; --cream:#f6f4ee; --ink:#0e2a47; --mist:#5c7290;
     --R:#ff6b6b; --I:#4d96ff; --A:#c874e8; --S:#2ec4b6; --E:#ffb703; --C:#4ec27a;
-    --bottomnav-h:64px;
+    --navy:#0e2a47; --teal:#2ec4b6; --teal-ink:#12867b; --amber:#ffb703; --coral:#ff6b6b;
+    --cover:#0e2a47; --paper:#fffdf6; --rule:#e3ebf5; --margin:#ffb4b4;
+    --ink:#0e2a47; --mist:#5c7290; --card:#ffffff; --line:#e4dfd2; --shadow:rgba(14,42,71,.13);
+    --sel:#e6f7f4; --ic-line:#22303f; --btn-sh:#0e2a47;
+    --tape:rgba(255,183,3,.5); --tape2:rgba(46,196,182,.42); --tape3:rgba(200,116,232,.38);
+    --sc1:#fff0bf; --sc2:#d3f3ee;
+    --mx:46px; --top-h:60px;
+    color-scheme:light;
+  }
+  :root[data-theme="dark"]{
+    --cover:#08121d; --paper:#18212d; --rule:#222d3b; --margin:#5b2f3a;
+    --ink:#ece7dc; --mist:#9fb0c3; --card:#1f2a38; --line:#33425a; --shadow:rgba(0,0,0,.45);
+    --sel:#173f3c; --teal-ink:#5fe0d3; --ic-line:#e9e4d8; --btn-sh:#000;
+    --sc1:#4a3c12; --sc2:#123f3a;
+    color-scheme:dark;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html{scroll-behavior:smooth;}
-  body{font-family:'IBM Plex Sans Thai',sans-serif;color:var(--ink);
-    background:var(--cream);line-height:1.6;
-    padding-bottom:var(--bottomnav-h);}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 18px;}
-  .page{display:none;} .page.active{display:block;animation:fade .25s ease;}
-  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-  button{font-family:inherit;}
+  body{font-family:'IBM Plex Sans Thai',sans-serif;color:var(--ink);line-height:1.6;min-height:100dvh;
+    background:var(--cover) radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.2px) 0 0/18px 18px;}
+  button,input{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--amber);outline-offset:2px;}
+  [hidden]{display:none!important;}
 
-  /* ================= GLOBAL NAV (แถบล่างอย่างเดียว) ================= */
-  .bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;
-    border-top:1px solid #e7e2d6;height:var(--bottomnav-h);display:flex;
-    box-shadow:0 -4px 16px rgba(14,42,71,.06);max-width:760px;margin:0 auto;}
-  .bottomnav button{flex:1;background:none;border:none;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:3px;color:var(--mist);cursor:pointer;
-    font-size:10.5px;font-weight:600;font-family:inherit;transition:color .15s;}
-  .bottomnav button .ic{font-size:19px;}
-  .bottomnav button.on{color:var(--teal);}
+  /* ---------- ไอคอน (วาดเอง แทนอีโมจิ) ---------- */
+  .ic{width:1.35em;height:1.35em;flex-shrink:0;vertical-align:middle;fill:none;stroke:var(--ic-line);
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .ic .k{stroke:#22303f;} .ic .w{stroke:#fff;}
+  .ic.lg{width:38px;height:38px;} .ic.xl{width:60px;height:60px;}
 
-  /* ================= ทั่วไป ================= */
-  .btn{font-family:inherit;font-weight:700;font-size:15px;
-    padding:13px 24px;border-radius:12px;cursor:pointer;border:none;text-decoration:none;
-    display:inline-block;transition:transform .12s,box-shadow .2s;}
-  .btn-primary{background:var(--amber);color:var(--navy);box-shadow:0 6px 18px rgba(255,183,3,.35);}
-  .btn-primary:active{transform:translateY(2px);}
-  .btn-teal{background:var(--teal);color:#fff;box-shadow:0 6px 18px rgba(46,196,182,.3);}
-  .btn-ghost{background:#fff;color:var(--navy);border:2px solid var(--navy);}
-  .btn-line{background:transparent;color:inherit;border:1.5px solid rgba(120,120,120,.3);}
-  .btn-block{width:100%;text-align:center;}
-  .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
-  .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 26px rgba(14,42,71,.07);border:1px solid #e7e2d6;}
-  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    padding:4px 11px;border-radius:20px;}
+  /* ---------- แถบบน (อยู่บนปกสมุด) ---------- */
+  .topbar{position:sticky;top:0;z-index:30;height:var(--top-h);max-width:1040px;margin:0 auto;padding:0 10px;
+    display:flex;align-items:center;gap:6px;color:#f6f4ee;--ic-line:#f6f4ee;background:var(--cover);}
+  .brand{display:flex;align-items:center;gap:8px;font:700 18px 'Mali',sans-serif;color:inherit;background:none;border:0;cursor:pointer;white-space:nowrap;}
+  .brand .ic{width:28px;height:28px;}
+  .spacer{flex:1;}
+  .icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:transparent;color:inherit;
+    display:grid;place-items:center;cursor:pointer;flex-shrink:0;}
+  .icon-btn:hover{background:rgba(127,127,127,.16);}
+  .icon-btn .ic{width:24px;height:24px;}
+  .user-chip{display:flex;align-items:center;gap:6px;height:38px;padding:0 6px;border-radius:20px;
+    border:1.5px solid rgba(246,244,238,.3);background:transparent;color:inherit;font-weight:600;font-size:14px;cursor:pointer;max-width:42vw;}
+  .user-chip .ic{width:26px;height:26px;}
+  .user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:6px;}
+  @media(max-width:420px){.topbar .brand span{display:none;}}
 
-  /* ================= PAGE-001 : AUTH ================= */
-  #page-auth{min-height:calc(100dvh - var(--bottomnav-h));padding:36px 18px;
-    background:radial-gradient(circle at 80% 10%, rgba(46,196,182,.12), transparent 45%),
-               radial-gradient(circle at 10% 90%, rgba(255,183,3,.1), transparent 40%),var(--cream);}
-  #page-auth.active{display:flex;align-items:center;justify-content:center;}
-  .auth-card{width:100%;max-width:440px;background:#fff;border-radius:22px;padding:30px 26px;box-shadow:0 16px 46px rgba(14,42,71,.12);}
-  .auth-brand{text-align:center;margin-bottom:22px;}
-  .auth-brand .ic{font-size:34px;}
-  .auth-brand h1{font-family:'Fraunces',serif;font-weight:900;font-size:26px;margin-top:6px;}
-  .auth-brand h1 .n{color:var(--amber);}
-  .auth-brand p{font-size:13.5px;color:var(--mist);margin-top:6px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block;font-size:13px;font-weight:600;color:var(--mist);margin-bottom:6px;}
-  .field input,.field select{width:100%;font-size:15.5px;padding:12px 14px;border:2px solid #e7e2d6;
-    border-radius:11px;background:var(--cream);outline:none;font-family:inherit;}
-  .field input:focus,.field select:focus{border-color:var(--teal);}
-  .radio-row{display:flex;gap:8px;}
-  .radio-row label{flex:1;text-align:center;padding:10px 4px;border:2px solid #e7e2d6;border-radius:10px;
-    font-size:14px;font-weight:600;cursor:pointer;background:var(--cream);}
-  .radio-row input{display:none;}
-  .radio-row input:checked + span{color:var(--teal);}
-  .radio-row label:has(input:checked){border-color:var(--teal);background:#e9f7f5;}
-  .auth-divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--mist);font-size:12px;}
-  .auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:#e7e2d6;}
-  .err-msg{font-size:13px;color:#c0392b;background:#ffe9e6;padding:9px 12px;border-radius:9px;margin-bottom:12px;display:none;}
-  .err-msg.show{display:block;}
+  /* ---------- เมนูขีดสามขีด ---------- */
+  .scrim{position:fixed;inset:0;z-index:40;background:rgba(5,12,20,.55);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;}
+  .drawer{position:fixed;top:0;bottom:0;left:0;z-index:41;width:min(290px,82vw);padding:12px;display:flex;flex-direction:column;gap:4px;
+    background:var(--paper) repeating-linear-gradient(transparent 0 31px,var(--rule) 31px 32px);color:var(--ink);
+    transform:translateX(-102%);visibility:hidden;transition:transform .3s ease,visibility .3s;box-shadow:6px 0 30px rgba(0,0,0,.3);}
+  .menu-open .scrim{opacity:1;visibility:visible;}
+  .menu-open .drawer{transform:none;visibility:visible;}
+  .drawer-h{display:flex;align-items:center;justify-content:space-between;padding-left:6px;margin-bottom:10px;}
+  .nav-item{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:12px;border:0;background:none;
+    color:var(--ink);font-weight:600;font-size:16px;cursor:pointer;text-align:left;}
+  .nav-item .ic{width:30px;height:30px;}
+  .nav-item:hover{background:var(--sel);}
+  .nav-item.on{background:var(--sel);box-shadow:inset 4px 0 0 var(--teal);}
 
-  /* ================= PAGE-002 : DASHBOARD (Bento) ================= */
-  #page-dash{padding:26px 0 40px;}
-  .dash-hello{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
-  .dash-hello h2{font-family:'Fraunces',serif;font-size:22px;font-weight:700;}
-  .dash-hello .status{font-size:12.5px;color:var(--teal);font-weight:600;background:#e9f7f5;padding:6px 12px;border-radius:20px;white-space:nowrap;}
-  .bento{display:grid;gap:16px;grid-template-columns:1fr;}
-  @media(min-width:700px){.bento{grid-template-columns:1fr 1fr;}}
-  .bento .card h3{font-family:'Fraunces',serif;font-size:18px;margin-bottom:10px;}
-  .bento .quiz-modes{font-size:13px;color:#5c7290;margin:10px 0 16px;line-height:1.7;}
-  .bento .quiz-modes b{color:var(--navy);}
-  .mini-radar{display:flex;justify-content:center;margin:6px 0;}
-  .code-badge{text-align:center;margin-bottom:10px;}
-  .code-badge .code{font-family:'Fraunces',serif;font-weight:900;font-size:30px;color:var(--navy);letter-spacing:.08em;}
-  .code-badge .sub{font-size:12px;color:var(--mist);}
-  .score-inline{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:700;margin-top:8px;}
-  .score-inline span{padding:3px 9px;border-radius:8px;background:var(--cream);}
-  .empty-hint{font-size:13.5px;color:var(--mist);text-align:center;padding:14px 0;}
-  .faculty-mini{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f0ede4;}
-  .faculty-mini:first-of-type{border-top:none;padding-top:0;}
-  .faculty-mini .rank{width:24px;height:24px;border-radius:7px;background:var(--navy);color:#fff;font-size:12px;
-    font-weight:700;display:grid;place-items:center;flex-shrink:0;}
-  .faculty-mini .nm{flex:1;font-size:13.5px;font-weight:600;}
-  .faculty-mini .mt{font-size:12.5px;font-weight:700;color:var(--teal);}
-  .bm-item{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:13.5px;}
-  .bm-item .star{color:var(--amber);}
-  .linkrow{margin-top:14px;font-size:13.5px;}
-  .linkrow a,.linkrow button{color:var(--teal);font-weight:600;text-decoration:none;background:none;border:none;cursor:pointer;font-size:13.5px;font-family:inherit;}
+  /* ---------- สมุด: แต่ละ section คือหนึ่งหน้ากระดาษ ---------- */
+  .book{position:relative;max-width:1040px;margin:0 auto;padding:4px 10px 28px;perspective:2400px;}
+  .page{display:none;} .page.active{display:block;}
+  .sheet{position:relative;min-height:calc(100dvh - var(--top-h) - 32px);color:var(--ink);
+    padding:28px 28px 48px calc(var(--mx) + 22px);border-radius:6px 16px 16px 6px;
+    background-color:var(--paper);
+    background-image:linear-gradient(90deg,transparent calc(var(--mx) - 1px),var(--margin) calc(var(--mx) - 1px),var(--margin) calc(var(--mx) + 1px),transparent calc(var(--mx) + 1px)),
+      repeating-linear-gradient(transparent 0 31px,var(--rule) 31px 32px);
+    box-shadow:0 18px 40px rgba(0,0,0,.28);}
+  /* รูเจาะกระดาษด้านซ้าย */
+  .sheet::before{content:"";position:absolute;left:10px;top:18px;bottom:18px;width:14px;
+    background:radial-gradient(circle at 7px 7px,var(--cover) 0 5.5px,transparent 6px) 0 0/14px 32px repeat-y;}
+  /* เลขหน้ามุมล่างขวา */
+  .sheet::after{content:attr(data-no);position:absolute;right:20px;bottom:12px;font:600 14px 'Mali',sans-serif;color:var(--mist);}
+  @media(max-width:600px){
+    :root{--mx:30px;}
+    .book{padding:2px 6px 16px;}
+    .sheet{padding:20px 14px 44px calc(var(--mx) + 12px);}
+    .sheet::before{left:6px;width:12px;background-size:12px 28px;
+      background-image:radial-gradient(circle at 6px 6px,var(--cover) 0 4.5px,transparent 5px);}
+  }
 
-  /* ---- ส่วนอธิบายหลักการและวิธีการ ---- */
-  .method{grid-column:1/-1;background:linear-gradient(155deg,var(--navy),var(--navy-2));color:#e3ebf4;
-    border-radius:18px;padding:26px 22px;border:none;}
-  .method .kick{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);}
-  .method h3{font-family:'Fraunces',serif;font-size:20px;color:#fff;margin:6px 0 8px;}
-  .method .lead{font-size:14px;color:#bccbdc;margin-bottom:20px;max-width:640px;}
-  .method-grid{display:grid;gap:12px;grid-template-columns:1fr;}
-  @media(min-width:620px){.method-grid{grid-template-columns:repeat(3,1fr);}}
-  .m-item{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    border-radius:13px;padding:15px 16px;}
-  .m-item .n{font-family:'Fraunces',serif;font-weight:900;font-size:13px;color:var(--amber);}
-  .m-item h4{font-size:14.5px;color:#fff;margin:3px 0 5px;}
-  .m-item p{font-size:12.5px;color:#a9bccf;line-height:1.6;}
-  .riasec-strip{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 6px;}
-  .riasec-strip .r{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);
-    border-radius:20px;padding:6px 12px;font-size:12px;color:#dbe5ef;}
-  .riasec-strip .r b{width:19px;height:19px;border-radius:6px;color:#fff;font-size:10.5px;
-    display:grid;place-items:center;}
-  .method .cite{font-size:11.5px;color:#7b93ad;margin-top:16px;line-height:1.6;}
+  /* ---------- พลิกหน้า ---------- */
+  .ghost{position:absolute!important;display:block!important;margin:0!important;overflow:hidden;pointer-events:none;
+    z-index:3;transform-origin:left center;backface-visibility:hidden;}
+  .ghost.under{z-index:0;}
+  .turn-out{animation:turnOut .45s cubic-bezier(.5,0,.75,0) forwards;}
+  .turn-in{position:relative;z-index:2;transform-origin:left center;backface-visibility:hidden;
+    animation:turnIn .45s cubic-bezier(.25,1,.5,1) both;}
+  @keyframes turnOut{from{transform:rotateY(0);filter:brightness(1);}to{transform:rotateY(-90deg);filter:brightness(.6);}}
+  @keyframes turnIn{from{transform:rotateY(-90deg);filter:brightness(.6);}to{transform:rotateY(0);filter:brightness(1);}}
+  @media(prefers-reduced-motion:reduce){.turn-out,.turn-in{animation:none;}}
 
-  /* ================= PAGE-003 : ASSESSMENT STUDIO ================= */
-  #page-quiz{padding:0 0 40px;}
-  .quiz-topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #e7e2d6;padding:12px 0;}
-  .quiz-topbar .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .quiz-topbar .exit{font-size:13px;color:var(--mist);background:none;border:none;cursor:pointer;white-space:nowrap;}
-  .quiz-topbar .progress-txt{font-size:12.5px;font-weight:600;color:var(--navy);white-space:nowrap;}
-  .quiz-topbar .dim-tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:16px;color:#fff;white-space:nowrap;margin-left:auto;}
-  .bar-outer{height:6px;background:#eee;border-radius:6px;overflow:hidden;margin-top:8px;}
-  .bar-inner{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:6px;transition:width .3s;}
+  /* ---------- กระดาษโน้ต ---------- */
+  .grid{display:grid;gap:26px 18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));align-items:start;}
+  .wide{grid-column:1/-1;}
+  .note{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:20px 18px 18px;
+    box-shadow:3px 4px 0 var(--shadow);}
+  .taped::before{content:"";position:absolute;top:-10px;left:50%;width:72px;height:20px;border-radius:2px;
+    background:var(--tape);transform:translateX(-50%) rotate(-3deg);}
+  .grid>.taped:nth-child(3n+2)::before{background:var(--tape2);transform:translateX(-50%) rotate(2deg);}
+  .grid>.taped:nth-child(3n)::before{background:var(--tape3);transform:translateX(-50%) rotate(-1deg);}
 
-  .q-wrap{padding:26px 0;max-width:640px;margin:0 auto;}
-  .q-type-tag{margin-bottom:14px;}
-  .q-type-tag.likert{background:#e6f0ff;color:#2b6cd6;}
-  .q-type-tag.situational{background:#e9f7f5;color:#1a9c8e;}
-  .q-type-tag.sub{background:#fff1e0;color:#c77a12;}
-  .q-text{font-size:19px;font-weight:600;line-height:1.45;margin-bottom:20px;}
-  .likert-row{display:flex;flex-direction:column;gap:9px;}
-  .opt{padding:14px 16px;border:2px solid #e7e2d6;border-radius:13px;cursor:pointer;
-    font-size:15px;background:#fff;transition:all .15s;display:flex;align-items:center;gap:12px;}
+  .page-h,.sec-h,.note-h,.h{font-family:'Mali','IBM Plex Sans Thai',sans-serif;font-weight:700;}
+  .page-h{display:flex;align-items:center;gap:10px;font-size:24px;margin-bottom:18px;}
+  .page-h .ic{width:36px;height:36px;}
+  .sec-h{display:flex;align-items:center;gap:10px;font-size:20px;margin:30px 0 14px;}
+  .sec-h .ic{width:30px;height:30px;}
+  .note-h{display:flex;align-items:center;gap:8px;font-size:17px;margin-bottom:12px;}
+  .note-h .ic{width:26px;height:26px;}
+  .note-h .icon-btn{margin-left:auto;margin-top:-8px;margin-right:-8px;}
+  .muted{color:var(--mist);}
+  .fine{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--mist);margin-top:24px;}
+  .fine .ic{width:18px;height:18px;margin-top:1px;}
+
+  /* ---------- ปุ่ม ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;
+    border-radius:14px;border:2px solid transparent;background:none;color:var(--ink);font-weight:700;font-size:16px;
+    cursor:pointer;transition:transform .12s,box-shadow .12s;text-decoration:none;}
+  .btn .ic{width:22px;height:22px;}
+  .btn-primary{background:var(--amber);color:#0e2a47;border-color:#0e2a47;box-shadow:3px 4px 0 var(--btn-sh);--ic-line:#0e2a47;}
+  .btn-primary:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--btn-sh);}
+  .btn-ghost{background:var(--card);border-color:var(--line);}
+  .btn-danger{background:var(--coral);color:#fff;--ic-line:#fff;}
+  .btn-danger-line{border-color:var(--coral);color:var(--coral);margin-top:22px;}
+  .btn-block{width:100%;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+  .icon-only{width:56px;padding:0;}
+  .btn-link{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--teal-ink);
+    font-weight:700;font-size:15px;cursor:pointer;padding:8px 0;--ic-line:var(--teal-ink);}
+  .btn-link .ic{width:18px;height:18px;}
+  .soon{position:relative;}
+  .soon::after{content:"เร็วๆ นี้";position:absolute;top:-10px;right:-6px;font-size:10.5px;font-weight:700;
+    background:var(--A);color:#fff;padding:1px 8px;border-radius:10px;}
+
+  .bar{height:8px;background:var(--rule);border-radius:8px;overflow:hidden;}
+  .bar>i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--teal),var(--amber));transition:width .3s;}
+
+  /* ---------- หน้าหลัก ---------- */
+  .quiz-note{display:flex;flex-direction:column;gap:14px;}
+  .quiz-note .top{display:flex;align-items:center;gap:14px;}
+  .quiz-note .top .ic{width:56px;height:56px;}
+  .quiz-note .h{font-size:20px;line-height:1.3;}
+  .quiz-note b{font-family:'Fraunces',serif;}
+  .tiles{display:flex;gap:6px;justify-content:center;}
+  .tile{width:42px;height:42px;border-radius:10px;color:#fff;font:900 22px 'Fraunces',serif;display:grid;place-items:center;
+    box-shadow:2px 3px 0 var(--shadow);}
+  .tiles.big .tile{width:60px;height:60px;font-size:32px;border-radius:14px;}
+  .tiles.sm{justify-content:flex-start;gap:4px;}
+  .tiles.sm .tile{width:24px;height:24px;font-size:12px;border-radius:7px;box-shadow:none;}
+  .rank-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--line);}
+  .rank-row .ic{width:28px;height:28px;}
+  .rank-row .nm{flex:1;font-size:14px;font-weight:600;line-height:1.4;}
+  .rank-row b{font-family:'Fraunces',serif;color:var(--teal-ink);}
+  .dims{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media(min-width:760px){.dims{grid-template-columns:repeat(6,1fr);}}
+  .dim{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 4px 10px;border-radius:12px;
+    border:1.5px solid var(--line);border-top:4px solid var(--c);background:var(--paper);text-align:center;}
+  .dim .ic{width:36px;height:36px;margin-bottom:4px;}
+  .dim b{font:900 18px 'Fraunces',serif;color:var(--c);line-height:1;}
+  .dim small{font-size:12px;color:var(--mist);line-height:1.35;}
+  .radar svg{display:block;margin:4px auto;max-width:100%;height:auto;}
+  .shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-self:stretch;}
+  .shortcut{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:130px;padding:14px 8px;
+    border:1.5px solid var(--line);border-radius:16px;color:var(--ink);font-weight:700;font-size:16px;cursor:pointer;
+    box-shadow:3px 4px 0 var(--shadow);transition:transform .15s;}
+  .shortcut .ic{width:54px;height:54px;}
+  .shortcut:hover{transform:translateY(-3px) rotate(0deg);}
+  .sc1{background:var(--sc1);transform:rotate(-1.5deg);} .sc2{background:var(--sc2);transform:rotate(1.5deg);}
+  /* ปุ่มลัด: กล่องที่ขยายจากปุ่มจนเต็มหน้ากระดาษ */
+  .zoom-ov{position:fixed;z-index:50;display:grid;place-items:center;overflow:hidden;pointer-events:none;
+    box-shadow:0 18px 40px rgba(0,0,0,.28);}
+  .zoom-ov .ic{width:64px;height:64px;}
+
+  /* ---------- แบบประเมิน ---------- */
+  .quizbar{position:sticky;top:var(--top-h);z-index:5;display:flex;align-items:center;gap:12px;
+    margin:-12px 0 20px;padding:8px 0;background:var(--paper);}
+  .quizbar .bar{flex:1;}
+  .q-count{font:700 15px 'Fraunces',serif;white-space:nowrap;}
+  .q-dim{display:flex;gap:2px;} .q-dim .ic{width:30px;height:30px;}
+  .q-host{position:relative;max-width:680px;margin:0 auto;padding:26px 0 24px;}
+  .q-sheet{padding-top:34px;padding-bottom:34px;}
+  #page-quiz{overflow:clip;}   /* คำถามที่หล่นออกนอกกระดาษถูกตัด ไม่ทำให้หน้ายาวขึ้น */
+  /* อุปกรณ์ตกแต่งวางคร่อมขอบบน/ล่างของการ์ด — ตำแหน่งมาจาก LAYOUTS ผ่านตัวแปร --x --r ใน style */
+  .prop{position:absolute;--size:54px;--off:-32px;width:var(--size);height:var(--size);
+    left:var(--x);margin-left:calc(var(--size) / -2);pointer-events:none;
+    transform:rotate(var(--r));filter:drop-shadow(2px 3px 0 var(--shadow));}
+  .prop.t{top:var(--off);} .prop.b{bottom:var(--off);}
+  .prop.tool{--size:46px;--off:-26px;}
+  .prop .ic{width:100%;height:100%;}
+  @media(max-width:600px){.prop{--size:44px;--off:-26px;} .prop.tool{--size:38px;--off:-21px;}}
+  /* เปลี่ยนข้อ: การ์ดเก่าหล่นลงพร้อมอุปกรณ์ การ์ดใหม่ตกลงมาจากด้านบน */
+  .fall-out{animation:fallOut .55s cubic-bezier(.5,0,.9,.45) forwards;overflow:visible!important;}
+  .fall-out .prop{animation:propFall .55s ease-in forwards;}
+  .drop-in{position:relative;z-index:2;animation:dropIn .7s cubic-bezier(.2,.8,.3,1) both;}
+  .drop-in .prop{animation:propDrop .5s cubic-bezier(.2,.9,.3,1.35) var(--d) both;}
+  @keyframes fallOut{to{transform:translateY(75vh) rotate(7deg);opacity:0;}}
+  @keyframes propFall{to{transform:translate(var(--dx),60px) rotate(calc(var(--r) + var(--spin)));}}
+  @keyframes dropIn{from{transform:translateY(-70vh) rotate(-5deg);opacity:0;}
+    65%{transform:translateY(12px) rotate(1deg);opacity:1;}to{transform:none;opacity:1;}}
+  @keyframes propDrop{from{transform:translateY(-60px) rotate(calc(var(--r) - 40deg));opacity:0;}to{transform:rotate(var(--r));opacity:1;}}
+  @media(prefers-reduced-motion:reduce){.fall-out,.drop-in,.fall-out .prop,.drop-in .prop{animation:none;}}
+  #page-stats .res-hero .ic{width:84px;height:84px;}
+  .q-text{font-size:19px;font-weight:600;line-height:1.5;margin-bottom:24px;}
+  .faces{display:flex;justify-content:space-between;gap:6px;}
+  .face{flex:1;max-width:76px;aspect-ratio:1;padding:0;border:0;background:none;border-radius:50%;cursor:pointer;
+    display:grid;place-items:center;transition:transform .15s,opacity .15s,filter .15s;}
+  .face .ic{width:100%;height:100%;}
+  .face:hover{transform:scale(1.08);}
+  .face.sel{transform:scale(1.16);}
+  .faces.has-sel .face:not(.sel){opacity:.45;filter:grayscale(.5);}
+  .face-cap{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mist);margin-top:8px;}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;border:2px solid var(--line);
+    border-radius:14px;background:var(--card);color:var(--ink);font-size:15px;line-height:1.5;cursor:pointer;transition:border-color .15s,background .15s;}
   .opt:hover{border-color:var(--teal);}
-  .opt.sel{border-color:var(--teal);background:#e9f7f5;font-weight:600;}
-  .opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid #c3ccd9;flex-shrink:0;position:relative;}
-  .opt.sel .dot{border-color:var(--teal);background:var(--teal);}
-  .opt.sel .dot::after{content:"✓";position:absolute;inset:0;color:#fff;font-size:11px;display:grid;place-items:center;}
-  .likert-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--mist);margin-top:6px;padding:0 4px;}
-  .nav-row{display:flex;gap:12px;margin-top:26px;}
-  .nav-row .btn{flex:1;}
+  .opt.sel{border-color:var(--teal);background:var(--sel);font-weight:600;}
+  .opt .dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:grid;place-items:center;}
+  .opt.sel .dot{background:var(--teal);border-color:var(--teal);--ic-line:#fff;}
+  .opt .dot .ic{width:16px;height:16px;stroke-width:3;}
+  .nav-row{display:flex;gap:12px;max-width:680px;margin:24px auto 0;}
+  .nav-row #qNext{flex:1;}
 
-  /* ================= PAGE-004 : RESULTS ================= */
-  #page-results{padding:26px 0 40px;}
-  .res-header{text-align:center;margin-bottom:20px;}
-  .res-header h2{font-family:'Fraunces',serif;font-weight:900;font-size:26px;}
-  .res-topbar{background:linear-gradient(155deg,var(--navy),var(--navy-2));color:#fff;border-radius:18px;
-    padding:20px;text-align:center;margin-bottom:18px;}
-  .res-topbar .code{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:.1em;color:var(--amber);}
-  .res-topbar .label{font-size:15.5px;font-weight:600;margin-top:2px;}
-  .res-grid{display:grid;gap:16px;grid-template-columns:1fr;margin-bottom:18px;}
-  @media(min-width:700px){.res-grid{grid-template-columns:1fr 1fr;}}
-  .res-grid .card h3{font-family:'Fraunces',serif;font-size:17px;margin-bottom:14px;}
-  svg{display:block;margin:0 auto;max-width:100%;height:auto;}
-  .score-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
-  .score-row{display:flex;align-items:center;gap:10px;font-size:13.5px;}
-  .score-row .sw{width:12px;height:12px;border-radius:4px;flex-shrink:0;}
-  .score-row .nm{flex:1;}
-  .score-row .val{font-weight:700;font-family:'Fraunces',serif;}
-  .strength-list{list-style:none;font-size:14px;color:#43576f;}
-  .strength-list li{padding:7px 0 7px 22px;position:relative;}
-  .strength-list li::before{content:"•";position:absolute;left:0;color:var(--teal);font-weight:900;}
-  .cta-row{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;}
+  /* ---------- ผลลัพธ์ ---------- */
+  .res-hero{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;margin-bottom:28px;}
+  .persona{font:600 18px 'Mali',sans-serif;}
+  .score-row{display:grid;grid-template-columns:28px 18px 1fr 44px;align-items:center;gap:8px;padding:6px 0;}
+  .score-row .ic{width:28px;height:28px;}
+  .score-row .d{font:900 15px 'Fraunces',serif;}
+  .score-row .v{font:700 14px 'Fraunces',serif;text-align:right;}
+  .ticks{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14.5px;}
+  .ticks li{display:flex;gap:10px;align-items:flex-start;}
+  .ticks li::before{content:"";width:8px;height:8px;margin-top:9px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+  .icon-list{list-style:none;display:flex;flex-direction:column;gap:10px;text-align:left;}
+  .icon-list li{display:flex;gap:10px;align-items:center;}
+  .icon-list .ic{width:28px;height:28px;}
+  details.note{padding:0;}
+  details summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 14px 14px 16px;cursor:pointer;}
+  details summary::-webkit-details-marker{display:none;}
+  details>:not(summary){margin:0 16px 12px;}
+  details[open] summary{border-bottom:1px dashed var(--line);margin-bottom:12px;}
+  .chev{transition:transform .2s;}
+  details[open] .chev{transform:rotate(90deg);}
+  .list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));align-items:start;}
+  .track.top{border:2px solid var(--teal);}
+  .track .nm,.fac .nm{font-weight:700;font-size:15.5px;line-height:1.35;}
+  .track .nm{flex:1;}
+  .pct{font:700 16px 'Fraunces',serif;color:var(--teal-ink);white-space:nowrap;}
+  .meta{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--mist);line-height:1.6;}
+  .meta .ic{width:22px;height:22px;margin-top:1px;}
+  .actions{display:flex;flex-wrap:wrap;gap:14px 10px;margin-top:24px;}
+  .actions .btn-primary{flex:1 1 220px;}
 
-  /* ---- สายการเรียนแนะนำ ---- */
-  .track-sec{margin-bottom:18px;}
-  .track-sec > h3{font-family:'Fraunces',serif;font-size:19px;margin-bottom:3px;}
-  .track-sec > .cap{font-size:13px;color:var(--mist);margin-bottom:14px;}
-  .track{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:15px;
-    background:#fff;border:1px solid #e7e2d6;margin-bottom:11px;box-shadow:0 5px 18px rgba(14,42,71,.05);}
-  .track.top{border:2px solid var(--teal);background:linear-gradient(155deg,#eefaf8,#fff);}
-  .track .ico{font-size:26px;flex-shrink:0;line-height:1.2;}
-  .track .body{flex:1;min-width:0;}
-  .track .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
-  .track h4{font-size:16px;}
-  .track .pct{font-family:'Fraunces',serif;font-weight:700;color:var(--teal);font-size:15px;margin-left:auto;}
-  .track .best{font-size:10.5px;font-weight:700;background:var(--teal);color:#fff;padding:3px 9px;border-radius:14px;}
-  .track .why{font-size:13.5px;color:#4a5f77;margin-bottom:7px;}
-  .track .meta{font-size:12.5px;color:var(--mist);line-height:1.65;}
-  .track .meta b{color:var(--navy);}
-  .track .codes{display:flex;gap:4px;margin-top:7px;}
-  .track .codes span{width:21px;height:21px;border-radius:6px;color:#fff;font-size:10.5px;
-    font-weight:700;display:grid;place-items:center;}
+  /* ---------- คณะ ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:4px 14px;border-radius:22px;
+    border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;}
+  .chip.dim-chip{padding-left:7px;}
+  .chip .ic{width:26px;height:26px;}
+  .chip b{font-family:'Fraunces',serif;color:var(--c,var(--ink));}
+  .chip.on{border-color:var(--c,var(--ink));box-shadow:inset 0 0 0 1.5px var(--c,var(--ink));background:var(--sel);}
+  .chip.static{cursor:default;border-style:dashed;padding-left:7px;}
+  .banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .banner>span{flex:1;min-width:170px;font-weight:600;}
+  .warn{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;margin-bottom:16px;border-radius:12px;
+    background:rgba(255,183,3,.13);border:1.5px dashed var(--amber);font-size:13.5px;line-height:1.6;}
+  .warn .ic{width:24px;height:24px;}
+  .warn a{color:var(--teal-ink);font-weight:700;}
+  .count{font-size:13px;color:var(--mist);font-weight:600;margin-bottom:10px;}
+  .fac-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .match{display:flex;align-items:center;gap:8px;}
+  .match .bar{flex:1;max-width:220px;}
+  .match b{font:700 14px 'Fraunces',serif;color:var(--teal-ink);}
+  .star-btn{width:44px;height:44px;border:0;background:none;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex-shrink:0;}
+  .star-btn .ic{width:28px;height:28px;}
+  .star-btn:hover{background:var(--sel);}
 
-  /* ================= PAGE-005 : FACULTY EXPLORER ================= */
-  #page-explorer{padding:26px 0 40px;}
-  .exp-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;font-size:13px;}
-  .fchip{background:#fff;border:1.5px solid #e7e2d6;padding:7px 13px;border-radius:20px;
-    font-weight:600;color:var(--navy);cursor:pointer;font-family:inherit;font-size:12.5px;transition:all .15s;}
-  .fchip:hover{border-color:var(--teal);}
-  .fchip.on{background:var(--navy);color:#fff;border-color:var(--navy);}
-  .fchip.static{background:#e9f7f5;border-color:#b9e6df;color:#1a6b60;cursor:default;}
+  /* ---------- ข้อมูลของฉัน ---------- */
+  .form{max-width:520px;display:flex;flex-direction:column;gap:20px;}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .lbl{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;}
+  .lbl .ic{width:26px;height:26px;}
+  .field input{width:100%;font-size:16px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;
+    background:var(--paper);color:var(--ink);outline:none;}
+  .field input:focus{border-color:var(--teal);}
+  .seg{display:flex;gap:8px;}
+  .seg button{flex:1;min-height:48px;border:2px solid var(--line);border-radius:12px;background:var(--paper);
+    color:var(--ink);font-weight:700;font-size:16px;cursor:pointer;}
+  .seg button.on{border-color:var(--teal);background:var(--sel);color:var(--teal-ink);}
+  .form .fine{margin-top:0;}
+  .opt-hint{font-size:12px;color:var(--mist);margin-top:-3px;}
 
-  .exp-banner{background:linear-gradient(155deg,#eefaf8,#fff);border:2px dashed var(--teal);
-    border-radius:16px;padding:20px;margin-bottom:14px;}
-  .exp-banner .t{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:6px;}
-  .exp-banner p{font-size:13.5px;color:#4a5f77;margin-bottom:14px;line-height:1.65;}
-
-  .tcas-warn{display:flex;gap:12px;background:#fff8e8;border:1px solid #ffe0a8;
-    border-radius:14px;padding:16px 18px;margin-bottom:16px;font-size:13px;color:#7a5a1e;line-height:1.65;}
-  .tcas-warn .ic{font-size:20px;flex-shrink:0;line-height:1.3;}
-  .tcas-warn b{color:#5c4210;}
-
-  .exp-count{font-size:13px;color:var(--mist);margin-bottom:12px;font-weight:600;}
-  .fac-fit{font-size:13.5px;color:#43576f;background:var(--cream);padding:11px 14px;
-    border-radius:11px;margin-bottom:11px;line-height:1.6;border-left:3px solid var(--teal);}
-  .fac-fit b{color:var(--navy);}
-  .code-hint{font-size:11.5px;color:var(--mist);align-self:center;margin-left:4px;}
-  .fac-card{margin-bottom:14px;}
-  .fac-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
-  .fac-head h3{font-family:'Fraunces',serif;font-size:18px;}
-  .fac-head .save{background:#fff5e6;border:1px solid #ffdca0;color:#c77a12;font-size:12px;font-weight:700;
-    padding:6px 12px;border-radius:20px;cursor:pointer;white-space:nowrap;}
-  .fac-head .save.on{background:var(--amber);color:var(--navy);}
-  .match-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .match-bar{flex:1;height:8px;background:#eee;border-radius:6px;overflow:hidden;}
-  .match-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:6px;}
-  .match-pct{font-weight:700;font-family:'Fraunces',serif;color:var(--teal);white-space:nowrap;font-size:15px;}
-  .fac-code{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;align-items:center;}
-  .fac-code span{width:24px;height:24px;border-radius:7px;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;}
-  .fac-meta{font-size:13px;color:#5c7290;line-height:1.7;}
-  .fac-meta b{color:var(--navy);}
-
-  /* modal */
-  .modal{position:fixed;inset:0;background:rgba(14,42,71,.6);display:none;place-items:center;padding:24px;z-index:50;}
+  /* ---------- modal ---------- */
+  .modal{position:fixed;inset:0;z-index:60;background:rgba(5,12,20,.6);display:none;place-items:center;padding:20px;}
   .modal.show{display:grid;}
-  .modal-card{background:#fff;border-radius:20px;padding:28px 24px;max-width:380px;text-align:center;}
-  .modal-actions{display:none;gap:10px;margin-top:4px;}
-  .modal-actions .btn{flex:1;font-size:15px;padding:12px;}
-  .btn-danger{background:var(--coral);color:#fff;}
-  .btn-danger:active{transform:translateY(2px);}
-  .modal-card .ic{font-size:40px;margin-bottom:12px;}
-  .modal-card h3{font-size:20px;margin-bottom:8px;}
-  .modal-card p{font-size:14px;color:#5c7290;margin-bottom:18px;line-height:1.6;}
+  .modal-card{width:100%;max-width:400px;text-align:center;padding:28px 22px 22px;}
+  .modal-ic .ic{width:60px;height:60px;display:block;margin:0 auto 10px;}
+  .modal-card h3{font:700 20px 'Mali',sans-serif;margin-bottom:8px;}
+  #modalBody{font-size:14.5px;color:var(--mist);line-height:1.65;margin-bottom:20px;}
+  #modalBody .cite{font-size:12px;margin-top:12px;}
+  .modal-actions{display:none;gap:10px;}
+  .modal-actions .btn{flex:1;}
 </style>
 </head>
 <body>
 
-<!-- ===== GLOBAL NAV (Desktop) ===== -->
+<header class="topbar">
+  <button class="icon-btn" id="menuBtn" data-ic="menu" onclick="toggleMenu(true)" aria-label="เมนู" aria-controls="drawer" aria-expanded="false"></button>
+  <button class="brand" onclick="goPage('dash')" data-ic="compass" aria-label="หน้าหลัก"><span>Career Compass</span></button>
+  <span class="spacer"></span>
+  <button class="user-chip" id="userChip" onclick="goPage('me')" aria-label="ข้อมูลของฉัน"></button>
+  <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"></button>
+</header>
 
-<!-- ===== PAGE-001 : AUTH ===== -->
-<section class="page active" id="page-auth">
-  <div class="auth-card">
-    <div class="auth-brand">
-      <div class="ic">🧭</div>
-      <h1>Career <span class="n">Compass</span></h1>
-      <p>เข็มทิศค้นหาตัวตน สู่คณะที่ใช่ในแบบคุณ</p>
-    </div>
-    <div class="err-msg" id="authErr"></div>
-    <div class="field">
-      <label>ชื่อเล่น</label>
-      <input id="in_name" placeholder="ใส่ชื่อที่อยากให้เรียก" maxlength="40"
-        onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <div class="field">
-      <label>ระดับชั้น</label>
-      <div class="radio-row">
-        <label><input type="radio" name="grade" value="ม.4"><span>ม.4</span></label>
-        <label><input type="radio" name="grade" value="ม.5" checked><span>ม.5</span></label>
-        <label><input type="radio" name="grade" value="ม.6"><span>ม.6</span></label>
-      </div>
-    </div>
-    <button class="btn btn-primary btn-block" onclick="doLogin()">เริ่มใช้งาน</button>
-    <div class="auth-divider">หรือ</div>
-    <button class="btn btn-ghost btn-block" onclick="doGuest()">ทดลองทำแบบประเมินด่วน (Guest)</button>
-    <p style="text-align:center;font-size:11.5px;color:var(--mist);margin-top:16px;">🔒 ข้อมูลบันทึกในเครื่องนี้เท่านั้น (LocalStorage)</p>
+<div class="scrim" onclick="closeMenu()"></div>
+<nav class="drawer" id="drawer" aria-label="เมนู">
+  <div class="drawer-h">
+    <span class="brand" data-ic="compass"><span>Career Compass</span></span>
+    <button class="icon-btn" data-ic="close" onclick="closeMenu()" aria-label="ปิดเมนู"></button>
   </div>
-</section>
-
-<!-- ===== PAGE-002 : DASHBOARD ===== -->
-<section class="page" id="page-dash">
-  <div class="wrap">
-    <div class="dash-hello">
-      <h2 id="helloTxt">สวัสดีคุณ —</h2>
-      <span class="status" id="statusTxt">💾 ยังไม่มีข้อมูลบันทึก</span>
-    </div>
-    <div class="bento">
-      <div class="card method">
-        <div class="kick">◎ หลักการและวิธีการ</div>
-        <h3>เราวิเคราะห์ตัวตนของคุณด้วยอะไร?</h3>
-        <p class="lead">Career Compass ใช้ทฤษฎี <b style="color:#fff">RIASEC ของ John L. Holland</b> ซึ่งเป็นกรอบที่ได้รับการยอมรับในวงการจิตวิทยาอาชีพ มาวัดแนวโน้มบุคลิกภาพ 6 มิติ โดยปรับบริบทคำถามให้เข้ากับชีวิตนักเรียนไทย</p>
-
-        <div class="riasec-strip">
-          <span class="r"><b style="background:var(--R)">R</b> ปฏิบัติการ/ลงมือทำ</span>
-          <span class="r"><b style="background:var(--I)">I</b> ช่างคิด/วิเคราะห์</span>
-          <span class="r"><b style="background:var(--A)">A</b> สร้างสรรค์/ศิลปะ</span>
-          <span class="r"><b style="background:var(--S)">S</b> ช่วยเหลือ/สังคม</span>
-          <span class="r"><b style="background:var(--E)">E</b> บริหาร/โน้มน้าว</span>
-          <span class="r"><b style="background:var(--C)">C</b> จัดการ/ระเบียบ</span>
-        </div>
-
-        <div class="method-grid" style="margin-top:16px;">
-          <div class="m-item">
-            <div class="n">01</div>
-            <h4>คำถาม 3 รูปแบบ</h4>
-            <p>Likert 30 ข้อ วัดความชอบที่รู้ตัว · Situational 18 ข้อ จับพฤติกรรมอัตโนมัติที่ไม่รู้ตัว · Sub-question 12 ข้อ คัดแยกมิติที่ก้ำกึ่ง</p>
-          </div>
-          <div class="m-item">
-            <div class="n">02</div>
-            <h4>ให้น้ำหนักคะแนน</h4>
-            <p>Likert ให้ 1–5 คะแนนตรงมิติ · Situational ให้มิติหลัก +3 มิติรอง +1 · Sub-question ให้มิติที่เลือก +2</p>
-          </div>
-          <div class="m-item">
-            <div class="n">03</div>
-            <h4>แปลงเป็นคะแนนมาตรฐาน</h4>
-            <p>ปรับคะแนนดิบเป็นสเกล 0–100% ต่อมิติ แล้วเรียง 3 อันดับแรกเป็น Holland Code เพื่อแนะนำสายการเรียนที่สอดคล้อง</p>
-          </div>
-        </div>
-
-        <p class="cite">อ้างอิง: Holland, J. L. (1997). <i>Making Vocational Choices: A Theory of Vocational Personalities and Work Environments</i> (3rd ed.). ผลลัพธ์เป็นเครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา</p>
-      </div>
-
-      <div class="card">
-        <h3>🚀 แบบประเมิน RIASEC Hybrid Quiz (60 ข้อ)</h3>
-        <div class="quiz-modes">
-          <div>• <b>30 ข้อ:</b> Likert Scale (ความชอบตรง)</div>
-          <div>• <b>18 ข้อ:</b> Situational (พฤติกรรมอัตโนมัติ)</div>
-          <div>• <b>12 ข้อ:</b> Deep Sub-question (แยกความก้ำกึ่ง)</div>
-        </div>
-        <button class="btn btn-primary btn-block" onclick="goPage('quiz')" id="startQuizBtn">เริ่มทำแบบประเมิน →</button>
-      </div>
-      <div class="card" id="dashScoreCard">
-        <h3>🎯 สรุปผล Holland Code</h3>
-        <div class="empty-hint">ยังไม่มีผลการประเมิน — ลองทำแบบทดสอบดูก่อนนะ</div>
-      </div>
-      <div class="card" id="dashFacultyCard">
-        <h3>🎓 คณะแนะนำที่ตรงกับบุคลิกของคุณ</h3>
-        <div class="empty-hint">ทำแบบประเมินให้เสร็จก่อน ระบบจะแนะนำคณะให้อัตโนมัติ</div>
-      </div>
-      <div class="card" id="dashBookmarkCard">
-        <h3>⭐ รายการที่บันทึกไว้</h3>
-        <div class="empty-hint" id="bmEmpty">ยังไม่มีคณะที่บันทึกไว้</div>
-        <div id="bmList"></div>
-        <div class="linkrow"><button onclick="goPage('explorer')">จัดการรายการบันทึก →</button></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PAGE-003 : ASSESSMENT STUDIO ===== -->
-<section class="page" id="page-quiz">
-  <div class="quiz-topbar">
-    <div class="wrap">
-      <button class="exit" onclick="exitQuiz()">← บันทึกและออกชั่วคราว</button>
-      <span class="progress-txt" id="qProgress">ข้อ 1 จาก 60</span>
-      <span class="dim-tag" id="qDimTag">R</span>
-    </div>
-    <div class="wrap"><div class="bar-outer"><div class="bar-inner" id="qBar"></div></div></div>
-  </div>
-  <div class="wrap q-wrap">
-    <div id="qCard"></div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" id="qBack" onclick="prevQ()">← ย้อนกลับ</button>
-      <button class="btn btn-primary" id="qNext" onclick="nextQ()" disabled>ถัดไป →</button>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PAGE-004 : RESULTS ===== -->
-<section class="page" id="page-results">
-  <div class="wrap">
-    <div class="res-header">
-      <h2>🏆 ผลการวิเคราะห์บุคลิกภาพเชิงอาชีพ</h2>
-    </div>
-    <div id="resultsBody">
-      <div class="card" style="text-align:center;"><div class="empty-hint">ยังไม่มีผลการประเมิน — ไปทำแบบทดสอบก่อนนะ</div>
-        <button class="btn btn-primary" style="margin-top:12px;" onclick="goPage('quiz')">เริ่มทำแบบประเมิน</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PAGE-005 : FACULTY EXPLORER ===== -->
-<section class="page" id="page-explorer">
-  <div class="wrap">
-    <h2 style="font-family:'Fraunces',serif;font-size:22px;margin-bottom:6px;">🎓 ค้นหาและจับคู่คณะที่เหมาะกับรหัสของคุณ</h2>
-    <div class="exp-filter" id="expFilter"></div>
-    <div id="facultyList"></div>
-  </div>
-</section>
-
-<!-- ===== BOTTOM NAV (Mobile) ===== -->
-<nav class="bottomnav" id="bottomnav" style="display:none;">
-  <button data-go="dash"><span class="ic">🏠</span>หน้าหลัก</button>
-  <button data-go="quiz"><span class="ic">📝</span>ทำควิซ</button>
-  <button data-go="results"><span class="ic">📊</span>ผลคะแนน</button>
-  <button data-go="explorer"><span class="ic">🎓</span>สำรวจคณะ</button>
-  <button data-go="profile"><span class="ic">👤</span>โปรไฟล์</button>
+  <button class="nav-item" data-go="dash" data-ic="home"><span>หน้าหลัก</span></button>
+  <button class="nav-item" data-go="quiz" data-ic="quiz"><span>แบบประเมิน</span></button>
+  <button class="nav-item" data-go="results" data-ic="results"><span>ผลลัพธ์</span></button>
+  <button class="nav-item" data-go="explorer" data-ic="grad"><span>คณะ</span></button>
+  <button class="nav-item" data-go="stats" data-ic="market"><span>ตลาดแรงงาน</span></button>
+  <button class="nav-item" data-go="me" data-ic="profile"><span>ข้อมูลของฉัน</span></button>
 </nav>
 
-<!-- modal -->
-<div class="modal" id="modal">
-  <div class="modal-card">
-    <div class="ic" id="modalIc">ℹ️</div>
+<main class="book" id="pages">
+
+<!-- ===== หน้า 1 : หน้าหลัก ===== -->
+<section class="page sheet" id="page-dash" data-no="1">
+  <div class="grid">
+    <div class="note taped quiz-note">
+      <div class="top" data-ic="quiz">
+        <div><div class="h">แบบประเมิน RIASEC</div><div class="muted"><b id="dashQuizCount">60</b> ข้อ</div></div>
+      </div>
+      <div class="bar"><i id="dashQuizBar"></i></div>
+      <button class="btn btn-primary" id="startQuizBtn" onclick="goPage('quiz')"></button>
+    </div>
+    <div class="shortcuts">
+      <button class="shortcut sc1" data-ic="grad" onclick="zoomTo('explorer',this)"><span>คณะ</span></button>
+      <button class="shortcut sc2" data-ic="market" onclick="zoomTo('stats',this)"><span>ตลาดแรงงาน</span></button>
+    </div>
+    <div class="note taped" id="dashResult" hidden></div>
+    <div class="note taped" id="dashBookmarks" hidden>
+      <div class="note-h" data-ic="star"><span>บันทึกไว้</span></div>
+      <div id="bmList"></div>
+      <button class="btn-link" onclick="goPage('explorer')"><span>จัดการ</span></button>
+    </div>
+    <div class="note taped wide">
+      <div class="note-h"><span>RIASEC</span><button class="icon-btn" data-ic="info" onclick="showMethod()" aria-label="หลักการและวิธีการ"></button></div>
+      <div class="dims" id="dimGrid"></div>
+    </div>
+  </div>
+  <p class="fine" data-ic="info"><span>เครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา และไม่ใช่คำตัดสินอนาคตของคุณ</span></p>
+</section>
+
+<!-- ===== หน้า 2 : แบบประเมิน ===== -->
+<section class="page sheet" id="page-quiz" data-no="2">
+  <div class="quizbar">
+    <button class="icon-btn" data-ic="home" onclick="exitQuiz()" aria-label="บันทึกและออกชั่วคราว" title="บันทึกและออกชั่วคราว"></button>
+    <div class="bar"><i id="qBar"></i></div>
+    <span class="q-count" id="qProgress">1/60</span>
+    <span class="q-dim" id="qDimTag"></span>
+  </div>
+  <div class="q-host">
+    <div class="note q-sheet" id="qSheet"><div id="qCard"></div></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-ghost icon-only" id="qBack" data-ic="back" onclick="prevQ()" aria-label="ย้อนกลับ"></button>
+    <button class="btn btn-primary" id="qNext" onclick="nextQ()" disabled></button>
+  </div>
+</section>
+
+<!-- ===== หน้า 3 : ผลลัพธ์ ===== -->
+<section class="page sheet" id="page-results" data-no="3">
+  <div id="resultsBody"></div>
+</section>
+
+<!-- ===== หน้า 4 : คณะ ===== -->
+<section class="page sheet" id="page-explorer" data-no="4">
+  <h2 class="page-h" data-ic="grad"><span>คณะ</span></h2>
+  <div class="chips" id="expFilter"></div>
+  <div id="facultyList"></div>
+</section>
+
+<!-- ===== หน้า 5 : ตลาดแรงงาน (หน้าว่าง — รอรวบรวมข้อมูล)
+     แหล่งข้อมูลที่ใช้ได้: สำนักงานสถิติแห่งชาติ (สสช.), กระทรวงแรงงาน — ทุกตัวเลขต้องระบุแหล่ง+ปี ห้ามแต่งตัวเลข (ดู CLAUDE.md กฎข้อ 2) ===== -->
+<section class="page sheet" id="page-stats" data-no="5">
+  <h2 class="page-h" data-ic="market"><span>ตลาดแรงงาน</span></h2>
+  <div class="note taped res-hero" data-ic="market"><p class="muted">กำลังรวบรวมข้อมูล</p></div>
+  <p class="fine" data-ic="info"><span>แหล่งข้อมูล: สำนักงานสถิติแห่งชาติ · กระทรวงแรงงาน</span></p>
+</section>
+
+<!-- ===== หน้า 6 : ข้อมูลของฉัน (ไม่บังคับกรอก) ===== -->
+<section class="page sheet" id="page-me" data-no="6">
+  <h2 class="page-h" data-ic="profile"><span>ข้อมูลของฉัน</span></h2>
+  <div class="note taped form">
+    <label class="field">
+      <span class="lbl" data-ic="profile"><span>ชื่อเล่น</span></span>
+      <input id="in_name" maxlength="40" placeholder="ชื่อ" autocomplete="nickname" oninput="updateUser('name',this.value)">
+      <small class="opt-hint">*ไม่บังคับ</small>
+    </label>
+    <div class="field">
+      <span class="lbl" data-ic="grade"><span>ชั้น</span></span>
+      <div class="seg" id="gradeRow">
+        <button data-g="ม.4" onclick="pickGrade('ม.4')">ม.4</button>
+        <button data-g="ม.5" onclick="pickGrade('ม.5')">ม.5</button>
+        <button data-g="ม.6" onclick="pickGrade('ม.6')">ม.6</button>
+      </div>
+      <small class="opt-hint">*ไม่บังคับ</small>
+    </div>
+    <label class="field">
+      <span class="lbl" data-ic="school"><span>โรงเรียน</span></span>
+      <input id="in_school" maxlength="80" placeholder="โรงเรียน" oninput="updateUser('school',this.value)">
+      <small class="opt-hint">*ไม่บังคับ</small>
+    </label>
+    <p class="fine" data-ic="lock"><span>บันทึกอัตโนมัติ · เก็บในเครื่องนี้เท่านั้น</span></p>
+  </div>
+  <button class="btn btn-danger-line" data-ic="trash" onclick="clearAll()"><span>ล้างข้อมูลทั้งหมด</span></button>
+</section>
+
+</main>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card note taped" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-ic" id="modalIc"></div>
     <h3 id="modalTitle"></h3>
     <div id="modalBody"></div>
-    <button class="btn btn-primary btn-block" id="modalOk" onclick="closeModal()">เข้าใจแล้ว</button>
+    <button class="btn btn-primary btn-block" id="modalOk" onclick="closeModal()">โอเค</button>
     <div class="modal-actions" id="modalActions">
       <button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button>
       <button class="btn btn-danger" id="modalConfirm">ยืนยัน</button>
@@ -651,37 +691,37 @@ const QUESTIONS = [
 
 const DIMS = ['R','I','A','S','E','C'];
 const DIM_INFO = {
-  R:{name:'Realistic',th:'ปฏิบัติการ/ลงมือทำ',color:'var(--R)',emo:'🔧'},
-  I:{name:'Investigative',th:'ช่างคิด/วิเคราะห์',color:'var(--I)',emo:'🔬'},
-  A:{name:'Artistic',th:'สร้างสรรค์/ศิลปะ',color:'var(--A)',emo:'🎨'},
-  S:{name:'Social',th:'ช่วยเหลือ/สังคม',color:'var(--S)',emo:'🤝'},
-  E:{name:'Enterprising',th:'บริหาร/โน้มน้าว',color:'var(--E)',emo:'📣'},
-  C:{name:'Conventional',th:'จัดการ/ระเบียบ',color:'var(--C)',emo:'📊'},
+  R:{name:'Realistic',th:'ปฏิบัติการ/ลงมือทำ',color:'var(--R)',ic:'wrench'},
+  I:{name:'Investigative',th:'ช่างคิด/วิเคราะห์',color:'var(--I)',ic:'micro'},
+  A:{name:'Artistic',th:'สร้างสรรค์/ศิลปะ',color:'var(--A)',ic:'palette'},
+  S:{name:'Social',th:'ช่วยเหลือ/สังคม',color:'var(--S)',ic:'people'},
+  E:{name:'Enterprising',th:'บริหาร/โน้มน้าว',color:'var(--E)',ic:'mega'},
+  C:{name:'Conventional',th:'จัดการ/ระเบียบ',color:'var(--C)',ic:'clip'},
 };
 
 /* ===== ฐานข้อมูลสายการเรียน (แผนการเรียน ม.ปลาย) ผูกกับ RIASEC ===== */
 const TRACKS = [
-  {name:'วิทย์-คณิต (Science-Math)',code:['I','R'],icon:'🔬',
+  {name:'วิทย์-คณิต (Science-Math)',code:['I','R'],icon:'micro',
    why:'เหมาะกับคนที่ชอบตั้งคำถาม วิเคราะห์เหตุผล และได้ลงมือทดลองจริง',
    focus:'ฟิสิกส์ · เคมี · ชีววิทยา · คณิตศาสตร์',
    next:'วิศวกรรมศาสตร์, วิทยาศาสตร์, แพทยศาสตร์, เทคโนโลยีสารสนเทศ'},
-  {name:'ศิลป์-คำนวณ (Arts-Math)',code:['C','E'],icon:'📊',
+  {name:'ศิลป์-คำนวณ (Arts-Math)',code:['C','E'],icon:'calc',
    why:'เหมาะกับคนที่จัดการตัวเลขเป็นระบบ และสนใจการบริหารหรือธุรกิจ',
    focus:'คณิตศาสตร์ · ภาษาอังกฤษ · สังคมศึกษา',
    next:'บริหารธุรกิจ, บัญชี, เศรษฐศาสตร์, การเงิน'},
-  {name:'ศิลป์-ภาษา (Arts-Language)',code:['S','A'],icon:'🗣️',
+  {name:'ศิลป์-ภาษา (Arts-Language)',code:['S','A'],icon:'talk',
    why:'เหมาะกับคนที่สื่อสารเก่ง เข้าใจผู้คน และชอบงานที่ใช้ภาษา',
    focus:'ภาษาอังกฤษ · ภาษาที่สาม · สังคมศึกษา',
    next:'อักษรศาสตร์, นิเทศศาสตร์, ครุศาสตร์, ความสัมพันธ์ระหว่างประเทศ'},
-  {name:'ศิลป์-สังคม (Arts-Social)',code:['S','E'],icon:'🤝',
+  {name:'ศิลป์-สังคม (Arts-Social)',code:['S','E'],icon:'people',
    why:'เหมาะกับคนที่สนใจสังคม กฎหมาย และการทำงานกับผู้คน',
    focus:'สังคมศึกษา · ภาษาไทย · ภาษาอังกฤษ',
    next:'นิติศาสตร์, รัฐศาสตร์, จิตวิทยา, สังคมสงเคราะห์'},
-  {name:'ศิลป์-ออกแบบ / สายศิลปะ',code:['A','R'],icon:'🎨',
+  {name:'ศิลป์-ออกแบบ / สายศิลปะ',code:['A','R'],icon:'palette',
    why:'เหมาะกับคนที่มีความคิดสร้างสรรค์ และชอบถ่ายทอดผ่านงานภาพหรือสื่อ',
    focus:'ศิลปะ · การออกแบบ · การสร้างพอร์ตโฟลิโอ',
    next:'สถาปัตยกรรม, มัณฑนศิลป์, นิเทศศิลป์, ดิจิทัลมีเดีย'},
-  {name:'สายอาชีวะ / ทวิศึกษา (เทคนิค)',code:['R','C'],icon:'🔧',
+  {name:'สายอาชีวะ / ทวิศึกษา (เทคนิค)',code:['R','C'],icon:'wrench',
    why:'เหมาะกับคนที่เรียนรู้ได้ดีจากการลงมือทำจริง มากกว่าการนั่งอ่านทฤษฎี',
    focus:'ช่างอุตสาหกรรม · เทคโนโลยี · การปฏิบัติงานจริง',
    next:'ปวช./ปวส. สายช่าง, เทคโนโลยีอุตสาหกรรม, ต่อยอด ป.ตรี สายเทคนิค'},
@@ -690,178 +730,455 @@ const TRACKS = [
 /* ===== ฐานข้อมูลคณะ/สายอาชีพ ผูกกับ Holland Code 2-3 ตัวอักษร ===== */
 const FACULTIES = [
   // ---- สายสังคม / จิตวิทยา / การศึกษา ----
-  {name:'คณะจิตวิทยา / จิตวิทยาการปรึกษา',code:['S','I'],icon:'🧠',
+  {name:'คณะจิตวิทยา / จิตวิทยาการปรึกษา',code:['S','I'],icon:'brain',
    fit:'คนที่สังเกตความรู้สึกคนอื่นได้ไว ชอบรับฟัง และอยากเข้าใจว่าทำไมคนถึงคิดหรือทำแบบนั้น',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.เกษตรศาสตร์, ม.เชียงใหม่',
    careers:'นักจิตวิทยา, นักพัฒนาทรัพยากรบุคคล (HRD), ที่ปรึกษาแนะแนว'},
-  {name:'คณะครุศาสตร์ / ศึกษาศาสตร์',code:['S','A'],icon:'👩‍🏫',
+  {name:'คณะครุศาสตร์ / ศึกษาศาสตร์',code:['S','A'],icon:'board',
    fit:'คนที่มีความสุขเวลาสอนแล้วคนอื่นเข้าใจ และชอบคิดวิธีอธิบายเรื่องยากให้ง่าย',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ศรีนครินทรวิโรฒ, ม.เชียงใหม่',
    careers:'ครู, นักออกแบบหลักสูตร, นักการศึกษา'},
-  {name:'คณะรัฐศาสตร์ / สังคมสงเคราะห์',code:['S','E','I'],icon:'🏛️',
+  {name:'คณะรัฐศาสตร์ / สังคมสงเคราะห์',code:['S','E','I'],icon:'columns',
    fit:'คนที่สนใจปัญหาสังคม อยากมีส่วนเปลี่ยนแปลง และทำงานกับผู้คนได้ดี',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.รามคำแหง',
    careers:'ข้าราชการ, นักพัฒนาสังคม, นักวิเคราะห์นโยบาย, งานองค์กรระหว่างประเทศ'},
-  {name:'คณะนิติศาสตร์',code:['E','I','C'],icon:'⚖️',
+  {name:'คณะนิติศาสตร์',code:['E','I','C'],icon:'scales',
    fit:'คนที่ชอบอ่านเยอะ จับประเด็นเก่ง โต้แย้งด้วยเหตุผล และให้ความสำคัญกับความถูกต้อง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.รามคำแหง',
    careers:'ทนายความ, ผู้พิพากษา, อัยการ, นิติกรองค์กร'},
 
   // ---- สายสุขภาพ ----
-  {name:'คณะแพทยศาสตร์',code:['I','S','R'],icon:'🩺',
+  {name:'คณะแพทยศาสตร์',code:['I','S','R'],icon:'stetho',
    fit:'คนที่ชอบวิเคราะห์หาสาเหตุอย่างเป็นระบบ อดทนกับการเรียนยาว และอยากช่วยคนโดยตรง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.มหิดล, ม.เชียงใหม่, ม.ขอนแก่น',
    careers:'แพทย์เฉพาะทาง, แพทย์เวชปฏิบัติทั่วไป, นักวิจัยทางการแพทย์'},
-  {name:'คณะพยาบาลศาสตร์',code:['S','I','R'],icon:'💉',
+  {name:'คณะพยาบาลศาสตร์',code:['S','I','R'],icon:'syringe',
    fit:'คนที่ดูแลคนอื่นได้ดี ทำงานเป็นทีมเก่ง และรับมือกับสถานการณ์กดดันได้',
    unis:'ม.มหิดล, จุฬาลงกรณ์มหาวิทยาลัย, ม.เชียงใหม่, วิทยาลัยพยาบาลในสังกัด สธ.',
    careers:'พยาบาลวิชาชีพ, พยาบาลเฉพาะทาง, พยาบาลชุมชน'},
-  {name:'คณะเภสัชศาสตร์',code:['I','C','S'],icon:'💊',
+  {name:'คณะเภสัชศาสตร์',code:['I','C','S'],icon:'pill',
    fit:'คนที่ละเอียดรอบคอบกับตัวเลขและรายละเอียด ชอบเคมี และใส่ใจความแม่นยำสูง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.มหิดล, ม.ศิลปากร, ม.ขอนแก่น',
    careers:'เภสัชกรโรงพยาบาล, เภสัชกรชุมชน, งานวิจัยและพัฒนายา'},
-  {name:'คณะเทคนิคการแพทย์ / สหเวชศาสตร์',code:['I','C','R'],icon:'🔬',
+  {name:'คณะเทคนิคการแพทย์ / สหเวชศาสตร์',code:['I','C','R'],icon:'micro',
    fit:'คนที่ชอบงานแล็บ วิเคราะห์ผลตรวจ และทำงานกับเครื่องมือที่ต้องการความแม่นยำ',
    unis:'ม.มหิดล, จุฬาลงกรณ์มหาวิทยาลัย, ม.เชียงใหม่, ม.ธรรมศาสตร์',
    careers:'นักเทคนิคการแพทย์, นักกายภาพบำบัด, นักรังสีเทคนิค'},
 
   // ---- สายวิศวกรรม / เทคโนโลยี ----
-  {name:'คณะวิศวกรรมศาสตร์ / วิศวกรรมเครื่องกล',code:['R','I'],icon:'⚙️',
+  {name:'คณะวิศวกรรมศาสตร์ / วิศวกรรมเครื่องกล',code:['R','I'],icon:'gear',
    fit:'คนที่ชอบรื้อดูว่าของทำงานยังไง และสนุกกับการสร้างสิ่งที่ใช้งานได้จริง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, มจธ., ม.เกษตรศาสตร์, สจล.',
    careers:'วิศวกรเครื่องกล, วิศวกรภาคสนาม, นักออกแบบผลิตภัณฑ์'},
-  {name:'คณะวิศวกรรมคอมพิวเตอร์ / วิทยาการข้อมูล',code:['I','R','C'],icon:'💻',
+  {name:'คณะวิศวกรรมคอมพิวเตอร์ / วิทยาการข้อมูล',code:['I','R','C'],icon:'laptop',
    fit:'คนที่ชอบแก้โจทย์ตรรกะ อดทนกับการหาบั๊ก และสนใจว่าข้อมูลบอกอะไรเราได้บ้าง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, มจธ., สจล., ม.เกษตรศาสตร์',
    careers:'วิศวกรซอฟต์แวร์, นักวิทยาศาสตร์ข้อมูล, วิศวกร AI/ML'},
-  {name:'คณะเทคโนโลยีสารสนเทศ / นวัตกรรมดิจิทัล',code:['I','C','E'],icon:'🖥️',
+  {name:'คณะเทคโนโลยีสารสนเทศ / นวัตกรรมดิจิทัล',code:['I','C','E'],icon:'monitor',
    fit:'คนที่อยู่ตรงกลางระหว่างเทคโนโลยีกับธุรกิจ ชอบทั้งระบบและการทำงานกับคน',
    unis:'สจล., มจธ., ม.มหิดล, ม.ธรรมศาสตร์',
    careers:'Product Owner, IT Business Analyst, นักพัฒนาระบบ'},
 
   // ---- สายศิลปะ / ออกแบบ / สื่อ ----
-  {name:'คณะสถาปัตยกรรมศาสตร์',code:['A','I','R'],icon:'📐',
+  {name:'คณะสถาปัตยกรรมศาสตร์',code:['A','I','R'],icon:'ruler',
    fit:'คนที่คิดเป็นภาพสามมิติ ชอบทั้งความสวยงามและการคำนวณให้สร้างได้จริง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ศิลปากร, สจล., มจธ.',
    careers:'สถาปนิก, นักออกแบบภายใน, ภูมิสถาปนิก'},
-  {name:'คณะศิลปกรรมศาสตร์ / นิเทศศิลป์',code:['A','R'],icon:'🎨',
+  {name:'คณะศิลปกรรมศาสตร์ / นิเทศศิลป์',code:['A','R'],icon:'palette',
    fit:'คนที่สื่อสารผ่านภาพได้ดีกว่าคำพูด และมีสไตล์เป็นของตัวเอง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ศิลปากร, ม.กรุงเทพ',
    careers:'นักออกแบบกราฟิก, ศิลปิน, ครีเอทีฟไดเรกเตอร์'},
-  {name:'คณะดิจิทัลมีเดียและการออกแบบ',code:['A','I','R'],icon:'🎬',
+  {name:'คณะดิจิทัลมีเดียและการออกแบบ',code:['A','I','R'],icon:'clapper',
    fit:'คนที่ชอบทำคลิป ตัดต่อ เล่าเรื่องด้วยสื่อ และสนใจเทคโนโลยีการผลิตงาน',
    unis:'ม.ศิลปากร, ม.กรุงเทพ, ม.รังสิต, สจล.',
    careers:'Motion Designer, UX/UI Designer, Game Artist, ผู้กำกับสื่อดิจิทัล'},
-  {name:'คณะนิเทศศาสตร์ / วารสารศาสตร์',code:['E','S','A'],icon:'📣',
+  {name:'คณะนิเทศศาสตร์ / วารสารศาสตร์',code:['E','S','A'],icon:'mega',
    fit:'คนที่กล้าพูด เล่าเรื่องเก่ง และอยากทำงานที่ได้เจอผู้คนหลากหลาย',
    unis:'ม.ธรรมศาสตร์, จุฬาลงกรณ์มหาวิทยาลัย, ม.กรุงเทพ',
    careers:'นักวางแผนกลยุทธ์สื่อ, นักสื่อสารองค์กร (PR), คอนเทนต์ครีเอเตอร์'},
-  {name:'คณะอักษรศาสตร์ / มนุษยศาสตร์',code:['A','S','I'],icon:'📖',
+  {name:'คณะอักษรศาสตร์ / มนุษยศาสตร์',code:['A','S','I'],icon:'book',
    fit:'คนที่รักการอ่านและภาษา สนใจวัฒนธรรม และชอบตีความความหมายเบื้องหลัง',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.เกษตรศาสตร์',
    careers:'นักแปล, บรรณาธิการ, นักเขียน, งานวิเทศสัมพันธ์'},
 
   // ---- สายบริหาร / ตัวเลข ----
-  {name:'คณะบริหารธุรกิจ / การตลาด',code:['E','C'],icon:'📈',
+  {name:'คณะบริหารธุรกิจ / การตลาด',code:['E','C'],icon:'chartup',
    fit:'คนที่ชอบมองหาโอกาส กล้าเสนอไอเดีย และสนุกกับการโน้มน้าวคน',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.มหิดล, ม.เกษตรศาสตร์',
    careers:'นักการตลาด, ผู้ประกอบการ, นักวิเคราะห์ธุรกิจ'},
-  {name:'คณะบัญชี / การเงิน',code:['C','I'],icon:'🧾',
+  {name:'คณะบัญชี / การเงิน',code:['C','I'],icon:'receipt',
    fit:'คนที่เป็นระเบียบ มองเห็นตัวเลขที่ผิดพลาด และสบายใจกับงานที่มีกฎเกณฑ์ชัด',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.เกษตรศาสตร์',
    careers:'นักบัญชี, นักวางแผนการเงิน, ผู้สอบบัญชี'},
 
   // ---- สายลงมือทำ / ภาคสนาม ----
-  {name:'คณะเกษตรศาสตร์ / วนศาสตร์',code:['R','I','S'],icon:'🌱',
+  {name:'คณะเกษตรศาสตร์ / วนศาสตร์',code:['R','I','S'],icon:'sprout',
    fit:'คนที่ชอบอยู่กลางแจ้ง สนใจธรรมชาติ และอยากเห็นผลจากสิ่งที่ลงมือทำเอง',
    unis:'ม.เกษตรศาสตร์, ม.เชียงใหม่, ม.ขอนแก่น, ม.แม่โจ้',
    careers:'นักวิชาการเกษตร, นักวิจัยพืช/สัตว์, ผู้ประกอบการเกษตรสมัยใหม่'},
-  {name:'คณะวิทยาศาสตร์การกีฬา / พลศึกษา',code:['R','S','E'],icon:'🏃',
+  {name:'คณะวิทยาศาสตร์การกีฬา / พลศึกษา',code:['R','S','E'],icon:'runner',
    fit:'คนที่ชอบเคลื่อนไหว สนใจร่างกายมนุษย์ และอยากช่วยให้คนอื่นแข็งแรงขึ้น',
    unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.เกษตรศาสตร์, ม.มหิดล, ม.การกีฬาแห่งชาติ',
    careers:'นักวิทยาศาสตร์การกีฬา, โค้ช, ผู้ฝึกสอนส่วนบุคคล, นักกายภาพการกีฬา'},
 ];
 
 /* ============================================================================
+   ไอคอน — วาดเองด้วย SVG (ได้แรงบันดาลใจจากอีโมจิ แต่เป็นของเราเอง)
+   เส้นขอบใช้ --ic-line (เปลี่ยนตามธีม), .k = เส้นเข้มคงที่, .w = เส้นขาว
+   ============================================================================ */
+const ICONS = {
+  menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+  close:'<path d="M6 6l12 12M18 6 6 18"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  next:'<path d="M9 5l7 7-7 7"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  restart:'<path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4.5h-4.5"/>',
+  play:'<path d="M7 4.5v15l12.5-7.5z" fill="var(--S)"/>',
+  flag:'<path d="M5 21V3.5"/><path d="M5 4.5h12.5l-2.8 4 2.8 4H5" fill="var(--R)"/>',
+  home:'<path d="M5.5 10v10.5h13V10" fill="var(--E)"/><path d="M3 11.5 12 4l9 7.5"/><rect x="10" y="14" width="4" height="6.5" rx="1" fill="var(--R)"/>',
+  quiz:'<rect x="4" y="3" width="13" height="18" rx="2" fill="#fff"/><path class="k" d="M7.5 8h6M7.5 11.5h6M7.5 15h3"/><path d="M13.5 20.5v-2.4l6-6 2.4 2.4-6 6z" fill="var(--E)"/>',
+  results:'<rect x="3" y="3" width="18" height="18" rx="3.5" fill="#fff"/><rect class="k" x="6.5" y="12" width="3" height="6" rx="1" fill="var(--I)"/><rect class="k" x="10.5" y="7" width="3" height="11" rx="1" fill="var(--S)"/><rect class="k" x="14.5" y="10" width="3" height="8" rx="1" fill="var(--E)"/>',
+  grad:'<path d="M6.5 11.5v4.3c0 1.7 2.5 3.2 5.5 3.2s5.5-1.5 5.5-3.2v-4.3" fill="#8fbaff"/><path d="M2.5 9.5 12 5l9.5 4.5L12 14z" fill="var(--I)"/><path d="M21.5 9.5V15"/><circle cx="21.5" cy="16.3" r="1.2" fill="var(--E)"/>',
+  profile:'<circle cx="12" cy="8.5" r="4" fill="var(--E)"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.7 2 7.5 6z" fill="var(--S)"/>',
+  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--E)"/>',
+  sun:'<circle cx="12" cy="12" r="4.2" fill="var(--E)"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+  star:'<path d="M12 3.2l2.7 5.5 6 .9-4.35 4.25 1 6L12 17l-5.35 2.85 1-6L3.3 9.6l6-.9z" fill="var(--E)"/>',
+  'star-o':'<path d="M12 3.2l2.7 5.5 6 .9-4.35 4.25 1 6L12 17l-5.35 2.85 1-6L3.3 9.6l6-.9z"/>',
+  compass:'<circle cx="12" cy="12" r="9" fill="#fff"/><path class="k" stroke-width="1.2" d="M15.8 8.2 10.6 10.6 13.4 13.4z" fill="var(--R)"/><path class="k" stroke-width="1.2" d="M8.2 15.8 13.4 13.4 10.6 10.6z" fill="var(--I)"/>',
+  info:'<circle cx="12" cy="12" r="9.5" fill="var(--I)"/><path class="w" stroke-width="2.4" d="M12 11v6M12 7.5v.1"/>',
+  warn:'<path d="M12 3.5 22 20.5H2z" fill="var(--E)"/><path class="k" d="M12 10v4.5M12 17.6v.1"/>',
+  lock:'<rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="var(--E)"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path class="k" d="M12 14.5v2.5"/>',
+  trash:'<path d="M6 7l1 13.5h10L18 7" fill="var(--R)"/><path d="M4 7h16M9.5 7V4h5v3"/>',
+  download:'<path d="M4 14v4.5c0 .8.7 1.5 1.5 1.5h13c.8 0 1.5-.7 1.5-1.5V14" fill="var(--S)"/><path d="M12 3.5v10M8 9.5l4 4 4-4"/>',
+  masks:'<path d="M3 5h10v6a5 5 0 0 1-10 0z" fill="var(--A)"/><path d="M11 9h10v6a5 5 0 0 1-10 0z" fill="var(--E)"/><path class="k" d="M5.6 8h1.3M9.1 8h1.3M6 11.6c1.1 1 2.9 1 4 0M13.6 12h1.3M17.1 12h1.3M14 16.8c1.1-1 2.9-1 4 0"/>',
+  trophy:'<path d="M7 6H4.5a2.5 2.5 0 0 0 2.8 3.4M17 6h2.5a2.5 2.5 0 0 1-2.8 3.4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z" fill="var(--E)"/><path d="M12 14v3"/><path d="M8.5 20.5h7l-.8-3.5H9.3z" fill="var(--R)"/>',
+  target:'<circle cx="12" cy="12" r="9" fill="var(--R)"/><circle cx="12" cy="12" r="5.5" fill="#fff"/><circle cx="12" cy="12" r="2" fill="var(--R)"/>',
+  spark:'<path d="M11 3l1.9 5.6L18.5 10.5l-5.6 1.9L11 18l-1.9-5.6L3.5 10.5l5.6-1.9z" fill="var(--E)"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="var(--A)"/>',
+  split:'<path d="M12 21v-7l-6.5-6.5M12 14l6.5-6.5" stroke="var(--A)" stroke-width="2.4"/><path d="M4.5 11.5v-5h5M19.5 11.5v-5h-5" stroke="var(--A)" stroke-width="2.4"/>',
+  school:'<path d="M3 20.5V11l9-5 9 5v9.5z" fill="var(--E)"/><rect x="10" y="14.5" width="4" height="6" fill="var(--R)"/><circle cx="12" cy="10.5" r="1.6" fill="#fff"/><path d="M12 6V2.5l3.2 1.2L12 5"/>',
+  grade:'<rect x="3.5" y="14.5" width="5" height="6" rx="1" fill="var(--S)"/><rect x="9.5" y="10" width="5" height="10.5" rx="1" fill="var(--I)"/><rect x="15.5" y="5.5" width="5" height="15" rx="1" fill="var(--A)"/>',
+  brief:'<rect x="3" y="7" width="18" height="13" rx="2" fill="var(--E)"/><path d="M9 7V5.2c0-.9.7-1.7 1.6-1.7h2.8c.9 0 1.6.8 1.6 1.7V7M3 12.5h18"/>',
+  // ---- 6 มิติ RIASEC ----
+  wrench:'<g transform="rotate(45 12 12)"><rect x="10.25" y="9" width="3.5" height="13.5" rx="1.75" fill="var(--R)"/><path d="M10.5 1.76A4.5 4.5 0 1 0 13.5 1.76V5h-3z" fill="var(--R)"/></g>',
+  micro:'<path d="M15 19c3-2 3.5-6.5.5-9"/><rect x="8" y="2.5" width="4.5" height="11" rx="1.5" transform="rotate(-28 10.25 8)" fill="var(--I)"/><path d="M6.5 15.5h7"/><rect x="4.5" y="18.5" width="15" height="2.5" rx="1.2" fill="var(--I)"/>',
+  palette:'<path d="M12 3a9 9 0 0 0 0 18c1.4 0 2-1 1.6-2.2-.5-1.4.4-2.8 1.9-2.8H18a3 3 0 0 0 3-3c0-5.5-4-10-9-10z" fill="#fff"/><circle cx="7.5" cy="11.5" r="1.7" fill="var(--R)" stroke="none"/><circle cx="9.5" cy="7" r="1.7" fill="var(--I)" stroke="none"/><circle cx="14.5" cy="6.8" r="1.7" fill="var(--S)" stroke="none"/><circle cx="17.5" cy="10.5" r="1.7" fill="var(--A)" stroke="none"/>',
+  people:'<circle cx="8" cy="8" r="3" fill="var(--S)"/><circle cx="16" cy="8" r="3" fill="var(--E)"/><path d="M2.5 19.5c.5-3.5 2.6-5.5 5.5-5.5s5 2 5.5 5.5z" fill="var(--S)"/><path d="M10.5 19.5c.5-3.5 2.6-5.5 5.5-5.5s5 2 5.5 5.5z" fill="var(--E)"/>',
+  mega:'<path d="M4 9.5h3l9-5v15l-9-5H4z" fill="var(--E)"/><path d="M7 14.5l1.5 5h2.5l-1.3-4.3"/><path d="M19 9c1.2 1.7 1.2 4.3 0 6"/>',
+  clip:'<rect x="5" y="4" width="14" height="17" rx="2" fill="#fff"/><rect x="9" y="2.5" width="6" height="3.2" rx="1" fill="var(--C)"/><path class="k" d="M8 10.5l1.2 1.2 2-2M13 11h3.5M8 15.5l1.2 1.2 2-2M13 16h3.5"/>',
+  // ---- คณะ / สายการเรียน ----
+  brain:'<path d="M12 5c-1.2-1.8-4.4-1.6-5.2.7C4.3 5.9 3.2 8.6 4.6 10.3 3 11.8 3.9 15 6 15.2c.6 2.3 3.8 3.1 6 1.3z" fill="#ff9ecf"/><path d="M12 5c1.2-1.8 4.4-1.6 5.2.7C19.7 5.9 20.8 8.6 19.4 10.3 21 11.8 20.1 15 18 15.2c-.6 2.3-3.8 3.1-6 1.3z" fill="var(--A)"/><path class="k" d="M8 9c1 0 1.5.8 1.5 1.8M16 9c-1 0-1.5.8-1.5 1.8"/>',
+  board:'<rect x="3" y="3.5" width="18" height="12.5" rx="1.5" fill="var(--C)"/><path class="w" d="M6.5 7.5h6.5M6.5 11h4"/><path d="M8 20.5l1.8-4.5M16 20.5l-1.8-4.5"/><circle class="k" cx="17" cy="10.5" r="1.8" fill="var(--R)"/>',
+  columns:'<path d="M3 9 12 4l9 5z" fill="var(--E)"/><path d="M5.5 11v6.5M10 11v6.5M14 11v6.5M18.5 11v6.5"/><path d="M3.5 18.5h17v2h-17z" fill="var(--E)"/>',
+  scales:'<path d="M12 5v15M8 20.5h8M4.5 7.5h15M4.5 7.5 2.5 13M4.5 7.5l2 5.5M19.5 7.5l-2 5.5M19.5 7.5l2 5.5"/><path d="M2 13h5a2.5 2.5 0 0 1-5 0zM17 13h5a2.5 2.5 0 0 1-5 0z" fill="var(--E)"/><circle cx="12" cy="4.5" r="1.5" fill="var(--R)"/>',
+  stetho:'<path d="M6 3.5v5a4 4 0 0 0 8 0v-5M10 12.5v2a4.5 4.5 0 0 0 9 0v-2"/><circle cx="19" cy="10.5" r="2.2" fill="var(--R)"/><path stroke-width="2.6" d="M4.8 3.5h2.4M12.8 3.5h2.4"/>',
+  syringe:'<g transform="rotate(45 12 12)"><rect x="9.5" y="6" width="5" height="10" rx="1" fill="#bfe3ff"/><path d="M12 16v5.5M8 6h8M12 6V2.5M10 2.5h4"/><path class="k" d="M9.5 10h2M9.5 13h2"/></g>',
+  pill:'<g transform="rotate(-45 12 12)"><path d="M8.5 12V7.5a3.5 3.5 0 0 1 7 0V12z" fill="var(--R)"/><path d="M8.5 12v4.5a3.5 3.5 0 0 0 7 0V12z" fill="#fff"/></g>',
+  gear:'<circle cx="12" cy="12" r="8.2" stroke="var(--I)" stroke-width="3.4" stroke-dasharray="2.6 3.84" stroke-linecap="butt"/><circle cx="12" cy="12" r="6.3" fill="var(--I)"/><circle cx="12" cy="12" r="2.4" fill="#fff"/>',
+  laptop:'<rect x="4.5" y="4.5" width="15" height="10.5" rx="1.5" fill="var(--I)"/><path d="M2.5 18.5h19l-1.5-3.5H4z" fill="#fff"/><path class="w" d="M10 8l-2 1.8 2 1.8M14 8l2 1.8-2 1.8"/>',
+  monitor:'<rect x="3" y="3.5" width="18" height="12.5" rx="1.5" fill="var(--S)"/><path d="M12 16v4M8 20.5h8"/><path class="w" d="M6.5 12.5l3-3 2.5 2 4-4"/>',
+  ruler:'<path d="M4 3.5v17h17z" fill="var(--E)"/><path d="M8 12v4.5h4.5z" fill="#fff"/><path class="k" d="M4 8h2M4 12h2M4 16h2"/>',
+  clapper:'<rect x="3.5" y="9.5" width="17" height="11" rx="1.5" fill="var(--A)"/><g transform="rotate(-14 3.5 9.5)"><rect x="3.5" y="5.5" width="17" height="4" rx="1" fill="#fff"/><path class="k" d="M8 5.5l-2 4M13 5.5l-2 4M18 5.5l-2 4"/></g>',
+  book:'<path d="M3 5.5c3-1 6-1 9 1v13c-3-2-6-2-9-1z" fill="var(--I)"/><path d="M21 5.5c-3-1-6-1-9 1v13c3-2 6-2 9-1z" fill="var(--S)"/>',
+  chartup:'<rect x="3" y="3" width="18" height="18" rx="3.5" fill="#fff"/><path d="M6.5 16l4-4.5 3 2.5 4-6" stroke="var(--C)" stroke-width="2.4"/><path class="k" d="M14.5 8h3v3"/>',
+  receipt:'<path d="M6 2.5h12v19l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5-2 1.5z" fill="#fff"/><path class="k" d="M9 7h6M9 10.5h6"/><path d="M9 14.5h4" stroke="var(--C)" stroke-width="2.4"/>',
+  sprout:'<path d="M12 21v-9"/><path d="M12 12C12 7.5 8.5 5 4 5c0 4.5 3.5 7 8 7z" fill="var(--C)"/><path d="M12 14.5c0-4 3-6.5 7.5-6.5 0 4-3 6.5-7.5 6.5z" fill="var(--S)"/><path d="M7.5 21h9"/>',
+  runner:'<circle cx="15" cy="4.5" r="2.3" fill="var(--E)"/><path stroke="var(--R)" stroke-width="2.4" d="M6 9.5l4-2 4 1.5-2 4.5 3.5 3-1.5 4.5M12 13.5l-4 3.5-3.5-.5M14 9l2.5 3H20"/>',
+  calc:'<rect x="5" y="2.5" width="14" height="19" rx="2.5" fill="var(--C)"/><rect x="8" y="5.5" width="8" height="4" rx="1" fill="#fff"/><path class="w" stroke-width="2.6" d="M8.6 13h.1M12 13h.1M15.4 13h.1M8.6 17h.1M12 17h.1M15.4 17h.1"/>',
+  talk:'<path d="M10 11.5h9.5c.8 0 1.5.7 1.5 1.5v4.5c0 .8-.7 1.5-1.5 1.5H19v2.5l-3-2.5h-6c-.8 0-1.5-.7-1.5-1.5V13c0-.8.7-1.5 1.5-1.5z" fill="var(--E)"/><path d="M5.5 3h9A2.5 2.5 0 0 1 17 5.5V10a2.5 2.5 0 0 1-2.5 2.5H9L5.5 16v-3.5A2.5 2.5 0 0 1 3 10V5.5A2.5 2.5 0 0 1 5.5 3z" fill="var(--I)"/>',
+  market:'<rect x="2.5" y="8.5" width="15" height="11.5" rx="2" fill="var(--E)"/><path d="M7 8.5V6.8c0-.7.6-1.3 1.3-1.3h3.4c.7 0 1.3.6 1.3 1.3v1.7M2.5 13.5h15"/><circle cx="18" cy="7" r="5" fill="var(--C)"/><path class="w" stroke-width="1.6" d="M15.4 8.6l2-2 1.3 1.3 2-2"/>',
+  // ---- อุปกรณ์ตกแต่งการ์ดคำถาม ----
+  pencil:'<g transform="rotate(45 12 12)"><rect x="9.5" y="2" width="5" height="15" fill="var(--E)"/><rect x="9.5" y="2" width="5" height="3" fill="#ff9ecf"/><path d="M9.5 17l2.5 5 2.5-5z" fill="#ffd9a8"/><path d="M11.3 20.6 12 22l.7-1.4z" fill="#22303f" stroke="none"/></g>',
+  eraser:'<g transform="rotate(-30 12 12)"><rect x="4" y="8.5" width="16" height="7" rx="1.5" fill="#ff9ecf"/><path d="M12.5 8.5h6c.8 0 1.5.7 1.5 1.5v4c0 .8-.7 1.5-1.5 1.5h-6z" fill="var(--I)"/></g>',
+  flask:'<path d="M10.5 3v6L4.8 18.5A1.6 1.6 0 0 0 6.2 21h11.6a1.6 1.6 0 0 0 1.4-2.5L13.5 9V3" fill="#fff"/><path d="M7.2 14.5h9.6l2.4 4A1.6 1.6 0 0 1 17.8 21H6.2a1.6 1.6 0 0 1-1.4-2.5z" fill="var(--S)"/><path d="M9 3h6"/><circle cx="10.5" cy="17.6" r="1" fill="#fff" stroke="none"/><circle cx="13.8" cy="16.6" r=".7" fill="#fff" stroke="none"/>',
+  ball:'<circle cx="12" cy="12" r="9" fill="#fff"/><path class="k" d="M12 8.2l3.2 2.3-1.2 3.8h-4l-1.2-3.8z" fill="#22303f"/><path class="k" d="M12 8.2V3.5M15.2 10.5l4.3-1.5M14 14.3l2.6 3.7M10 14.3l-2.6 3.7M8.8 10.5 4.5 9"/>',
+  brush:'<g transform="rotate(40 12 12)"><rect x="10.5" y="1.5" width="3" height="11" rx="1.2" fill="var(--A)"/><rect x="9.8" y="12.5" width="4.4" height="3" fill="#c9d3df"/><path d="M9.8 15.5h4.4V18c0 2-1 3.5-2.2 4-1.2-.5-2.2-2-2.2-4z" fill="var(--R)"/></g>',
+  note:'<path d="M9 18V5.5l10-2V16M9 9l10-2"/><circle cx="6.5" cy="18" r="2.6" fill="var(--A)"/><circle cx="16.5" cy="16" r="2.6" fill="var(--A)"/>',
+  camera:'<path d="M8 7l1.5-3h5L16 7" fill="#8fbaff"/><rect x="2.5" y="7" width="19" height="13" rx="2.5" fill="var(--I)"/><circle cx="12" cy="13.5" r="4" fill="#fff"/><circle class="k" stroke-width="1" cx="12" cy="13.5" r="1.8" fill="var(--A)"/>',
+  hammer:'<g transform="rotate(-40 12 12)"><rect x="10.8" y="8" width="2.4" height="14" rx="1" fill="#e0a868"/><rect x="5.5" y="3" width="13" height="5.5" rx="1.2" fill="#9aa9bb"/></g>',
+  magnifier:'<path d="M15.5 15.5 21 21" stroke="var(--R)" stroke-width="3.2"/><circle cx="10" cy="10" r="6.5" fill="#bfe3ff"/><path class="w" d="M7 8.5a3.5 3.5 0 0 1 3-2.5"/>',
+  bulb:'<path d="M9 17.8h6M9.8 20.6h4.4"/><path d="M8.8 15.5C6.6 14 5.5 12 5.5 9.8a6.5 6.5 0 0 1 13 0c0 2.2-1.1 4.2-3.3 5.7z" fill="var(--E)"/><path class="k" d="M10.3 12l1.7 1.7 1.7-1.7"/>',
+  heart:'<path d="M12 20.5S3 15 3 8.8a4.6 4.6 0 0 1 9-2.2 4.6 4.6 0 0 1 9 2.2C21 15 12 20.5 12 20.5z" fill="var(--R)"/><path class="w" d="M6.6 8.6a2 2 0 0 1 1.8-1.7"/>',
+  globe:'<circle cx="12" cy="12" r="9" fill="var(--I)"/><path stroke="none" fill="var(--C)" d="M5.6 6.8c2.1-.6 3.8.4 3.5 2.3-.3 1.6-2.4 1.5-3.2 3.2-.5 1-1.6.8-2.3-.4A9 9 0 0 1 5.6 6.8zM14 3.3c-.8 1.6.3 3 1.8 3.2 1.6.2 2.2 1.8 1.4 3.2-.7 1.3.2 2.7 1.8 2.6.7 0 1.4-.2 2-.5A9 9 0 0 0 14 3.3zM9.6 20.7c.3-1.6 1.4-2.7 2.9-2.7 1.3 0 2.4 1 2.6 2.4a9 9 0 0 1-5.5.3z"/><circle cx="12" cy="12" r="9"/>',
+  coin:'<circle cx="12" cy="12" r="9" fill="var(--E)"/><circle class="k" stroke-width="1" cx="12" cy="12" r="6.3" fill="#ffd166"/><path class="k" stroke-width="1.4" d="M12.2 7.3v9.4M10 9h3a1.5 1.5 0 0 1 0 3h-3zM10 12h3.4a1.5 1.5 0 0 1 0 3H10z"/>',
+  mic:'<path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v4M8.5 21.5h7"/><rect x="8.5" y="2.5" width="7" height="11.5" rx="3.5" fill="var(--A)"/><path class="w" d="M10.5 6.5h3M10.5 9h3"/>',
+  puzzle:'<path d="M3 9h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H3z" fill="var(--S)"/><path d="M15 3h6v6h-6z" fill="var(--E)"/>',
+  bolt:'<path d="M13.5 2.5 5 13.5h6l-1.5 8 9-11.5h-6z" fill="var(--E)"/>',
+  robot:'<path d="M12 7V4M3 11v3M21 11v3"/><circle cx="12" cy="3.5" r="1.3" fill="var(--R)"/><rect x="5" y="7" width="14" height="11" rx="3" fill="#c9d3df"/><circle class="k" stroke-width="1" cx="9" cy="12" r="1.6" fill="var(--I)"/><circle class="k" stroke-width="1" cx="15" cy="12" r="1.6" fill="var(--I)"/><path class="k" d="M9.5 15.5h5"/>',
+  paw:'<ellipse cx="12" cy="16" rx="4.5" ry="3.8" fill="#e0a868"/><circle cx="6.3" cy="10.5" r="2" fill="#e0a868"/><circle cx="10" cy="6.5" r="2" fill="#e0a868"/><circle cx="14" cy="6.5" r="2" fill="#e0a868"/><circle cx="17.7" cy="10.5" r="2" fill="#e0a868"/>',
+  clock:'<path d="M5 4.5 3 6.5M19 4.5l2 2" stroke="var(--R)" stroke-width="2.6"/><circle cx="12" cy="12.5" r="8.5" fill="#fff"/><path class="k" d="M12 8v4.5l3 2"/>',
+  folder:'<path d="M3 6.5C3 5.7 3.7 5 4.5 5H9l2 2.5h8.5c.8 0 1.5.7 1.5 1.5v9.5c0 .8-.7 1.5-1.5 1.5h-15c-.8 0-1.5-.7-1.5-1.5z" fill="var(--E)"/><path d="M3 10h18"/>',
+  rulerbar:'<g transform="rotate(-35 12 12)"><rect x="1.5" y="8.5" width="21" height="7" rx="1" fill="#ffd166"/><path class="k" d="M5 8.5V11M8.5 8.5v4M12 8.5V11M15.5 8.5v4M19 8.5V11"/></g>',
+  protractor:'<path d="M2.5 17.5a9.5 9.5 0 0 1 19 0z" fill="#bfe3ff"/><path d="M8 17.5a4 4 0 0 1 8 0" fill="#fff"/><path class="k" stroke-width="1.3" d="M12 8v2M5.3 10.8l1.4 1.4M18.7 10.8l-1.4 1.4M3.5 14.6l1.9.6M20.5 14.6l-1.9.6"/>',
+  pen:'<g transform="rotate(45 12 12)"><path d="M10 16.5h4l-1 3.5h-2z" fill="#c9d3df"/><path d="M11.4 20h1.2L12 22.3z" fill="#22303f" stroke="none"/><rect x="10" y="1.5" width="4" height="15" rx="1.5" fill="var(--I)"/><path d="M15 3v7"/></g>',
+  // ---- หน้าความชอบ 1–5 (Likert) ----
+  f1:'<circle cx="12" cy="12" r="9.5" fill="var(--R)"/><path class="k" d="M7.8 9l2.2 1.3M16.2 9 14 10.3M8.2 16.8c2.2-2 5.4-2 7.6 0"/>',
+  f2:'<circle cx="12" cy="12" r="9.5" fill="#ff9f43"/><path class="k" stroke-width="2.6" d="M9 9.8v.6M15 9.8v.6"/><path class="k" d="M8.8 16.2c2-1.2 4.4-1.2 6.4 0"/>',
+  f3:'<circle cx="12" cy="12" r="9.5" fill="var(--E)"/><path class="k" stroke-width="2.6" d="M9 9.8v.6M15 9.8v.6"/><path class="k" d="M9 15.5h6"/>',
+  f4:'<circle cx="12" cy="12" r="9.5" fill="#9ad86e"/><path class="k" stroke-width="2.6" d="M9 9.8v.6M15 9.8v.6"/><path class="k" d="M8.5 14.3c2 2.2 5 2.2 7 0"/>',
+  f5:'<circle cx="12" cy="12" r="9.5" fill="var(--C)"/><path class="k" d="M7.8 10.5c.7-1 2-1 2.7 0M13.5 10.5c.7-1 2-1 2.7 0"/><path class="k" d="M7.5 13.5h9a4.5 4.5 0 0 1-9 0z" fill="#fff"/>',
+};
+/* อุปกรณ์ตกแต่งการ์ดคำถาม 2 ชิ้นต่อข้อ — เลือกให้เข้ากับเนื้อหาคำถาม
+   ใช้ตกแต่งอย่างเดียว ไม่มีผลกับคะแนน */
+const PROPS = {
+  R01:['wrench','hammer'], R02:['ball','sun'],     R03:['bolt','gear'],      R04:['hammer','ruler'],  R05:['gear','laptop'],
+  R06:['bolt','wrench'],   R07:['ball','trophy'],  R08:['sun','puzzle'],     R09:['robot','gear'],    R10:['masks','hammer'],
+  I01:['magnifier','bulb'],I02:['chartup','calc'], I03:['book','globe'],     I04:['flask','pencil'],  I05:['calc','puzzle'],
+  I06:['book','magnifier'],I07:['magnifier','stetho'],I08:['flask','talk'],  I09:['flask','micro'],   I10:['heart','brain'],
+  A01:['note','pencil'],   A02:['bulb','brush'],   A03:['palette','brush'],  A04:['bulb','spark'],    A05:['camera','clapper'],
+  A06:['brush','ruler'],   A07:['camera','mic'],   A08:['bulb','sprout'],    A09:['brush','mega'],    A10:['masks','mic'],
+  S01:['book','pencil'],   S02:['heart','talk'],   S03:['people','sprout'],  S04:['heart','people'],  S05:['people','puzzle'],
+  S06:['talk','heart'],    S07:['mega','people'],  S08:['scales','heart'],   S09:['paw','coin'],      S10:['mic','book'],
+  E01:['mega','talk'],     E02:['trophy','target'],E03:['mic','board'],      E04:['coin','bulb'],     E05:['flag','people'],
+  E06:['coin','mega'],     E07:['clock','trophy'], E08:['clock','talk'],     E09:['coin','calc'],     E10:['gear','coin'],
+  C01:['folder','clock'],  C02:['clip','book'],    C03:['magnifier','eraser'],C04:['receipt','coin'], C05:['clock','ruler'],
+  C06:['coin','calc'],     C07:['pencil','eraser'],C08:['folder','laptop'],  C09:['clip','pencil'],   C10:['folder','pencil'],
+};
+
+/* อุปกรณ์การเรียน 3 ชิ้น สุ่มใหม่ทุกครั้งที่ขึ้นข้อใหม่ */
+const STATIONERY = ['pencil','eraser','rulerbar','protractor','pen'];
+
+/* แบบการวางอุปกรณ์ 4 แบบ (สุ่มต่อข้อ) — ช่อง 1–2 = อาชีพ (PROPS), ช่อง 3–5 = อุปกรณ์การเรียน
+   [ขอบ t=บน/b=ล่าง, ตำแหน่งแนวนอน %, มุมเอียง deg] — วางคร่อมขอบการ์ดเท่านั้น ไม่ทับข้อความ */
+const LAYOUTS = [
+  [['t',7,-14],  ['t',92,12],  ['t',50,-6], ['b',14,8],   ['b',80,-10]],
+  [['t',8,-12],  ['b',91,14],  ['t',44,5],  ['t',80,-18], ['b',30,10]],
+  [['b',9,10],   ['t',88,-10], ['t',12,-20],['t',55,8],   ['b',62,-6]],
+  [['t',30,-8],  ['t',70,10],  ['t',6,15],  ['b',50,-4],  ['b',93,20]],
+];
+
+function ic(name, cls=''){
+  return `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||''}</svg>`;
+}
+
+/* ============================================================================
    STATE + LOCAL STORAGE
    ============================================================================ */
-const LS_USER = 'cc_user';
+const LS_USER = 'cc_user';           // {name, grade, school} — ทุกช่องไม่บังคับ
 const LS_RESULT = 'cc_result';
 const LS_BOOKMARKS = 'cc_bookmarks';
 const LS_PROGRESS = 'cc_progress';   // คำตอบที่ทำค้างไว้ {answers, qIdx}
-let user = null;
+const LS_THEME = 'cc_theme';         // 'light' | 'dark'
+let user = {};
 let answers = {};
 let qIdx = 0;
 let lastResult = null;
 
-function loadUser(){ try{ return JSON.parse(localStorage.getItem(LS_USER)); }catch(e){ return null; } }
+function loadUser(){ try{ return JSON.parse(localStorage.getItem(LS_USER)) || {}; }catch(e){ return {}; } }
 function saveUser(u){ localStorage.setItem(LS_USER, JSON.stringify(u)); }
 function loadResult(){ try{ return JSON.parse(localStorage.getItem(LS_RESULT)); }catch(e){ return null; } }
 function saveResult(r){ localStorage.setItem(LS_RESULT, JSON.stringify(r)); }
 function loadBookmarks(){ try{ return JSON.parse(localStorage.getItem(LS_BOOKMARKS))||[]; }catch(e){ return []; } }
 function saveBookmarks(b){ localStorage.setItem(LS_BOOKMARKS, JSON.stringify(b)); }
 function loadProgress(){ try{ return JSON.parse(localStorage.getItem(LS_PROGRESS)); }catch(e){ return null; } }
-/* Guest ไม่บันทึกถาวร — เหมือนผลการประเมิน */
 function saveProgress(){
-  if(!user || user.guest) return;
   try{ localStorage.setItem(LS_PROGRESS, JSON.stringify({answers, qIdx})); }catch(e){}
 }
 function clearProgress(){ localStorage.removeItem(LS_PROGRESS); }
 
 /* ============================================================================
-   PAGE-001 : AUTH
+   NAVIGATION — เมนูขีดสามขีด + พลิกหน้าแบบสมุด
    ============================================================================ */
-function doLogin(){
-  const name = document.getElementById('in_name').value.trim();
-  const grade = document.querySelector('input[name="grade"]:checked').value;
-  const errEl = document.getElementById('authErr');
-  if(!name){
-    errEl.textContent = 'กรุณาใส่ชื่อเล่นก่อนนะ'; errEl.classList.add('show'); return;
-  }
-  errEl.classList.remove('show');
-  user = {name, grade, guest:false};
-  saveUser(user);
-  enterApp();
+const ORDER = ['dash','quiz','results','explorer','stats','me'];   // ลำดับหน้าในสมุด → ใช้ตัดสินทิศการพลิก
+const RENDER = {
+  dash:()=>renderDashboard(), quiz:()=>enterQuizPage(), results:()=>renderResults(),
+  explorer:()=>renderExplorer(), stats:()=>{}, me:()=>renderMe(),
+};
+let curPage = null;
+
+document.querySelectorAll('[data-go]').forEach(btn=>{
+  btn.addEventListener('click', ()=> goPage(btn.dataset.go));
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeMenu(); closeModal(); } });
+
+function toggleMenu(open){
+  document.body.classList.toggle('menu-open', open);
+  document.getElementById('menuBtn').setAttribute('aria-expanded', open);
+  if(open) document.querySelector('#drawer .nav-item.on, #drawer .nav-item').focus();
 }
-function doGuest(){
-  user = {name:'ผู้ทดลองใช้', grade:'-', guest:true};
-  enterApp();
+function closeMenu(){ toggleMenu(false); }
+
+function goPage(name, animate=true){
+  closeMenu();
+  RENDER[name]();                       // วาดหน้าใหม่ก่อนพลิก ให้พร้อมตั้งแต่เฟรมแรก
+  if(name===curPage) return;
+  const from = curPage && document.getElementById('page-'+curPage);
+  const to = document.getElementById('page-'+name);
+  const dir = ORDER.indexOf(name) > ORDER.indexOf(curPage) ? 1 : -1;
+  window.scrollTo({top:0, behavior:'instant'});
+  turnPage(animate ? from : null, dir, ()=>{
+    if(from) from.classList.remove('active');
+    to.classList.add('active');
+    return to;
+  });
+  curPage = name;
+  document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('on', b.dataset.go===name));
 }
 
-function enterApp(){
-  document.getElementById('bottomnav').style.display='flex';
-  lastResult = user.guest ? null : loadResult();
-  const p = user.guest ? null : loadProgress();
-  if(p && p.answers){
-    answers = p.answers;
-    qIdx = Math.min(Math.max(0, p.qIdx|0), QUESTIONS.length-1);
-  }
-  renderDashboard();
-  goPage('dash');
+const reduceMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* เปลี่ยนเนื้อหาพร้อมแอนิเมชัน: โคลนของเก่าเป็นภาพนิ่ง (ghost) แล้วสลับเนื้อหาจริงข้างใต้
+   mode 'turn' (เปลี่ยนหน้า): dir>0 = หน้าเก่าพลิกออกไปทางซ้าย, dir<0 = หน้าใหม่พลิกกลับเข้ามาทับ
+   mode 'drop' (เปลี่ยนข้อ): ของเก่าหล่นลง ของใหม่ตกลงมาจากด้านบน — เหมือนกันทั้งสองทิศ
+   swap() เปลี่ยน DOM จริงแล้วคืน element ที่จะแสดง */
+function turnPage(el, dir, swap, mode='turn'){
+  if(!el || reduceMotion()){ swap(); return; }
+  const drop = mode==='drop';
+  const ghost = el.cloneNode(true);
+  ghost.removeAttribute('id');
+  ghost.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+  ghost.setAttribute('aria-hidden','true');
+  Object.assign(ghost.style, {top:el.offsetTop+'px', left:el.offsetLeft+'px', width:el.offsetWidth+'px',
+    height:(drop ? el.offsetHeight : Math.min(el.offsetHeight, window.innerHeight))+'px'});
+  ghost.classList.add('ghost', drop ? 'fall-out' : dir>0 ? 'turn-out' : 'under');
+  const shown = swap();
+  el.parentNode.appendChild(ghost);
+  const inCls = drop ? 'drop-in' : (dir<0 ? 'turn-in' : null);
+  if(inCls) shown.classList.add(inCls);
+  const watch = inCls ? shown : ghost;
+  let done = false;
+  const end = ()=>{ if(done) return; done = true; ghost.remove(); if(inCls) shown.classList.remove(inCls); };
+  // animationend ของอุปกรณ์ตกแต่ง (ลูก) bubble ขึ้นมาด้วย → ฟังเฉพาะของตัวมันเอง
+  watch.addEventListener('animationend', e=>{ if(e.target===watch) end(); });
+  setTimeout(end, 900);   // กันกรณี animationend ไม่ยิง (แท็บถูกซ่อน ฯลฯ)
+}
+
+/* ปุ่มลัดหน้าหลัก: ซูมเข้าไปในปุ่ม — กล่องสีของปุ่มขยายจนเต็มหน้ากระดาษ แล้วกลายเป็นหน้าใหม่ */
+function zoomTo(name, btn){
+  if(reduceMotion() || !btn.animate){ goPage(name); return; }
+  window.scrollTo({top:0, behavior:'instant'});
+  const r = btn.getBoundingClientRect();
+  const s = document.querySelector('.page.active').getBoundingClientRect();
+  const ov = document.createElement('div');
+  ov.className = 'zoom-ov';
+  ov.innerHTML = ic(btn.dataset.ic);
+  document.body.appendChild(ov);
+  const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+  const box = (x,y,w,h,rad,bg)=>({left:x+'px', top:y+'px', width:w+'px', height:h+'px', borderRadius:rad, backgroundColor:bg});
+  const grow = ov.animate([
+    box(r.left, r.top, r.width, r.height, '16px', getComputedStyle(btn).backgroundColor),
+    box(s.left, s.top, s.width, Math.min(s.height, window.innerHeight - s.top), '6px 16px 16px 6px', paper),
+  ], {duration:480, easing:'cubic-bezier(.65,0,.25,1)', fill:'forwards'});
+  ov.firstChild.animate([{transform:'scale(1)', opacity:1}, {transform:'scale(2.6)', opacity:0}],
+    {duration:480, easing:'ease-in', fill:'forwards'});
+  grow.onfinish = ()=>{
+    goPage(name, false);
+    ov.animate([{opacity:1},{opacity:0}], {duration:240, fill:'forwards'}).onfinish = ()=> ov.remove();
+  };
 }
 
 /* ============================================================================
-   NAVIGATION
+   ธีม สว่าง / มืด
    ============================================================================ */
-document.querySelectorAll('[data-go]').forEach(btn=>{
-  btn.addEventListener('click', ()=> {
-    const target = btn.dataset.go;
-    if(target==='profile'){ showProfileModal(); return; }
-    goPage(target);
-  });
-});
-
-function goPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll(`[data-go="${name}"]`).forEach(b=>b.classList.add('on'));
-  if(name==='quiz') enterQuizPage();
-  if(name==='results') renderResults();
-  if(name==='explorer') renderExplorer();
-  window.scrollTo({top:0,behavior:'smooth'});
+function toggleTheme(){
+  const t = document.documentElement.dataset.theme==='dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  try{ localStorage.setItem(LS_THEME, t); }catch(e){}
+  renderThemeBtn();
+}
+function renderThemeBtn(){
+  const dark = document.documentElement.dataset.theme==='dark';
+  const b = document.getElementById('themeBtn');
+  b.innerHTML = ic(dark ? 'sun' : 'moon');
+  b.setAttribute('aria-label', dark ? 'โหมดสว่าง' : 'โหมดมืด');
 }
 
+/* ============================================================================
+   หน้า 5 : ข้อมูลของฉัน — ไม่บังคับกรอก บันทึกอัตโนมัติ
+   ============================================================================ */
+function renderMe(){
+  document.getElementById('in_name').value = user.name || '';
+  document.getElementById('in_school').value = user.school || '';
+  document.querySelectorAll('#gradeRow button').forEach(b=>{
+    const on = b.dataset.g===user.grade;
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
+  });
+}
+function updateUser(field, value){
+  value = value.trim();
+  if(value) user[field] = value; else delete user[field];
+  saveUser(user);
+  renderUserChip();
+}
+function pickGrade(g){ updateUser('grade', user.grade===g ? '' : g); renderMe(); }
+
+/* ป้ายมุมขวาบน: แสดงแค่ชื่อ · ชั้น (ถ้ากรอกไว้) */
+function renderUserChip(){
+  const t = [user.name, user.grade].filter(Boolean).join(' · ');
+  document.getElementById('userChip').innerHTML = ic('profile') + (t ? `<span>${escapeHtml(t)}</span>` : '');
+}
+
+function clearAll(){
+  openConfirm('trash','ล้างข้อมูลทั้งหมด?',
+    'ข้อมูลของฉัน ผลการประเมิน คำตอบที่ทำค้าง และคณะที่บันทึกในเครื่องนี้จะถูกลบ',
+    'ล้างข้อมูล', ()=>{
+      [LS_USER, LS_RESULT, LS_BOOKMARKS, LS_PROGRESS].forEach(k=>localStorage.removeItem(k));
+      user = {}; answers = {}; qIdx = 0; lastResult = null;
+      renderUserChip(); renderMe();
+      goPage('dash');
+    });
+}
+
+/* ============================================================================
+   หน้า 1 : หน้าหลัก
+   ============================================================================ */
+function codeTiles(code, cls){
+  return `<div class="tiles ${cls||''}">${[...code].map(d=>
+    `<span class="tile" style="background:${DIM_INFO[d].color}" title="${DIM_INFO[d].th}">${d}</span>`).join('')}</div>`;
+}
+
+function renderDashboard(){
+  const answered = Object.keys(answers).length, total = QUESTIONS.length;
+  document.getElementById('startQuizBtn').innerHTML =
+    answered   ? `${ic('play')}<span>ทำต่อ</span>` :
+    lastResult ? `${ic('restart')}<span>ทำใหม่</span>` : `${ic('play')}<span>เริ่มเลย</span>`;
+  document.getElementById('dashQuizCount').textContent = answered ? `${answered}/${total}` : total;
+  document.getElementById('dashQuizBar').style.width = (answered/total*100)+'%';
+
+  const res = document.getElementById('dashResult');
+  res.hidden = !lastResult;
+  if(lastResult){
+    const top3 = matchFaculties(lastResult.scores).slice(0,3);
+    res.innerHTML = `
+      <div class="note-h">${ic('target')}<span>รหัสของฉัน</span></div>
+      ${codeTiles(lastResult.hollandCode)}
+      <div class="radar" id="miniRadarHolder"></div>
+      ${top3.map(f=>`<div class="rank-row">${ic(f.icon)}<span class="nm">${f.name}</span><b>${f.match}%</b></div>`).join('')}
+      <button class="btn-link" onclick="goPage('results')"><span>ดูผลเต็ม</span>${ic('next')}</button>`;
+    drawRadar('miniRadarHolder', lastResult.scores, 180);
+  }
+  renderBookmarksWidget();
+}
+
+function renderBookmarksWidget(){
+  const bm = loadBookmarks();
+  document.getElementById('dashBookmarks').hidden = bm.length===0;
+  document.getElementById('bmList').innerHTML = bm.map(name=>{
+    const f = FACULTIES.find(x=>x.name===name);
+    return `<div class="rank-row">${ic(f ? f.icon : 'star')}<span class="nm">${escapeHtml(name)}</span></div>`;
+  }).join('');
+}
+
+function renderRiasec(){
+  document.getElementById('dimGrid').innerHTML = DIMS.map(d=>
+    `<div class="dim" style="--c:${DIM_INFO[d].color}">${ic(DIM_INFO[d].ic)}<b>${d}</b><small>${DIM_INFO[d].th}</small></div>`).join('');
+}
+
+function showMethod(){
+  openModal('compass','หลักการ RIASEC', `
+    <p>ทฤษฎีของ John L. Holland วัดแนวโน้มบุคลิกภาพเชิงอาชีพ 6 มิติ</p><br>
+    <ul class="icon-list">
+      <li>${ic('f4')}<span>Likert 30 ข้อ · 1–5 คะแนน</span></li>
+      <li>${ic('talk')}<span>สถานการณ์ 18 ข้อ · หลัก +3 รอง +1</span></li>
+      <li>${ic('split')}<span>คำถามคัดแยก 12 ข้อ · +2</span></li>
+      <li>${ic('results')}<span>แปลงเป็น 0–100% → 3 อันดับแรก = Holland Code</span></li>
+    </ul>
+    <p class="cite">Holland, J. L. (1997). <i>Making Vocational Choices: A Theory of Vocational Personalities and Work Environments</i> (3rd ed.). Psychological Assessment Resources.</p>
+    <p class="cite">ผลลัพธ์เป็นเครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา</p>`);
+}
+
+/* ============================================================================
+   หน้า 2 : แบบประเมิน 60 ข้อ
+   ============================================================================ */
 /* เข้าหน้าควิซ: เริ่มใหม่ถ้ายังไม่เริ่ม (finishQuiz ล้างคำตอบแล้ว), ทำต่อถ้าค้างอยู่ */
 function enterQuizPage(){
   if(Object.keys(answers).length === 0){
@@ -870,158 +1187,72 @@ function enterQuizPage(){
     renderQ();
   }
 }
-
-function showProfileModal(){
-  openModal('👤', 'โปรไฟล์ของคุณ',
-    `ชื่อ: ${user.name}<br>ระดับชั้น: ${user.grade}` +
-    (user.guest ? '<br><br>⚠️ โหมด Guest — ผลจะไม่ถูกบันทึกถาวร' : '<br><br>💾 ข้อมูลบันทึกในเครื่องนี้แล้ว') +
-    `<br><br><button class="btn btn-line" style="font-size:13px;padding:9px 18px;" onclick="doLogout()">🚪 ออกจากระบบ</button>`);
-}
-
-function doLogout(){
-  openConfirm('🚪','ออกจากระบบ?',
-    'ข้อมูลที่บันทึกไว้ในเครื่องนี้ (ชื่อ ผลการประเมิน และคณะที่บันทึก) จะถูกลบทั้งหมด',
-    'ออกจากระบบ', confirmLogout);
-}
-
-function confirmLogout(){
-  localStorage.removeItem(LS_USER);
-  localStorage.removeItem(LS_RESULT);
-  localStorage.removeItem(LS_BOOKMARKS);
-  clearProgress();
-  user=null; answers={}; qIdx=0; lastResult=null;
-  closeModal();
-  document.getElementById('bottomnav').style.display='none';
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-auth').classList.add('active');
-  document.getElementById('in_name').value='';
-}
-
-/* ============================================================================
-   PAGE-002 : DASHBOARD (Bento Grid)
-   ============================================================================ */
-function renderDashboard(){
-  document.getElementById('helloTxt').textContent =
-    `สวัสดีคุณ ${user.name}` + (user.grade!=='-' ? ` (${user.grade})` : '');
-  document.getElementById('statusTxt').textContent =
-    user.guest ? '🔓 โหมด Guest (ไม่บันทึกถาวร)' : (lastResult ? '💾 สถานะข้อมูล: บันทึกในเครื่องแล้ว' : '💾 ยังไม่มีผลบันทึก');
-
-  const scoreCard = document.getElementById('dashScoreCard');
-  const facultyCard = document.getElementById('dashFacultyCard');
-  const startBtn = document.getElementById('startQuizBtn');
-
-  const answered = Object.keys(answers).length;
-  const resumeTxt = `▶ ทำต่อ (ตอบแล้ว ${answered}/${QUESTIONS.length} ข้อ)`;
-  if(lastResult){
-    startBtn.textContent = answered ? resumeTxt : '↻ ทำแบบประเมินใหม่อีกครั้ง';
-    const sorted = Object.entries(lastResult.scores).sort((a,b)=>b[1]-a[1]);
-    const top3 = sorted.slice(0,3);
-    scoreCard.innerHTML = `
-      <h3>🎯 สรุปผล Holland Code</h3>
-      <div class="code-badge">
-        <div class="code">${top3.map(x=>x[0]).join(' - ')}</div>
-        <div class="sub">(${top3.map(x=>DIM_INFO[x[0]].name).join(' / ')})</div>
-      </div>
-      <div class="mini-radar" id="miniRadarHolder"></div>
-      <div class="score-inline">${sorted.map(([d,v])=>`<span style="color:${DIM_INFO[d].color}">${d}:${v}%</span>`).join('')}</div>
-      <div class="linkrow" style="text-align:center;"><button onclick="goPage('results')">ดูผลวิเคราะห์เต็ม →</button></div>
-    `;
-    drawRadar('miniRadarHolder', lastResult.scores, 130);
-
-    const matched = matchFaculties(lastResult.scores).slice(0,3);
-    facultyCard.innerHTML = `<h3>🎓 คณะแนะนำที่ตรงกับบุคลิกของคุณ</h3>` +
-      matched.map((f,i)=>`<div class="faculty-mini"><div class="rank">${i+1}</div><div class="nm">${f.name}</div><div class="mt">${f.match}%</div></div>`).join('') +
-      `<div class="linkrow"><button onclick="goPage('explorer')">ดูรายการคณะทั้งหมด →</button></div>`;
-  } else {
-    startBtn.textContent = answered ? resumeTxt : 'เริ่มทำแบบประเมิน →';
-    scoreCard.innerHTML = `<h3>🎯 สรุปผล Holland Code</h3><div class="empty-hint">ยังไม่มีผลการประเมิน — ลองทำแบบทดสอบดูก่อนนะ</div>`;
-    facultyCard.innerHTML = `<h3>🎓 คณะแนะนำที่ตรงกับบุคลิกของคุณ</h3><div class="empty-hint">ทำแบบประเมินให้เสร็จก่อน ระบบจะแนะนำคณะให้อัตโนมัติ</div>`;
-  }
-
-  renderBookmarksWidget();
-}
-
-function renderBookmarksWidget(){
-  const bm = loadBookmarks();
-  const listEl = document.getElementById('bmList');
-  const emptyEl = document.getElementById('bmEmpty');
-  if(bm.length===0){ emptyEl.style.display='block'; listEl.innerHTML=''; return; }
-  emptyEl.style.display='none';
-  listEl.innerHTML = bm.map(name=>`<div class="bm-item"><span class="star">⭐</span>${name}</div>`).join('');
-}
-
-/* ============================================================================
-   PAGE-003 : ASSESSMENT STUDIO — 60 ข้อ
-   ============================================================================ */
 function startQuiz(){
-  qIdx=0; answers={};
+  qIdx=0; answers={}; deco={q:-1};
   renderQ();
 }
-function exitQuiz(){ saveProgress(); renderDashboard(); goPage('dash'); }
+function exitQuiz(){ saveProgress(); goPage('dash'); }
 
 function renderQ(){
   saveProgress();   // ทุกครั้งที่ตอบ/เลื่อนข้อ — ปิดแท็บกลางคันก็ไม่หาย
   const q = QUESTIONS[qIdx];
   const total = QUESTIONS.length;
-  document.getElementById('qProgress').textContent = `ข้อ ${qIdx+1} จาก ${total}`;
+  const saved = answers[q.id];
+  document.getElementById('qProgress').textContent = `${qIdx+1}/${total}`;
   document.getElementById('qBar').style.width = (qIdx/total*100)+'%';
   document.getElementById('qBack').disabled = (qIdx===0);
 
-  const dimForTag = q.type==='likert' ? q.dim : (q.type==='sub' ? q.pair[0] : null);
-  const tagEl = document.getElementById('qDimTag');
-  if(dimForTag){
-    tagEl.style.display='inline-block';
-    tagEl.textContent = 'มิติ: ' + DIM_INFO[dimForTag].name;
-    tagEl.style.background = DIM_INFO[dimForTag].color;
-  } else {
-    tagEl.style.display='inline-block';
-    tagEl.textContent = 'สถานการณ์จำลอง';
-    tagEl.style.background = 'var(--mist)';
-  }
+  // มุมขวา: ไอคอนมิติของข้อนี้ (sub แสดงทั้งคู่ ไม่ชี้นำ), สถานการณ์จำลองแสดงรูปบทสนทนา
+  const dims = q.type==='likert' ? [q.dim] : (q.type==='sub' ? q.pair : []);
+  document.getElementById('qDimTag').innerHTML = dims.length
+    ? dims.map(d=>`<span title="${DIM_INFO[d].th}">${ic(DIM_INFO[d].ic)}</span>`).join('')
+    : `<span title="สถานการณ์จำลอง">${ic('talk')}</span>`;
 
-  const saved = answers[q.id];
-  let html='';
-  const typeLabel = {likert:'Likert Scale',situational:'สถานการณ์จำลอง (Situational)',sub:'คำถามคัดแยก (Sub-question)'}[q.type];
-  html += `<span class="tag q-type-tag ${q.type}">${typeLabel}</span>`;
-  html += `<div class="q-text">${q.text}</div>`;
-
+  let html = renderProps(q) + `<div class="q-text">${q.text}</div>`;
   if(q.type==='likert'){
-    html += `<div class="likert-row">`;
-    [1,2,3,4,5].forEach(v=>{
-      const sel = saved===v ? 'sel':'';
-      html += `<div class="opt ${sel}" onclick="answerLikert(${v})"><span class="dot"></span><span>${v}</span></div>`;
-    });
-    html += `</div><div class="likert-labels"><span>1 ไม่ชอบเลย</span><span>5 ชอบมากที่สุด</span></div>`;
-  } else if(q.type==='situational'){
-    html += `<div class="likert-row">`;
-    q.options.forEach((o,i)=>{
-      const sel = saved===i ? 'sel':'';
-      html += `<div class="opt ${sel}" onclick="answerChoice(${i})"><span class="dot"></span><span>${o.t}</span></div>`;
-    });
-    html += `</div>`;
-  } else if(q.type==='sub'){
-    html += `<div class="likert-row">`;
-    q.options.forEach((o,i)=>{
-      const sel = saved===i ? 'sel':'';
-      html += `<div class="opt ${sel}" onclick="answerChoice(${i})"><span class="dot"></span><span>${o.t}</span></div>`;
-    });
-    html += `</div>`;
+    html += `<div class="faces ${saved!==undefined?'has-sel':''}">` + [1,2,3,4,5].map(v=>
+      `<button class="face ${saved===v?'sel':''}" onclick="answerLikert(${v})" aria-label="${v} จาก 5" aria-pressed="${saved===v}">${ic('f'+v)}</button>`
+    ).join('') + `</div><div class="face-cap"><span>ไม่ชอบเลย</span><span>ชอบมาก</span></div>`;
+  } else {
+    html += `<div class="opts">` + q.options.map((o,i)=>
+      `<button class="opt ${saved===i?'sel':''}" onclick="answerChoice(${i})" aria-pressed="${saved===i}"><span class="dot">${saved===i?ic('check'):''}</span><span>${o.t}</span></button>`
+    ).join('') + `</div>`;
   }
-
   document.getElementById('qCard').innerHTML = html;
-  document.getElementById('qNext').disabled = (saved===undefined);
-  document.getElementById('qNext').textContent = (qIdx===total-1) ? 'ดูผลวิเคราะห์ →' : 'ถัดไป →';
+
+  const nx = document.getElementById('qNext');
+  nx.disabled = (saved===undefined);
+  nx.innerHTML = (qIdx===total-1) ? `${ic('flag')}<span>ดูผล</span>` : `<span>ถัดไป</span>${ic('next')}`;
+}
+
+/* สุ่มเฉพาะตอนขึ้นข้อใหม่ — renderQ() ถูกเรียกซ้ำตอนกดตอบ ถ้าสุ่มทุกครั้งอุปกรณ์จะกระโดดไปมา */
+let deco = {q:-1};
+function renderProps(q){
+  if(deco.q !== qIdx){
+    // ponytail: สลับด้วย sort(random) เอนเอียงเล็กน้อย พอสำหรับของตกแต่ง
+    deco = {q:qIdx, layout:LAYOUTS[Math.floor(Math.random()*LAYOUTS.length)],
+      tools:[...STATIONERY].sort(()=>Math.random()-.5).slice(0,3)};
+  }
+  return [...(PROPS[q.id]||[]), ...deco.tools].map((name,i)=>{
+    const [edge,x,r] = deco.layout[i], left = x<50;
+    return `<span class="prop ${edge} ${i<2?'job':'tool'}" style="--x:${x}%;--r:${r}deg;--dx:${left?-40:40}px;--spin:${left?-80:90}deg;--d:${(.04+i*.03).toFixed(2)}s">${ic(name)}</span>`;
+  }).join('');
 }
 
 function answerLikert(v){ answers[QUESTIONS[qIdx].id]=v; renderQ(); }
 function answerChoice(i){ answers[QUESTIONS[qIdx].id]=i; renderQ(); }
 
+function turnQ(dir){
+  const sheet = document.getElementById('qSheet');
+  turnPage(sheet, dir, ()=>{ qIdx += dir; renderQ(); return sheet; }, 'drop');
+  window.scrollTo({top:0, behavior:'instant'});
+}
 function nextQ(){
   if(answers[QUESTIONS[qIdx].id]===undefined) return;
-  if(qIdx < QUESTIONS.length-1){ qIdx++; renderQ(); window.scrollTo({top:0,behavior:'smooth'}); }
+  if(qIdx < QUESTIONS.length-1) turnQ(1);
   else finishQuiz();
 }
-function prevQ(){ if(qIdx>0){ qIdx--; renderQ(); window.scrollTo({top:0,behavior:'smooth'}); } }
+function prevQ(){ if(qIdx>0) turnQ(-1); }
 
 /* ============================================================================
    SCORING ENGINE — ตามสูตรในเอกสารต้นฉบับ
@@ -1070,14 +1301,13 @@ function finishQuiz(){
   const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
   const hollandCode = sorted.slice(0,3).map(x=>x[0]).join('');
   lastResult = {scores, hollandCode, ts:new Date().toISOString()};
-  if(!user.guest) saveResult(lastResult);
+  saveResult(lastResult);
   answers={}; qIdx=0; clearProgress();
-  renderDashboard();
   goPage('results');
 }
 
 /* ============================================================================
-   PAGE-004 : RESULTS
+   หน้า 3 : ผลลัพธ์
    ============================================================================ */
 const PERSONA = {
   S:'นักประสานงาน พัฒนาคน และขับเคลื่อนองค์กร',I:'นักคิดวิเคราะห์เชิงลึก',R:'นักปฏิบัติมือทำจริง',
@@ -1097,89 +1327,67 @@ const ENV = {
 function renderResults(){
   const body = document.getElementById('resultsBody');
   if(!lastResult){
-    body.innerHTML = `<div class="card" style="text-align:center;"><div class="empty-hint">ยังไม่มีผลการประเมิน — ไปทำแบบทดสอบก่อนนะ</div>
-      <button class="btn btn-primary" style="margin-top:12px;" onclick="goPage('quiz')">เริ่มทำแบบประเมิน</button></div>`;
+    body.innerHTML = `<div class="note taped res-hero" style="margin-top:20px">${ic('results','xl')}
+      <p class="muted">ยังไม่มีผล</p>
+      <button class="btn btn-primary" onclick="goPage('quiz')">${ic('play')}<span>เริ่มทำแบบประเมิน</span></button></div>`;
     return;
   }
   const scores = lastResult.scores;
   const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-  const top3 = sorted.slice(0,3);
-  const topDim = top3[0][0], secondDim = top3[1][0];
+  const topDim = sorted[0][0], secondDim = sorted[1][0];
 
   body.innerHTML = `
-    <div class="res-topbar">
-      <div class="code">${lastResult.hollandCode}</div>
-      <div class="label">ฉายา: "${PERSONA[topDim]}"</div>
+    <div class="note taped res-hero">
+      ${ic('trophy','xl')}
+      ${codeTiles(lastResult.hollandCode,'big')}
+      <div class="persona">“${PERSONA[topDim]}”</div>
     </div>
-    <div class="res-grid">
-      <div class="card">
-        <h3>กราฟใยแมงมุม (Radar Chart 6 มิติ)</h3>
-        <div id="radarHolder"></div>
+    <div class="grid">
+      <div class="note"><div class="radar" id="radarHolder"></div></div>
+      <div class="note">${sorted.map(([d,v])=>`
+        <div class="score-row" title="${DIM_INFO[d].name} · ${DIM_INFO[d].th}">${ic(DIM_INFO[d].ic)}
+          <span class="d" style="color:${DIM_INFO[d].color}">${d}</span>
+          <div class="bar"><i style="width:${v}%;background:${DIM_INFO[d].color}"></i></div>
+          <span class="v">${v}%</span></div>`).join('')}
       </div>
-      <div class="card">
-        <h3>สรุปคะแนนมาตรฐาน (Normalized)</h3>
-        <div class="score-list">${sorted.map(([d,v],i)=>`
-          <div class="score-row"><span class="sw" style="background:${DIM_INFO[d].color}"></span>
-          <span class="nm">${i+1}. ${DIM_INFO[d].emo} ${DIM_INFO[d].name} (${d})</span><span class="val">${v}%</span></div>
-        `).join('')}</div>
-      </div>
-      <div class="card">
-        <h3>จุดเด่นของคุณ (Strengths)</h3>
-        <ul class="strength-list"><li>${STRENGTHS[topDim]}</li><li>${STRENGTHS[secondDim]}</li></ul>
-      </div>
-      <div class="card">
-        <h3>สภาพแวดล้อมที่ส่งเสริมการเรียนรู้</h3>
-        <ul class="strength-list"><li>${ENV[topDim]}</li><li>${ENV[secondDim]}</li></ul>
-      </div>
-    </div>
-    <div class="track-sec">
-      <h3>📚 สายการเรียนที่ตรงกับบุคลิกของคุณ</h3>
-      <p class="cap">เรียงตามความสอดคล้องกับ Holland Code ของคุณ (${lastResult.hollandCode})</p>
-      ${matchTracks(scores).map((t,i)=>`
-        <div class="track ${i===0?'top':''}">
-          <div class="ico">${t.icon}</div>
-          <div class="body">
-            <div class="hd">
-              <h4>${t.name}</h4>
-              ${i===0?'<span class="best">แนะนำที่สุด</span>':''}
-              <span class="pct">${t.match}%</span>
-            </div>
-            <div class="why">${t.why}</div>
-            <div class="meta">
-              <div><b>วิชาที่ควรเน้น:</b> ${t.focus}</div>
-              <div><b>ต่อยอดสู่:</b> ${t.next}</div>
-            </div>
-            <div class="codes">${t.code.map(d=>`<span style="background:${DIM_INFO[d].color}">${d}</span>`).join('')}</div>
-          </div>
-        </div>`).join('')}
+      <div class="note"><div class="note-h">${ic('spark')}<span>จุดเด่น</span></div>
+        <ul class="ticks"><li>${STRENGTHS[topDim]}</li><li>${STRENGTHS[secondDim]}</li></ul></div>
+      <div class="note"><div class="note-h">${ic('sprout')}<span>สภาพแวดล้อมที่ใช่</span></div>
+        <ul class="ticks"><li>${ENV[topDim]}</li><li>${ENV[secondDim]}</li></ul></div>
     </div>
 
-    <div class="cta-row">
-      <button class="btn btn-teal btn-block" onclick="goPage('explorer')" style="flex:2;">🎓 ดูคณะที่แมตช์กับคุณ →</button>
-      <button class="btn btn-line" onclick="downloadStoryCard()" style="flex:1;">📥 Story Card</button>
+    <h3 class="sec-h">${ic('book')}<span>สายการเรียน</span></h3>
+    <div class="list">${matchTracks(scores).map((t,i)=>`
+      <details class="note track ${i===0?'top':''}" ${i===0?'open':''}>
+        <summary>${ic(t.icon,'lg')}<span class="nm">${t.name}</span>
+          ${i===0?`<span title="แนะนำที่สุด">${ic('star')}</span>`:''}
+          <span class="pct">${t.match}%</span>${ic('next','chev')}</summary>
+        <p>${t.why}</p>
+        <p class="meta" title="วิชาที่ควรเน้น">${ic('book')}<span>${t.focus}</span></p>
+        <p class="meta" title="ต่อยอดสู่">${ic('grad')}<span>${t.next}</span></p>
+        ${codeTiles(t.code.join(''),'sm')}
+      </details>`).join('')}
     </div>
-    <div style="margin-top:16px;text-align:center;">
-      <div class="shadow-cta card" style="border:2px dashed var(--amber);background:linear-gradient(155deg,#fff6e6,#fff);">
-        <span class="tag" style="background:var(--amber);color:var(--navy);">เร็วๆ นี้</span>
-        <h3 style="font-family:'Fraunces',serif;font-size:19px;margin:10px 0 6px;">🎭 Career Shadow</h3>
-        <p style="font-size:13.5px;color:var(--mist);max-width:420px;margin:0 auto 14px;">ลองสัมผัสอาชีพที่แนะนำผ่านสถานการณ์จำลองสั้นๆ — ทดลอง สังเกต และลองทำงานแบบย่อ ก่อนตัดสินใจเลือกเรียนจริง</p>
-        <button class="btn btn-teal" onclick="showComingSoon()">เข้าสู่ Career Shadow →</button>
-      </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="goPage('explorer')">${ic('grad')}<span>ดูคณะที่ตรงกับฉัน</span></button>
+      <button class="btn btn-ghost soon" onclick="downloadStoryCard()">${ic('download')}<span>Story Card</span></button>
+      <button class="btn btn-ghost soon" onclick="showComingSoon()">${ic('masks')}<span>Career Shadow</span></button>
     </div>
+    <p class="fine">${ic('info')}<span>เครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา และไม่ใช่คำตัดสินอนาคตของคุณ</span></p>
   `;
   drawRadar('radarHolder', scores, 300);
 }
 
 function downloadStoryCard(){
-  openModal('📥','ฟีเจอร์นี้ยังไม่พร้อมใช้งาน','การดาวน์โหลด Story Card สำหรับแชร์โซเชียลอยู่ระหว่างการพัฒนา ขอบคุณที่สนใจนะ! 🙌');
+  openModal('download','Story Card','เร็วๆ นี้ — รูปสรุปผลไว้แชร์โซเชียล');
+}
+function showComingSoon(){
+  openModal('masks','Career Shadow','เร็วๆ นี้ — ลองสัมผัสอาชีพผ่านสถานการณ์จำลองสั้นๆ ก่อนตัดสินใจเลือกเรียน');
 }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c =>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function showComingSoon(){
-  openModal('🚧','ฟีเจอร์นี้ยังไม่พร้อมใช้งาน','Career Shadow อยู่ระหว่างการพัฒนา — จะเปิดให้นักเรียนได้ลองสัมผัสอาชีพจริงในเวอร์ชันถัดไป ขอบคุณที่สนใจนะ! 🙌');
 }
 
 /* ---------- SVG Radar ---------- */
@@ -1191,10 +1399,10 @@ function drawRadar(elId, scores, size){
   let grid='';
   [0.25,0.5,0.75,1].forEach(f=>{
     let p=DIMS.map((_,i)=>pt(i,rMax*f).join(',')).join(' ');
-    grid+=`<polygon points="${p}" fill="none" stroke="#e2ddd0" stroke-width="1"/>`;
+    grid+=`<polygon points="${p}" fill="none" stroke="var(--line)" stroke-width="1"/>`;
   });
   let axes='';
-  DIMS.forEach((_,i)=>{ const[x,y]=pt(i,rMax); axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2ddd0" stroke-width="1"/>`; });
+  DIMS.forEach((_,i)=>{ const[x,y]=pt(i,rMax); axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`; });
 
   let poly=DIMS.map((d,i)=>pt(i,rMax*scores[d]/100).join(',')).join(' ');
   let dots=DIMS.map((d,i)=>{const[x,y]=pt(i,rMax*scores[d]/100);return `<circle cx="${x}" cy="${y}" r="4" fill="${DIM_INFO[d].color}"/>`;}).join('');
@@ -1213,7 +1421,7 @@ function drawRadar(elId, scores, size){
 }
 
 /* ============================================================================
-   PAGE-005 : FACULTY EXPLORER
+   หน้า 4 : คณะ
    ============================================================================ */
 function matchFaculties(scores){
   return FACULTIES.map(f=>{
@@ -1244,88 +1452,67 @@ function setExpFilter(d){
 }
 
 function renderExplorer(){
-  const filterEl = document.getElementById('expFilter');
-  const listEl = document.getElementById('facultyList');
   const bookmarks = loadBookmarks();
   const hasResult = !!lastResult;
 
   // ---- แถบตัวกรอง: เลือกดูตามมิติได้เสมอ แม้ยังไม่ทำแบบทดสอบ ----
-  let filterHtml = `<button class="fchip ${expFilterDim===null?'on':''}" onclick="setExpFilter(null)">ทุกมิติ</button>`;
-  DIMS.forEach(d=>{
-    filterHtml += `<button class="fchip ${expFilterDim===d?'on':''}"
-      onclick="setExpFilter('${d}')" style="${expFilterDim===d?`background:${DIM_INFO[d].color};color:#fff;border-color:${DIM_INFO[d].color};`:''}">
-      ${d} · ${DIM_INFO[d].th}</button>`;
-  });
-  if(hasResult){
-    filterHtml += `<span class="fchip static">🎯 รหัสของคุณ: ${lastResult.hollandCode}</span>`;
-  }
-  filterEl.innerHTML = filterHtml;
+  document.getElementById('expFilter').innerHTML =
+    `<button class="chip ${expFilterDim===null?'on':''}" onclick="setExpFilter(null)">ทั้งหมด</button>` +
+    DIMS.map(d=>`<button class="chip dim-chip ${expFilterDim===d?'on':''}" style="--c:${DIM_INFO[d].color}"
+      onclick="setExpFilter('${d}')" title="${DIM_INFO[d].th}" aria-label="${DIM_INFO[d].th}">${ic(DIM_INFO[d].ic)}<b>${d}</b></button>`).join('') +
+    (hasResult ? `<span class="chip static" title="รหัสของฉัน">${ic('target')}<b>${lastResult.hollandCode}</b></span>` : '');
 
-  // ---- แบนเนอร์: ถ้ายังไม่ทำแบบทดสอบ ชวนทำ แต่ยังดูได้ ----
-  let banner = '';
-  if(!hasResult){
-    banner = `<div class="exp-banner">
-      <div class="t">👀 กำลังดูแบบสำรวจอิสระ</div>
-      <p>คุณเปิดดูได้ทุกคณะเลย ลองกดกรองตามมิติด้านบนเพื่อดูว่าคณะไหนเหมาะกับคนแบบไหน — ถ้าอยากรู้ว่า<b>ตัวคุณเอง</b>ตรงกับคณะไหนมากที่สุด ลองทำแบบประเมินดู</p>
-      <button class="btn btn-primary" style="font-size:14px;padding:11px 20px;" onclick="goPage('quiz')">ทำแบบประเมิน 60 ข้อ →</button>
-    </div>`;
-  }
+  // ---- ยังไม่ทำแบบทดสอบ: ดูได้ทุกคณะ แต่ชวนทำเพื่อดู % ----
+  const banner = hasResult ? '' : `<div class="note banner">${ic('target','lg')}
+    <span>ทำแบบประเมินเพื่อดู % ที่ตรงกับคุณ</span>
+    <button class="btn btn-primary" onclick="goPage('quiz')">${ic('play')}<span>เริ่ม</span></button></div>`;
 
-  // ---- คำเตือนเรื่อง TCAS ----
-  const tcasWarn = `<div class="tcas-warn">
-    <span class="ic">⚠️</span>
-    <div><b>เรื่องรอบรับสมัคร TCAS และเกณฑ์คัดเลือก</b><br>
-    ข้อมูลรอบรับสมัคร คุณสมบัติ และเกณฑ์คะแนน <b>เปลี่ยนแปลงทุกปีและต่างกันในแต่ละมหาวิทยาลัย</b>
-    เราจึงไม่ระบุไว้ในนี้เพื่อไม่ให้เข้าใจผิด กรุณาตรวจสอบจากประกาศล่าสุดของ
-    <b>ทปอ. (mytcas.com)</b> และเว็บไซต์คณะที่สนใจโดยตรงเสมอ ก่อนวางแผนสมัคร</div>
-  </div>`;
+  // ---- คำเตือนเรื่อง TCAS (ห้ามลบ — ดู CLAUDE.md) ----
+  const tcasWarn = `<div class="warn">${ic('warn')}<span>รอบรับสมัครและเกณฑ์ <b>TCAS</b> เปลี่ยนทุกปีและต่างกันในแต่ละมหาวิทยาลัย
+    ตรวจสอบประกาศล่าสุดที่ <a href="https://www.mytcas.com" target="_blank" rel="noopener">ทปอ. (mytcas.com)</a> และเว็บไซต์คณะเสมอ</span></div>`;
 
-  // ---- รายการคณะ ----
   let list = hasResult ? matchFaculties(lastResult.scores) : FACULTIES.map(f=>({...f, match:null}));
   if(expFilterDim) list = list.filter(f=> f.code.includes(expFilterDim));
 
-  if(list.length===0){
-    listEl.innerHTML = banner + tcasWarn + `<div class="card" style="text-align:center;"><div class="empty-hint">ไม่พบคณะที่ตรงกับมิตินี้ ลองเลือกมิติอื่นดูนะ</div></div>`;
-    return;
-  }
-
-  const countLine = `<p class="exp-count">พบ ${list.length} คณะ${expFilterDim?` ที่เกี่ยวข้องกับมิติ ${expFilterDim} (${DIM_INFO[expFilterDim].th})`:''}${hasResult?' · เรียงตามความสอดคล้องกับคุณ':''}</p>`;
-
-  listEl.innerHTML = banner + tcasWarn + countLine + list.map((f,i)=>{
-    const saved = bookmarks.includes(f.name);
-    const safeName = f.name.replace(/'/g,"\\'");
-    return `
-    <div class="card fac-card">
-      <div class="fac-head">
-        <h3>${f.icon||'🏛️'} ${f.name}</h3>
-        <button class="save ${saved?'on':''}" onclick="toggleBookmark('${safeName}')">${saved?'⭐ บันทึกแล้ว':'☆ บันทึก'}</button>
-      </div>
-      ${f.match!==null ? `<div class="match-row"><div class="match-bar"><i style="width:${f.match}%"></i></div><div class="match-pct">${f.match}%</div></div>` : ''}
-      <div class="fac-fit"><b>เหมาะกับ:</b> ${f.fit}</div>
-      <div class="fac-code">${f.code.map(d=>`<span style="background:${DIM_INFO[d].color}" title="${DIM_INFO[d].th}">${d}</span>`).join('')}
-        <span class="code-hint">${f.code.map(d=>DIM_INFO[d].th).join(' + ')}</span></div>
-      <div class="fac-meta">
-        <div><b>มหาวิทยาลัยตัวอย่าง:</b> ${f.unis}</div>
-        <div><b>สายอาชีพเป้าหมาย:</b> ${f.careers}</div>
-      </div>
-    </div>`;
-  }).join('');
+  document.getElementById('facultyList').innerHTML = banner + tcasWarn +
+    `<p class="count">${list.length} คณะ</p><div class="list">` +
+    list.map(f=>{
+      const saved = bookmarks.includes(f.name);
+      return `
+      <details class="note fac">
+        <summary>${ic(f.icon,'lg')}
+          <span class="fac-main"><span class="nm">${f.name}</span>
+            ${f.match!==null ? `<span class="match"><span class="bar"><i style="width:${f.match}%"></i></span><b>${f.match}%</b></span>` : ''}
+          </span>
+          <button class="star-btn" data-name="${escapeHtml(f.name)}" onclick="toggleBookmark(event,this)"
+            aria-label="บันทึก" aria-pressed="${saved}">${ic(saved?'star':'star-o')}</button>
+        </summary>
+        <p class="meta" title="เหมาะกับ">${ic('people')}<span>${f.fit}</span></p>
+        <div class="meta">${codeTiles(f.code.join(''),'sm')}<span>${f.code.map(d=>DIM_INFO[d].th).join(' + ')}</span></div>
+        <p class="meta" title="มหาวิทยาลัยตัวอย่าง">${ic('school')}<span>${f.unis}</span></p>
+        <p class="meta" title="สายอาชีพเป้าหมาย">${ic('brief')}<span>${f.careers}</span></p>
+      </details>`;
+    }).join('') + `</div>`;
 }
 
-function toggleBookmark(name){
+/* ดาวอยู่ใน <summary> → กันไม่ให้การกดดาวไปเปิด/ปิดการ์ด และอัปเดตเฉพาะปุ่ม ไม่วาดรายการใหม่ */
+function toggleBookmark(e, btn){
+  e.preventDefault(); e.stopPropagation();
+  const name = btn.dataset.name;
   let bm = loadBookmarks();
-  if(bm.includes(name)) bm = bm.filter(x=>x!==name);
-  else bm.push(name);
+  const on = !bm.includes(name);
+  bm = on ? [...bm, name] : bm.filter(x=>x!==name);
   saveBookmarks(bm);
-  renderExplorer();
+  btn.innerHTML = ic(on ? 'star' : 'star-o');
+  btn.setAttribute('aria-pressed', on);
   renderBookmarksWidget();
 }
 
 /* ============================================================================
    MODAL
    ============================================================================ */
-function openModal(ic,title,body){
-  document.getElementById('modalIc').textContent=ic;
+function openModal(icon,title,body){
+  document.getElementById('modalIc').innerHTML=ic(icon);
   document.getElementById('modalTitle').textContent=title;
   document.getElementById('modalBody').innerHTML=body;
   document.getElementById('modalOk').style.display='';
@@ -1335,8 +1522,8 @@ function openModal(ic,title,body){
 
 /* กล่องยืนยันในแอป — ไม่ใช้ confirm() ของเบราว์เซอร์
    เพราะบางเบราว์เซอร์/แอปดูไฟล์บนมือถือบล็อก confirm() ทำให้ปุ่มกดแล้วไม่ทำงาน */
-function openConfirm(ic,title,body,confirmText,onConfirm){
-  document.getElementById('modalIc').textContent=ic;
+function openConfirm(icon,title,body,confirmText,onConfirm){
+  document.getElementById('modalIc').innerHTML=ic(icon);
   document.getElementById('modalTitle').textContent=title;
   document.getElementById('modalBody').innerHTML=body;
   document.getElementById('modalOk').style.display='none';
@@ -1355,11 +1542,20 @@ function closeModal(){
 }
 
 /* ============================================================================
-   INIT — ถ้ามี user เดิมใน localStorage ให้ล็อกอินอัตโนมัติ
+   INIT — เข้าเว็บแล้วไปหน้าหลักทันที ไม่ต้องล็อกอิน
    ============================================================================ */
 (function init(){
-  const saved = loadUser();
-  if(saved){ user = saved; enterApp(); }
+  document.querySelectorAll('[data-ic]').forEach(el=>el.insertAdjacentHTML('afterbegin', ic(el.dataset.ic)));
+  user = loadUser();
+  delete user.guest; if(user.grade==='-') delete user.grade;   // ข้อมูลจากเวอร์ชันเก่าที่มีโหมด Guest
+  lastResult = loadResult();
+  const p = loadProgress();
+  if(p && p.answers){
+    answers = p.answers;
+    qIdx = Math.min(Math.max(0, p.qIdx|0), QUESTIONS.length-1);
+  }
+  renderThemeBtn(); renderUserChip(); renderRiasec();
+  goPage('dash');
 })();
 </script>
 </body>
