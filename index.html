@@ -1493,6 +1493,24 @@ function renderExplorer(){
         <p class="meta" title="สายอาชีพเป้าหมาย">${ic('brief')}<span>${f.careers}</span></p>
       </details>`;
     }).join('') + `</div>`;
+
+  if(canHover()) document.querySelectorAll('#facultyList details.fac').forEach(hoverOpen);
+}
+
+/* เอาเมาส์ชี้การ์ดคณะ = เปิดดูข้อมูล, เอาออก = ปิด — เฉพาะเครื่องที่มีเมาส์
+   (จอสัมผัสจำลอง mouseenter ตอนแตะ จะชนกับการกดเปิด/ปิด จึงใช้การกดแบบเดิม)
+   กดการ์ด = ปักไว้ให้เปิดค้างแม้เอาเมาส์ออก, กดอีกครั้ง = เลิกปักและปิด */
+const canHover = () => !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
+function hoverOpen(d){
+  let t;
+  // หน่วง 150ms: ลากเมาส์ผ่านเร็วๆ การ์ดจะไม่เด้งเปิดทีละใบจนหน้ากระโดด
+  d.addEventListener('mouseenter', ()=>{ t = setTimeout(()=>{ if(!d.dataset.pin) d.open = true; }, 150); });
+  d.addEventListener('mouseleave', ()=>{ clearTimeout(t); if(!d.dataset.pin) d.open = false; });
+  d.querySelector('summary').addEventListener('click', e=>{
+    e.preventDefault();
+    if(d.dataset.pin){ delete d.dataset.pin; d.open = false; }
+    else { d.dataset.pin = '1'; d.open = true; }
+  });
 }
 
 /* ดาวอยู่ใน <summary> → กันไม่ให้การกดดาวไปเปิด/ปิดการ์ด และอัปเดตเฉพาะปุ่ม ไม่วาดรายการใหม่ */
