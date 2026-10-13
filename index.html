@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Compass — เข็มทิศค้นหาตัวตน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2a47; --navy-2:#16375c; --teal:#2ec4b6; --amber:#ffb703;
+    --coral:#ff6b6b; --cream:#f6f4ee; --ink:#0e2a47; --mist:#5c7290;
+    --R:#ff6b6b; --I:#4d96ff; --A:#c874e8; --S:#2ec4b6; --E:#ffb703; --C:#4ec27a;
+    --bottomnav-h:64px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'IBM Plex Sans Thai',sans-serif;color:var(--ink);
+    background:var(--cream);line-height:1.6;
+    padding-bottom:var(--bottomnav-h);}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 18px;}
+  .page{display:none;} .page.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  button{font-family:inherit;}
+
+  /* ================= GLOBAL NAV (แถบล่างอย่างเดียว) ================= */
+  .bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;
+    border-top:1px solid #e7e2d6;height:var(--bottomnav-h);display:flex;
+    box-shadow:0 -4px 16px rgba(14,42,71,.06);max-width:760px;margin:0 auto;}
+  .bottomnav button{flex:1;background:none;border:none;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;color:var(--mist);cursor:pointer;
+    font-size:10.5px;font-weight:600;font-family:inherit;transition:color .15s;}
+  .bottomnav button .ic{font-size:19px;}
+  .bottomnav button.on{color:var(--teal);}
+
+  /* ================= ทั่วไป ================= */
+  .btn{font-family:inherit;font-weight:700;font-size:15px;
+    padding:13px 24px;border-radius:12px;cursor:pointer;border:none;text-decoration:none;
+    display:inline-block;transition:transform .12s,box-shadow .2s;}
+  .btn-primary{background:var(--amber);color:var(--navy);box-shadow:0 6px 18px rgba(255,183,3,.35);}
+  .btn-primary:active{transform:translateY(2px);}
+  .btn-teal{background:var(--teal);color:#fff;box-shadow:0 6px 18px rgba(46,196,182,.3);}
+  .btn-ghost{background:#fff;color:var(--navy);border:2px solid var(--navy);}
+  .btn-line{background:transparent;color:inherit;border:1.5px solid rgba(120,120,120,.3);}
+  .btn-block{width:100%;text-align:center;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+  .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 26px rgba(14,42,71,.07);border:1px solid #e7e2d6;}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:4px 11px;border-radius:20px;}
+
+  /* ================= PAGE-001 : AUTH ================= */
+  #page-auth{min-height:calc(100dvh - var(--bottomnav-h));padding:36px 18px;
+    background:radial-gradient(circle at 80% 10%, rgba(46,196,182,.12), transparent 45%),
+               radial-gradient(circle at 10% 90%, rgba(255,183,3,.1), transparent 40%),var(--cream);}
+  #page-auth.active{display:flex;align-items:center;justify-content:center;}
+  .auth-card{width:100%;max-width:440px;background:#fff;border-radius:22px;padding:30px 26px;box-shadow:0 16px 46px rgba(14,42,71,.12);}
+  .auth-brand{text-align:center;margin-bottom:22px;}
+  .auth-brand .ic{font-size:34px;}
+  .auth-brand h1{font-family:'Fraunces',serif;font-weight:900;font-size:26px;margin-top:6px;}
+  .auth-brand h1 .n{color:var(--amber);}
+  .auth-brand p{font-size:13.5px;color:var(--mist);margin-top:6px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--mist);margin-bottom:6px;}
+  .field input,.field select{width:100%;font-size:15.5px;padding:12px 14px;border:2px solid #e7e2d6;
+    border-radius:11px;background:var(--cream);outline:none;font-family:inherit;}
+  .field input:focus,.field select:focus{border-color:var(--teal);}
+  .radio-row{display:flex;gap:8px;}
+  .radio-row label{flex:1;text-align:center;padding:10px 4px;border:2px solid #e7e2d6;border-radius:10px;
+    font-size:14px;font-weight:600;cursor:pointer;background:var(--cream);}
+  .radio-row input{display:none;}
+  .radio-row input:checked + span{color:var(--teal);}
+  .radio-row label:has(input:checked){border-color:var(--teal);background:#e9f7f5;}
+  .auth-divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--mist);font-size:12px;}
+  .auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:#e7e2d6;}
+  .err-msg{font-size:13px;color:#c0392b;background:#ffe9e6;padding:9px 12px;border-radius:9px;margin-bottom:12px;display:none;}
+  .err-msg.show{display:block;}
+
+  /* ================= PAGE-002 : DASHBOARD (Bento) ================= */
+  #page-dash{padding:26px 0 40px;}
+  .dash-hello{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .dash-hello h2{font-family:'Fraunces',serif;font-size:22px;font-weight:700;}
+  .dash-hello .status{font-size:12.5px;color:var(--teal);font-weight:600;background:#e9f7f5;padding:6px 12px;border-radius:20px;white-space:nowrap;}
+  .bento{display:grid;gap:16px;grid-template-columns:1fr;}
+  @media(min-width:700px){.bento{grid-template-columns:1fr 1fr;}}
+  .bento .card h3{font-family:'Fraunces',serif;font-size:18px;margin-bottom:10px;}
+  .bento .quiz-modes{font-size:13px;color:#5c7290;margin:10px 0 16px;line-height:1.7;}
+  .bento .quiz-modes b{color:var(--navy);}
+  .mini-radar{display:flex;justify-content:center;margin:6px 0;}
+  .code-badge{text-align:center;margin-bottom:10px;}
+  .code-badge .code{font-family:'Fraunces',serif;font-weight:900;font-size:30px;color:var(--navy);letter-spacing:.08em;}
+  .code-badge .sub{font-size:12px;color:var(--mist);}
+  .score-inline{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:700;margin-top:8px;}
+  .score-inline span{padding:3px 9px;border-radius:8px;background:var(--cream);}
+  .empty-hint{font-size:13.5px;color:var(--mist);text-align:center;padding:14px 0;}
+  .faculty-mini{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f0ede4;}
+  .faculty-mini:first-of-type{border-top:none;padding-top:0;}
+  .faculty-mini .rank{width:24px;height:24px;border-radius:7px;background:var(--navy);color:#fff;font-size:12px;
+    font-weight:700;display:grid;place-items:center;flex-shrink:0;}
+  .faculty-mini .nm{flex:1;font-size:13.5px;font-weight:600;}
+  .faculty-mini .mt{font-size:12.5px;font-weight:700;color:var(--teal);}
+  .bm-item{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:13.5px;}
+  .bm-item .star{color:var(--amber);}
+  .linkrow{margin-top:14px;font-size:13.5px;}
+  .linkrow a,.linkrow button{color:var(--teal);font-weight:600;text-decoration:none;background:none;border:none;cursor:pointer;font-size:13.5px;font-family:inherit;}
+
+  /* ---- ส่วนอธิบายหลักการและวิธีการ ---- */
+  .method{grid-column:1/-1;background:linear-gradient(155deg,var(--navy),var(--navy-2));color:#e3ebf4;
+    border-radius:18px;padding:26px 22px;border:none;}
+  .method .kick{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);}
+  .method h3{font-family:'Fraunces',serif;font-size:20px;color:#fff;margin:6px 0 8px;}
+  .method .lead{font-size:14px;color:#bccbdc;margin-bottom:20px;max-width:640px;}
+  .method-grid{display:grid;gap:12px;grid-template-columns:1fr;}
+  @media(min-width:620px){.method-grid{grid-template-columns:repeat(3,1fr);}}
+  .m-item{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+    border-radius:13px;padding:15px 16px;}
+  .m-item .n{font-family:'Fraunces',serif;font-weight:900;font-size:13px;color:var(--amber);}
+  .m-item h4{font-size:14.5px;color:#fff;margin:3px 0 5px;}
+  .m-item p{font-size:12.5px;color:#a9bccf;line-height:1.6;}
+  .riasec-strip{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 6px;}
+  .riasec-strip .r{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);
+    border-radius:20px;padding:6px 12px;font-size:12px;color:#dbe5ef;}
+  .riasec-strip .r b{width:19px;height:19px;border-radius:6px;color:#fff;font-size:10.5px;
+    display:grid;place-items:center;}
+  .method .cite{font-size:11.5px;color:#7b93ad;margin-top:16px;line-height:1.6;}
+
+  /* ================= PAGE-003 : ASSESSMENT STUDIO ================= */
+  #page-quiz{padding:0 0 40px;}
+  .quiz-topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #e7e2d6;padding:12px 0;}
+  .quiz-topbar .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .quiz-topbar .exit{font-size:13px;color:var(--mist);background:none;border:none;cursor:pointer;white-space:nowrap;}
+  .quiz-topbar .progress-txt{font-size:12.5px;font-weight:600;color:var(--navy);white-space:nowrap;}
+  .quiz-topbar .dim-tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:16px;color:#fff;white-space:nowrap;margin-left:auto;}
+  .bar-outer{height:6px;background:#eee;border-radius:6px;overflow:hidden;margin-top:8px;}
+  .bar-inner{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:6px;transition:width .3s;}
+
+  .q-wrap{padding:26px 0;max-width:640px;margin:0 auto;}
+  .q-type-tag{margin-bottom:14px;}
+  .q-type-tag.likert{background:#e6f0ff;color:#2b6cd6;}
+  .q-type-tag.situational{background:#e9f7f5;color:#1a9c8e;}
+  .q-type-tag.sub{background:#fff1e0;color:#c77a12;}
+  .q-text{font-size:19px;font-weight:600;line-height:1.45;margin-bottom:20px;}
+  .likert-row{display:flex;flex-direction:column;gap:9px;}
+  .opt{padding:14px 16px;border:2px solid #e7e2d6;border-radius:13px;cursor:pointer;
+    font-size:15px;background:#fff;transition:all .15s;display:flex;align-items:center;gap:12px;}
+  .opt:hover{border-color:var(--teal);}
+  .opt.sel{border-color:var(--teal);background:#e9f7f5;font-weight:600;}
+  .opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid #c3ccd9;flex-shrink:0;position:relative;}
+  .opt.sel .dot{border-color:var(--teal);background:var(--teal);}
+  .opt.sel .dot::after{content:"✓";position:absolute;inset:0;color:#fff;font-size:11px;display:grid;place-items:center;}
+  .likert-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--mist);margin-top:6px;padding:0 4px;}
+  .nav-row{display:flex;gap:12px;margin-top:26px;}
+  .nav-row .btn{flex:1;}
+
+  /* ================= PAGE-004 : RESULTS ================= */
+  #page-results{padding:26px 0 40px;}
+  .res-header{text-align:center;margin-bottom:20px;}
+  .res-header h2{font-family:'Fraunces',serif;font-weight:900;font-size:26px;}
+  .res-topbar{background:linear-gradient(155deg,var(--navy),var(--navy-2));color:#fff;border-radius:18px;
+    padding:20px;text-align:center;margin-bottom:18px;}
+  .res-topbar .code{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:.1em;color:var(--amber);}
+  .res-topbar .label{font-size:15.5px;font-weight:600;margin-top:2px;}
+  .res-grid{display:grid;gap:16px;grid-template-columns:1fr;margin-bottom:18px;}
+  @media(min-width:700px){.res-grid{grid-template-columns:1fr 1fr;}}
+  .res-grid .card h3{font-family:'Fraunces',serif;font-size:17px;margin-bottom:14px;}
+  svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .score-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+  .score-row{display:flex;align-items:center;gap:10px;font-size:13.5px;}
+  .score-row .sw{width:12px;height:12px;border-radius:4px;flex-shrink:0;}
+  .score-row .nm{flex:1;}
+  .score-row .val{font-weight:700;font-family:'Fraunces',serif;}
+  .strength-list{list-style:none;font-size:14px;color:#43576f;}
+  .strength-list li{padding:7px 0 7px 22px;position:relative;}
+  .strength-list li::before{content:"•";position:absolute;left:0;color:var(--teal);font-weight:900;}
+  .cta-row{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;}
+
+  /* ---- สายการเรียนแนะนำ ---- */
+  .track-sec{margin-bottom:18px;}
+  .track-sec > h3{font-family:'Fraunces',serif;font-size:19px;margin-bottom:3px;}
+  .track-sec > .cap{font-size:13px;color:var(--mist);margin-bottom:14px;}
+  .track{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:15px;
+    background:#fff;border:1px solid #e7e2d6;margin-bottom:11px;box-shadow:0 5px 18px rgba(14,42,71,.05);}
+  .track.top{border:2px solid var(--teal);background:linear-gradient(155deg,#eefaf8,#fff);}
+  .track .ico{font-size:26px;flex-shrink:0;line-height:1.2;}
+  .track .body{flex:1;min-width:0;}
+  .track .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+  .track h4{font-size:16px;}
+  .track .pct{font-family:'Fraunces',serif;font-weight:700;color:var(--teal);font-size:15px;margin-left:auto;}
+  .track .best{font-size:10.5px;font-weight:700;background:var(--teal);color:#fff;padding:3px 9px;border-radius:14px;}
+  .track .why{font-size:13.5px;color:#4a5f77;margin-bottom:7px;}
+  .track .meta{font-size:12.5px;color:var(--mist);line-height:1.65;}
+  .track .meta b{color:var(--navy);}
+  .track .codes{display:flex;gap:4px;margin-top:7px;}
+  .track .codes span{width:21px;height:21px;border-radius:6px;color:#fff;font-size:10.5px;
+    font-weight:700;display:grid;place-items:center;}
+
+  /* ================= PAGE-005 : FACULTY EXPLORER ================= */
+  #page-explorer{padding:26px 0 40px;}
+  .exp-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;font-size:13px;}
+  .fchip{background:#fff;border:1.5px solid #e7e2d6;padding:7px 13px;border-radius:20px;
+    font-weight:600;color:var(--navy);cursor:pointer;font-family:inherit;font-size:12.5px;transition:all .15s;}
+  .fchip:hover{border-color:var(--teal);}
+  .fchip.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .fchip.static{background:#e9f7f5;border-color:#b9e6df;color:#1a6b60;cursor:default;}
+
+  .exp-banner{background:linear-gradient(155deg,#eefaf8,#fff);border:2px dashed var(--teal);
+    border-radius:16px;padding:20px;margin-bottom:14px;}
+  .exp-banner .t{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:6px;}
+  .exp-banner p{font-size:13.5px;color:#4a5f77;margin-bottom:14px;line-height:1.65;}
+
+  .tcas-warn{display:flex;gap:12px;background:#fff8e8;border:1px solid #ffe0a8;
+    border-radius:14px;padding:16px 18px;margin-bottom:16px;font-size:13px;color:#7a5a1e;line-height:1.65;}
+  .tcas-warn .ic{font-size:20px;flex-shrink:0;line-height:1.3;}
+  .tcas-warn b{color:#5c4210;}
+
+  .exp-count{font-size:13px;color:var(--mist);margin-bottom:12px;font-weight:600;}
+  .fac-fit{font-size:13.5px;color:#43576f;background:var(--cream);padding:11px 14px;
+    border-radius:11px;margin-bottom:11px;line-height:1.6;border-left:3px solid var(--teal);}
+  .fac-fit b{color:var(--navy);}
+  .code-hint{font-size:11.5px;color:var(--mist);align-self:center;margin-left:4px;}
+  .fac-card{margin-bottom:14px;}
+  .fac-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .fac-head h3{font-family:'Fraunces',serif;font-size:18px;}
+  .fac-head .save{background:#fff5e6;border:1px solid #ffdca0;color:#c77a12;font-size:12px;font-weight:700;
+    padding:6px 12px;border-radius:20px;cursor:pointer;white-space:nowrap;}
+  .fac-head .save.on{background:var(--amber);color:var(--navy);}
+  .match-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .match-bar{flex:1;height:8px;background:#eee;border-radius:6px;overflow:hidden;}
+  .match-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:6px;}
+  .match-pct{font-weight:700;font-family:'Fraunces',serif;color:var(--teal);white-space:nowrap;font-size:15px;}
+  .fac-code{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;align-items:center;}
+  .fac-code span{width:24px;height:24px;border-radius:7px;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;}
+  .fac-meta{font-size:13px;color:#5c7290;line-height:1.7;}
+  .fac-meta b{color:var(--navy);}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(14,42,71,.6);display:none;place-items:center;padding:24px;z-index:50;}
+  .modal.show{display:grid;}
+  .modal-card{background:#fff;border-radius:20px;padding:28px 24px;max-width:380px;text-align:center;}
+  .modal-actions{display:none;gap:10px;margin-top:4px;}
+  .modal-actions .btn{flex:1;font-size:15px;padding:12px;}
+  .btn-danger{background:var(--coral);color:#fff;}
+  .btn-danger:active{transform:translateY(2px);}
+  .modal-card .ic{font-size:40px;margin-bottom:12px;}
+  .modal-card h3{font-size:20px;margin-bottom:8px;}
+  .modal-card p{font-size:14px;color:#5c7290;margin-bottom:18px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<!-- ===== GLOBAL NAV (Desktop) ===== -->
+
+<!-- ===== PAGE-001 : AUTH ===== -->
+<section class="page active" id="page-auth">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="ic">🧭</div>
+      <h1>Career <span class="n">Compass</span></h1>
+      <p>เข็มทิศค้นหาตัวตน สู่คณะที่ใช่ในแบบคุณ</p>
+    </div>
+    <div class="err-msg" id="authErr"></div>
+    <div class="field">
+      <label>ชื่อเล่น</label>
+      <input id="in_name" placeholder="ใส่ชื่อที่อยากให้เรียก" maxlength="40"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="field">
+      <label>ระดับชั้น</label>
+      <div class="radio-row">
+        <label><input type="radio" name="grade" value="ม.4"><span>ม.4</span></label>
+        <label><input type="radio" name="grade" value="ม.5" checked><span>ม.5</span></label>
+        <label><input type="radio" name="grade" value="ม.6"><span>ม.6</span></label>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="doLogin()">เริ่มใช้งาน</button>
+    <div class="auth-divider">หรือ</div>
+    <button class="btn btn-ghost btn-block" onclick="doGuest()">ทดลองทำแบบประเมินด่วน (Guest)</button>
+    <p style="text-align:center;font-size:11.5px;color:var(--mist);margin-top:16px;">🔒 ข้อมูลบันทึกในเครื่องนี้เท่านั้น (LocalStorage)</p>
+  </div>
+</section>
+
+<!-- ===== PAGE-002 : DASHBOARD ===== -->
+<section class="page" id="page-dash">
+  <div class="wrap">
+    <div class="dash-hello">
+      <h2 id="helloTxt">สวัสดีคุณ —</h2>
+      <span class="status" id="statusTxt">💾 ยังไม่มีข้อมูลบันทึก</span>
+    </div>
+    <div class="bento">
+      <div class="card method">
+        <div class="kick">◎ หลักการและวิธีการ</div>
+        <h3>เราวิเคราะห์ตัวตนของคุณด้วยอะไร?</h3>
+        <p class="lead">Career Compass ใช้ทฤษฎี <b style="color:#fff">RIASEC ของ John L. Holland</b> ซึ่งเป็นกรอบที่ได้รับการยอมรับในวงการจิตวิทยาอาชีพ มาวัดแนวโน้มบุคลิกภาพ 6 มิติ โดยปรับบริบทคำถามให้เข้ากับชีวิตนักเรียนไทย</p>
+
+        <div class="riasec-strip">
+          <span class="r"><b style="background:var(--R)">R</b> ปฏิบัติการ/ลงมือทำ</span>
+          <span class="r"><b style="background:var(--I)">I</b> ช่างคิด/วิเคราะห์</span>
+          <span class="r"><b style="background:var(--A)">A</b> สร้างสรรค์/ศิลปะ</span>
+          <span class="r"><b style="background:var(--S)">S</b> ช่วยเหลือ/สังคม</span>
+          <span class="r"><b style="background:var(--E)">E</b> บริหาร/โน้มน้าว</span>
+          <span class="r"><b style="background:var(--C)">C</b> จัดการ/ระเบียบ</span>
+        </div>
+
+        <div class="method-grid" style="margin-top:16px;">
+          <div class="m-item">
+            <div class="n">01</div>
+            <h4>คำถาม 3 รูปแบบ</h4>
+            <p>Likert 30 ข้อ วัดความชอบที่รู้ตัว · Situational 18 ข้อ จับพฤติกรรมอัตโนมัติที่ไม่รู้ตัว · Sub-question 12 ข้อ คัดแยกมิติที่ก้ำกึ่ง</p>
+          </div>
+          <div class="m-item">
+            <div class="n">02</div>
+            <h4>ให้น้ำหนักคะแนน</h4>
+            <p>Likert ให้ 1–5 คะแนนตรงมิติ · Situational ให้มิติหลัก +3 มิติรอง +1 · Sub-question ให้มิติที่เลือก +2</p>
+          </div>
+          <div class="m-item">
+            <div class="n">03</div>
+            <h4>แปลงเป็นคะแนนมาตรฐาน</h4>
+            <p>ปรับคะแนนดิบเป็นสเกล 0–100% ต่อมิติ แล้วเรียง 3 อันดับแรกเป็น Holland Code เพื่อแนะนำสายการเรียนที่สอดคล้อง</p>
+          </div>
+        </div>
+
+        <p class="cite">อ้างอิง: Holland, J. L. (1997). <i>Making Vocational Choices: A Theory of Vocational Personalities and Work Environments</i> (3rd ed.). ผลลัพธ์เป็นเครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา</p>
+      </div>
+
+      <div class="card">
+        <h3>🚀 แบบประเมิน RIASEC Hybrid Quiz (60 ข้อ)</h3>
+        <div class="quiz-modes">
+          <div>• <b>30 ข้อ:</b> Likert Scale (ความชอบตรง)</div>
+          <div>• <b>18 ข้อ:</b> Situational (พฤติกรรมอัตโนมัติ)</div>
+          <div>• <b>12 ข้อ:</b> Deep Sub-question (แยกความก้ำกึ่ง)</div>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="goPage('quiz')" id="startQuizBtn">เริ่มทำแบบประเมิน →</button>
+      </div>
+      <div class="card" id="dashScoreCard">
+        <h3>🎯 สรุปผล Holland Code</h3>
+        <div class="empty-hint">ยังไม่มีผลการประเมิน — ลองทำแบบทดสอบดูก่อนนะ</div>
+      </div>
+      <div class="card" id="dashFacultyCard">
+        <h3>🎓 คณะแนะนำที่ตรงกับบุคลิกของคุณ</h3>
+        <div class="empty-hint">ทำแบบประเมินให้เสร็จก่อน ระบบจะแนะนำคณะให้อัตโนมัติ</div>
+      </div>
+      <div class="card" id="dashBookmarkCard">
+        <h3>⭐ รายการที่บันทึกไว้</h3>
+        <div class="empty-hint" id="bmEmpty">ยังไม่มีคณะที่บันทึกไว้</div>
+        <div id="bmList"></div>
+        <div class="linkrow"><button onclick="goPage('explorer')">จัดการรายการบันทึก →</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE-003 : ASSESSMENT STUDIO ===== -->
+<section class="page" id="page-quiz">
+  <div class="quiz-topbar">
+    <div class="wrap">
+      <button class="exit" onclick="exitQuiz()">← บันทึกและออกชั่วคราว</button>
+      <span class="progress-txt" id="qProgress">ข้อ 1 จาก 60</span>
+      <span class="dim-tag" id="qDimTag">R</span>
+    </div>
+    <div class="wrap"><div class="bar-outer"><div class="bar-inner" id="qBar"></div></div></div>
+  </div>
+  <div class="wrap q-wrap">
+    <div id="qCard"></div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="qBack" onclick="prevQ()">← ย้อนกลับ</button>
+      <button class="btn btn-primary" id="qNext" onclick="nextQ()" disabled>ถัดไป →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE-004 : RESULTS ===== -->
+<section class="page" id="page-results">
+  <div class="wrap">
+    <div class="res-header">
+      <h2>🏆 ผลการวิเคราะห์บุคลิกภาพเชิงอาชีพ</h2>
+    </div>
+    <div id="resultsBody">
+      <div class="card" style="text-align:center;"><div class="empty-hint">ยังไม่มีผลการประเมิน — ไปทำแบบทดสอบก่อนนะ</div>
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="goPage('quiz')">เริ่มทำแบบประเมิน</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE-005 : FACULTY EXPLORER ===== -->
+<section class="page" id="page-explorer">
+  <div class="wrap">
+    <h2 style="font-family:'Fraunces',serif;font-size:22px;margin-bottom:6px;">🎓 ค้นหาและจับคู่คณะที่เหมาะกับรหัสของคุณ</h2>
+    <div class="exp-filter" id="expFilter"></div>
+    <div id="facultyList"></div>
+  </div>
+</section>
+
+<!-- ===== BOTTOM NAV (Mobile) ===== -->
+<nav class="bottomnav" id="bottomnav" style="display:none;">
+  <button data-go="dash"><span class="ic">🏠</span>หน้าหลัก</button>
+  <button data-go="quiz"><span class="ic">📝</span>ทำควิซ</button>
+  <button data-go="results"><span class="ic">📊</span>ผลคะแนน</button>
+  <button data-go="explorer"><span class="ic">🎓</span>สำรวจคณะ</button>
+  <button data-go="profile"><span class="ic">👤</span>โปรไฟล์</button>
+</nav>
+
+<!-- modal -->
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div class="ic" id="modalIc">ℹ️</div>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+    <button class="btn btn-primary btn-block" id="modalOk" onclick="closeModal()">เข้าใจแล้ว</button>
+    <div class="modal-actions" id="modalActions">
+      <button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn btn-danger" id="modalConfirm">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   ธนาคารคำถาม 60 ข้อ — คัดลอกจากเอกสาร "คู่มือและคลังข้อสอบวัดบุคลิกภาพเชิงอาชีพ"
+   ประเภท: likert (30) / situational (18) / sub (12)
+   ============================================================================ */
+const QUESTIONS = [
+  // ===== R: Realistic (10 ข้อ = 5 Likert + 3 Situational + 2 Sub) =====
+  {id:'R01',type:'likert',dim:'R',text:'ชอบลงมือประกอบ ซ่อมแซม หรือต่อชิ้นส่วนอุปกรณ์และสิ่งของต่างๆ ด้วยตัวเอง'},
+  {id:'R02',type:'likert',dim:'R',text:'ชอบกิจกรรมกลางแจ้งหรือการทำงานที่ได้ขยับร่างกายมากกว่าการนั่งอยู่กับโต๊ะทั้งวัน'},
+  {id:'R03',type:'likert',dim:'R',text:'สนุกกับการได้ลองใช้เครื่องมือช่าง อุปกรณ์ประดิษฐ์ หรือทดลองต่อวงจรไฟฟ้าเล่น'},
+  {id:'R04',type:'likert',dim:'R',text:'เวลาทำโครงงานกลุ่ม มักอาสาเป็นฝ่ายจัดหาอุปกรณ์หรือลงมือสร้างโมเดลจริง'},
+  {id:'R05',type:'likert',dim:'R',text:'สนใจศึกษาระบบกลไกการทำงานของยานยนต์ เครื่องจักร หรือฮาร์ดแวร์คอมพิวเตอร์'},
+  {id:'R06',type:'situational',text:'พัดลมหรือปลั๊กไฟในห้องเรียนชำรุด มีเสียงดังและหมุนช้า คุณมักจะตอบสนองอย่างไร?',
+    options:[
+      {t:'เดินเข้าไปเช็กสายไฟ ใบพัด หรือลองขันน็อตซ่อมเบื้องต้นทันที',primary:'R',secondary:'I'},
+      {t:'ถ่ายคลิปรีวิวลงสตอรี่แซวความเก่าของโรงเรียน',primary:'A',secondary:'E'},
+      {t:'แจ้งครูประจำชั้นหรือเขียนใบแจ้งซ่อมไปยังฝ่ายอาคารสถานที่',primary:'C',secondary:'S'},
+      {t:'ช่วยเดินเตือนเพื่อนๆ ให้นั่งห่างๆ เพื่อความปลอดภัย',primary:'S',secondary:'C'},
+    ]},
+  {id:'R07',type:'situational',text:'ในงานกีฬาสีของโรงเรียน หน้าที่ไหนที่คุณรู้สึกว่าเหมาะกับตัวเองมากที่สุด?',
+    options:[
+      {t:'ขนย้ายอุปกรณ์ ก่อสร้างโครงสร้างซุ้ม และติดตั้งเต็นท์',primary:'R',secondary:'C'},
+      {t:'วาดภาพ ออกแบบชุดขบวนพาเหรด และตกแต่งป้ายสแตนด์',primary:'A',secondary:'R'},
+      {t:'ประสานงาน จัดคิวงาน และคุมงบประมาณค่าใช้จ่าย',primary:'C',secondary:'E'},
+      {t:'เป็นพี่สตาฟดูแลสวัสดิการ แจกน้ำ ปฐมพยาบาลน้องๆ',primary:'S',secondary:'R'},
+    ]},
+  {id:'R08',type:'situational',text:'ในวันหยุดว่างๆ กิจกรรมที่คุณอยากทำมากที่สุดคือข้อใด?',
+    options:[
+      {t:'รื้อจัดโต๊ะคอม ประกอบโมเดล ปลูกต้นไม้ หรือซ่อมจักรยาน',primary:'R',secondary:'C'},
+      {t:'นั่งอ่านบทความ ท่องโลกอินเทอร์เน็ตหาความรู้เรื่องที่สงสัย',primary:'I',secondary:'A'},
+      {t:'ชวนกลุ่มเพื่อนออกไปรวมตัวทำกิจกรรมหรือนั่งคุยกัน',primary:'S',secondary:'E'},
+      {t:'วางแผนจัดตารางอ่านหนังสือและเคลียร์งานค้างให้เรียบร้อย',primary:'C',secondary:'I'},
+    ]},
+  {id:'R09',type:'sub',pair:['R','I'],text:'เวลาเห็นหุ่นยนต์กู้ภัย สิ่งที่ทำให้คุณรู้สึกตื่นเต้นและอยากศึกษามากที่สุดคืออะไร?',
+    options:[
+      {t:'โครงสร้างชิ้นส่วน ระบบมอเตอร์ เฟือง และการประกอบชิ้นงานจริง',dim:'R'},
+      {t:'ระบบการคำนวณ ตรรกะของอัลกอริทึม และโค้ดควบคุมการตัดสินใจ',dim:'I'},
+    ]},
+  {id:'R10',type:'sub',pair:['R','A'],text:'ถ้าต้องทำพร็อพประกอบฉากละครเวทีของห้อง คุณให้ความสำคัญกับเรื่องใดมากกว่า?',
+    options:[
+      {t:'ความแข็งแรง ทนทาน ใช้งานได้จริง ปลอดภัย และกลไกไม่พังง่าย',dim:'R'},
+      {t:'ความสวยงาม โทนสี อารมณ์ และความแปลกใหม่สะดุดตา',dim:'A'},
+    ]},
+
+  // ===== I: Investigative =====
+  {id:'I01',type:'likert',dim:'I',text:"ชอบตั้งคำถามว่า 'ทำไม' และสืบค้นหาคำอธิบายทางวิทยาศาสตร์หรือตรรกะเบื้องหลัง"},
+  {id:'I02',type:'likert',dim:'I',text:'รู้สึกสนุกกับการวิเคราะห์ข้อมูล ตาราง กราฟสถิติ เพื่อหาแบบแผนหรือข้อสรุป'},
+  {id:'I03',type:'likert',dim:'I',text:'ชอบอ่านหรือดูคอนเทนต์สารคดี บทวิเคราะห์เชิงลึก หรืองานวิจัยใหม่ๆ'},
+  {id:'I04',type:'likert',dim:'I',text:'เวลาเจอปัญหาซับซ้อน ชอบตั้งสมมติฐานและทดลองหาวิธีแก้อย่างเป็นขั้นเป็นตอน'},
+  {id:'I05',type:'likert',dim:'I',text:'สนุกกับการแก้โจทย์คณิตศาสตร์ วิทยาศาสตร์ หรือปริศนาตรรกะที่ท้าทาย'},
+  {id:'I06',type:'situational',text:'เมื่อต้องทำโครงงาน IS ในหัวข้อที่ไม่เคยเรียนมาก่อน คุณจะเริ่มลงมืออย่างไร?',
+    options:[
+      {t:'ค้นหาเปเปอร์ งานวิจัย และอ่านทฤษฎีเพื่อทำความเข้าใจรากฐาน',primary:'I',secondary:'C'},
+      {t:'นัดระดมสมองกับเพื่อนในกลุ่มเพื่อแบ่งหน้าที่และตั้งเป้าหมาย',primary:'E',secondary:'S'},
+      {t:'คิดคอนเซ็ปต์ให้แหวกแนว นำเสนอแบบแปลกใหม่ไม่ซ้ำใคร',primary:'A',secondary:'I'},
+      {t:'รวบรวมตัวอย่างโครงงานปีก่อนๆ มาจัดระเบียบและทำตามขั้นตอน',primary:'C',secondary:'I'},
+    ]},
+  {id:'I07',type:'situational',text:'มีข่าววิทยาศาสตร์หรือสุขภาพที่เป็นกระแสไวรัลในโซเชียล สิ่งแรกที่คุณทำคือ?',
+    options:[
+      {t:'ค้นหาแหล่งที่มา งานวิจัยอ้างอิง และตรวจความน่าเชื่อถือ',primary:'I',secondary:'C'},
+      {t:'แชร์ต่อให้เพื่อนหรือคนในครอบครัวระวังตัวทันที',primary:'S',secondary:'E'},
+      {t:'โพสต์ตั้งคำถามเปิดประเด็นชวนถกเถียงในกลุ่มเพื่อน',primary:'E',secondary:'I'},
+      {t:'เลื่อนผ่านไป เพราะไม่ชอบอ่านข้อมูลยาวๆ',primary:'R',secondary:null},
+    ]},
+  {id:'I08',type:'situational',text:'สมาชิกในกลุ่มโครงงานมีความเห็นแย้งกันเรื่องวิธีทดลอง คุณจะจัดการอย่างไร?',
+    options:[
+      {t:'รวบรวมข้อมูลเชิงประจักษ์ ทำการทดลองซ้ำเพื่อพิสูจน์ด้วยหลักฐาน',primary:'I',secondary:'R'},
+      {t:'เป็นคนกลางเปิดวงรับฟังความรู้สึกของแต่ละฝ่ายเพื่อหาจุดร่วม',primary:'S',secondary:'E'},
+      {t:'โน้มน้าวให้ทุกคนโหวตเลือกแนวทางที่มีโอกาสสำเร็จสูงสุด',primary:'E',secondary:'C'},
+      {t:'สรุปข้อดี-ข้อเสียของแต่ละวิธีลงตารางเทียบกันอย่างละเอียด',primary:'C',secondary:'I'},
+    ]},
+  {id:'I09',type:'sub',pair:['I','C'],text:'ในการทำแล็บทดลองทางวิทยาศาสตร์ ขั้นตอนที่คุณรู้สึกตื่นเต้นที่สุดคืออะไร?',
+    options:[
+      {t:'การวิเคราะห์หาสาเหตุเมื่อผลการทดลองออกมาไม่ตรงตามทฤษฎี',dim:'I'},
+      {t:'การควบคุมขั้นตอน ตัวแปร และการจดบันทึกตัวเลขอย่างแม่นยำ',dim:'C'},
+    ]},
+  {id:'I10',type:'sub',pair:['I','S'],text:'ถ้าต้องการแก้ปัญหาความเครียดของเพื่อนๆ ในโรงเรียน คุณอยากทำอะไรมากกว่า?',
+    options:[
+      {t:'ทำแบบสำรวจ รวบรวมสถิติ เพื่อวิเคราะห์ปัจจัยต้นตอของความเครียด',dim:'I'},
+      {t:'เปิดพื้นที่รับฟังปัญหา ให้คำปรึกษา และจัดกิจกรรมบำบัดใจ',dim:'S'},
+    ]},
+
+  // ===== A: Artistic =====
+  {id:'A01',type:'likert',dim:'A',text:'ชอบสื่อสารความคิด ความรู้สึก หรือเรื่องราวออกมาผ่านภาพ ดนตรี หรืองานเขียน'},
+  {id:'A02',type:'likert',dim:'A',text:'ชอบทำงานที่มีอิสระทางความคิด และอึดอัดเวลาต้องทำตามกฎเกณฑ์ตายตัว'},
+  {id:'A03',type:'likert',dim:'A',text:'มักสังเกตเห็นคู่สี การจัดวาง องค์ประกอบศิลป์ และดีไซน์ของสิ่งรอบตัวเสมอ'},
+  {id:'A04',type:'likert',dim:'A',text:'สนุกกับการคิดไอเดียแปลกใหม่ที่ไม่ซ้ำใคร แม้คนส่วนใหญ่จะมองว่าหลุดกรอบ'},
+  {id:'A05',type:'likert',dim:'A',text:'ชอบแต่งรูป ตัดต่อคลิป คุมโทนสตอรี่ หรือจัดตกแต่งพื้นที่ส่วนตัวให้มีเอกลักษณ์'},
+  {id:'A06',type:'situational',text:'กลุ่มของคุณต้องจัดบอร์ดนิทรรศการวิชาการ หน้าที่ที่คุณอยากทำมากที่สุดคือ?',
+    options:[
+      {t:'ออกแบบธีม จัดเลย์เอาต์ วาดภาพประกอบ และเลือกโทนสี',primary:'A',secondary:'R'},
+      {t:'เขียนเรียบเรียงเนื้อหาวิชาการให้กระชับ ถูกต้องตามหลักการ',primary:'I',secondary:'C'},
+      {t:'ยืนบรรยายนำเสนอเนื้อหาและตอบคำถามคนที่เดินผ่านไปมา',primary:'E',secondary:'S'},
+      {t:'จัดซื้ออุปกรณ์และตรวจเช็กขนาดบอร์ดให้ตรงตามระเบียบ',primary:'C',secondary:'R'},
+    ]},
+  {id:'A07',type:'situational',text:'ถ้าได้ทำช่อง TikTok / YouTube ร่วมกับเพื่อน คุณอยากรับผิดชอบบทบาทไหน?',
+    options:[
+      {t:'คิดคอนเซ็ปต์ เขียนสตอรี่บอร์ด ถ่ายทำ และตัดต่อวิดีโอ',primary:'A',secondary:'R'},
+      {t:'วิเคราะห์อัลกอริทึม ยอดวิว และกลุ่มคนดูเพื่อปรับปรุงสถิติ',primary:'I',secondary:'E'},
+      {t:'เป็นพิธีกรหลักหน้ากล้อง พูดคุยสร้างความสนุกสนาน',primary:'E',secondary:'S'},
+      {t:'ติดต่อสปอนเซอร์ จัดการคิวงาน และดูแลตารางการลงคลิป',primary:'C',secondary:'E'},
+    ]},
+  {id:'A08',type:'situational',text:'ในการแต่งห้องนอนหรือโต๊ะอ่านหนังสือ สิ่งที่คุณให้ความสำคัญมากที่สุดคือ?',
+    options:[
+      {t:'สไตล์ บรรยากาศ (Vibe) แสงไฟ และของสะสมที่บ่งบอกตัวเรา',primary:'A',secondary:'R'},
+      {t:'ความเป็นระเบียบ การจัดหมวดหมู่หนังสือ และหยิบใช้งานสะดวก',primary:'C',secondary:'R'},
+      {t:'ประสิทธิภาพการใช้งาน ความเงียบ และแสงสว่างที่เหมาะกับการโฟกัส',primary:'I',secondary:'C'},
+      {t:'พื้นที่ที่กว้างพอสำหรับชวนเพื่อนมานั่งติวหนังสือด้วยกัน',primary:'S',secondary:'E'},
+    ]},
+  {id:'A09',type:'sub',pair:['A','E'],text:'เวลาออกแบบโปสเตอร์โปรโมตงานโรงเรียน คุณโฟกัสกับเป้าหมายใดมากกว่า?',
+    options:[
+      {t:'ความสวยงาม เอกลักษณ์ทางศิลปะ และพลังในการสื่ออารมณ์',dim:'A'},
+      {t:'ความชัดเจนของการขาย ข้อความกระตุ้นให้คนตัดสินใจมาร่วมงาน',dim:'E'},
+    ]},
+  {id:'A10',type:'sub',pair:['A','S'],text:'ในการซ้อมละครเวทีของโรงเรียน คุณมีความสุขกับบทบาทไหนมากกว่า?',
+    options:[
+      {t:'การถ่ายทอดบทบาท อินเนอร์ตัวละคร และการแสดงออกทางศิลปะ',dim:'A'},
+      {t:'การดูแลความรู้สึกของเพื่อนๆ ในกอง ช่วยประสานรอยต่อให้ทุกคนทำงานสุขใจ',dim:'S'},
+    ]},
+
+  // ===== S: Social =====
+  {id:'S01',type:'likert',dim:'S',text:'รู้สึกมีความสุขและภูมิใจเมื่อได้ช่วยติวหนังสือจนเพื่อนเข้าใจและสอบผ่าน'},
+  {id:'S02',type:'likert',dim:'S',text:'มักเป็นคนที่เพื่อนๆ ไว้วางใจเข้ามาเล่าเรื่องส่วนตัวหรือปรึกษาปัญหาชีวิต'},
+  {id:'S03',type:'likert',dim:'S',text:'สนใจเข้าร่วมกิจกรรมค่ายอาสา พัฒนาโรงเรียน หรือกิจกรรมช่วยเหลือสังคม'},
+  {id:'S04',type:'likert',dim:'S',text:'สังเกตและเข้าใจความรู้สึกของคนรอบข้างได้ไว แม้เขาไม่ได้พูดออกมาตรงๆ'},
+  {id:'S05',type:'likert',dim:'S',text:'ชอบการทำงานร่วมกับผู้อื่นเป็นทีม มากกว่าการนั่งทำงานคนเดียวเงียบๆ'},
+  {id:'S06',type:'situational',text:'ในการทำงานกลุ่ม มีเพื่อนคนหนึ่งเงียบ ไม่กล้าพูด คุณจะทำอย่างไร?',
+    options:[
+      {t:'ชวนคุยเดี่ยวๆ ค่อยๆ ถามความเห็น และสนับสนุนให้เขากล้าแชร์',primary:'S',secondary:'E'},
+      {t:'แจกจ่ายงานย่อยที่ชัดเจนให้เขาไปทำตามหน้าที่',primary:'C',secondary:'R'},
+      {t:'ดำเนินการประชุมต่อไปเพื่อรักษาเวลาของส่วนรวม',primary:'E',secondary:'C'},
+      {t:'เสนอไอเดียสร้างสรรค์ใหม่ๆ ให้บรรยากาศสนุกขึ้น',primary:'A',secondary:'S'},
+    ]},
+  {id:'S07',type:'situational',text:'ในค่ายปฐมนิเทศต้อนรับน้อง ม.4 เข้าใหม่ คุณอยากทำหน้าที่ไหนมากที่สุด?',
+    options:[
+      {t:'พี่เลี้ยงประจำกลุ่ม คอยดูแล ให้คำแนะนำ และชวนน้องทำความรู้จักกัน',primary:'S',secondary:'E'},
+      {t:'ฝ่ายสันทนาการ เต้น ร้องเพลง สร้างความบันเทิงบนเวที',primary:'A',secondary:'E'},
+      {t:'ประธานค่าย ควบคุมภาพรวมและประสานงานอาจารย์',primary:'E',secondary:'C'},
+      {t:'ฝ่ายทะเบียนและเอกสาร เช็กชื่อและจัดการตารางเวลา',primary:'C',secondary:'I'},
+    ]},
+  {id:'S08',type:'situational',text:'เมื่อเพื่อนสนิทสองคนในกลุ่มทะเลาะกันอย่างรุนแรง คุณมักจะทำอย่างไร?',
+    options:[
+      {t:'รับฟังความรู้สึกของทั้งสองฝ่ายอย่างเป็นกลาง และช่วยปรับความเข้าใจ',primary:'S',secondary:'I'},
+      {t:'วิเคราะห์หาเหตุผลว่าใครถูกใครผิดตามหลักฐานข้อเท็จจริง',primary:'I',secondary:'C'},
+      {t:'ตัดสินใจเด็ดขาดเพื่อไม่ให้บรรยากาศกลุ่มเสีย',primary:'E',secondary:'C'},
+      {t:'เบี่ยงเบนความสนใจ ชวนไปทำกิจกรรมผ่อนคลายอารมณ์',primary:'A',secondary:'S'},
+    ]},
+  {id:'S09',type:'sub',pair:['S','E'],text:'ในการจัดกิจกรรมระดมทุนช่วยสุนัขจรจัด คุณอยากทำสิ่งใดมากกว่า?',
+    options:[
+      {t:'พูดคุย ดูแล สร้างกำลังใจ และให้ข้อมูลเชิงลึกกับผู้ร่วมบริจาค',dim:'S'},
+      {t:'วางกลยุทธ์การขาย โน้มน้าว และตั้งเป้ายอดเงินบริจาคให้ได้สูงสุด',dim:'E'},
+    ]},
+  {id:'S10',type:'sub',pair:['S','I'],text:'หากต้องเลือกหัวข้อสัมมนาวิชาการ คุณอยากฟังเรื่องไหนมากกว่า?',
+    options:[
+      {t:'เทคนิคจิตวิทยาการสื่อสารเพื่อสร้างความเข้าใจและเยียวยาจิตใจ',dim:'S'},
+      {t:'ผลการวิจัยกลไกการทำงานของสมองและสารสื่อประสาท',dim:'I'},
+    ]},
+
+  // ===== E: Enterprising =====
+  {id:'E01',type:'likert',dim:'E',text:'สนุกกับการพูดคุย โน้มน้าว ชักจูง ให้คนอื่นเห็นคล้อยตามแนวคิดของเรา'},
+  {id:'E02',type:'likert',dim:'E',text:'ชอบการแข่งขัน และรู้สึกตื่นเต้นเมื่อได้ตั้งเป้าหมายที่ท้าทายแล้วทำได้สำเร็จ'},
+  {id:'E03',type:'likert',dim:'E',text:'มั่นใจและกล้าพูดแสดงความคิดเห็นหรือนำเสนองานต่อหน้าคนกลุ่มใหญ่'},
+  {id:'E04',type:'likert',dim:'E',text:'ชอบมองหาโอกาสใหม่ๆ หรือคิดไอเดียหารายได้จากกิจกรรมและสิ่งรอบตัว'},
+  {id:'E05',type:'likert',dim:'E',text:'มักได้รับเลือกหรือเต็มใจเสนอตัวเป็นหัวหน้ากลุ่มหรือผู้นำกิจกรรมอยู่เสมอ'},
+  {id:'E06',type:'situational',text:'โรงเรียนเปิดโอกาสให้เปิดบูทขายของในงานประจำปี คุณจะเลือกทำอะไร?',
+    options:[
+      {t:'วางแผนโปรโมต จัดโปรโมชัน เรียกลูกค้า และเจรจาปิดการขาย',primary:'E',secondary:'S'},
+      {t:'คำนวณต้นทุน บันทึกสต็อกสินค้า และสรุปยอดกำไร-ขาดทุน',primary:'C',secondary:'I'},
+      {t:'คิดสูตรสินค้า ทำแพ็กเกจจิ้ง และตกแต่งหน้าร้านให้สวยงาม',primary:'A',secondary:'R'},
+      {t:'ลงมือทำอาหาร ขนย้ายของ และจัดเตรียมอุปกรณ์หน้าร้าน',primary:'R',secondary:'C'},
+    ]},
+  {id:'E07',type:'situational',text:'ในการประกวดโครงงาน ถ้าเวลาเหลือน้อยและสมาชิกเริ่มถอดใจ คุณจะทำอย่างไร?',
+    options:[
+      {t:'ปลุกพลังทีม ปรับแผนด่วน ตัดสิ่งที่ไม่จำเป็นเพื่อมุ่งเป้าชนะ',primary:'E',secondary:'S'},
+      {t:'นั่งคุยรับฟังความเหนื่อยล้าของทุกคนแล้วช่วยกันทำต่อทีละนิด',primary:'S',secondary:'A'},
+      {t:'วิเคราะห์จุดบกพร่องและแก้ไขส่วนที่กระทบผลคะแนนมากที่สุด',primary:'I',secondary:'C'},
+      {t:'ตรวจสอบเกณฑ์การให้คะแนนอย่างละเอียดเพื่อให้ไม่โดนหักคะแนน',primary:'C',secondary:'I'},
+    ]},
+  {id:'E08',type:'situational',text:'มีโอกาส 3 นาทีเพื่อขอสปอนเซอร์จากร้านค้าแถวโรงเรียนมาสนับสนุนงานชมรม คุณจะทำอย่างไร?',
+    options:[
+      {t:'นำเสนอผลประโยชน์ที่ร้านค้าจะได้รับและจุดเด่นของงานอย่างมั่นใจ',primary:'E',secondary:'S'},
+      {t:'เตรียมเอกสารแจกแจงงบประมาณและโครงการอย่างเป็นระเบียบ',primary:'C',secondary:'I'},
+      {t:'เล่าเรื่องราวความตั้งใจของน้องๆ เพื่อขอความเห็นใจและการสนับสนุน',primary:'S',secondary:'A'},
+      {t:'นำเสนอดีไซน์สื่อและจุดวางโลโก้ที่สวยงามสะดุดตา',primary:'A',secondary:'E'},
+    ]},
+  {id:'E09',type:'sub',pair:['E','C'],text:'ในการบริหารจัดการร้านค้าสหกรณ์ของโรงเรียน คุณอยากรับผิดชอบงานส่วนไหน?',
+    options:[
+      {t:'วางกลยุทธ์การขาย คัดเลือกสินค้าใหม่ๆ มาลง และขยายฐานลูกค้า',dim:'E'},
+      {t:'ตรวจนับสต็อก บันทึกบัญชีรายรับ-รายจ่าย และจัดเก็บใบเสร็จ',dim:'C'},
+    ]},
+  {id:'E10',type:'sub',pair:['E','R'],text:'ถ้าต้องการสร้างสิ่งประดิษฐ์ขึ้นมาขาย บทบาทที่คุณอยากทำมากที่สุดคือ?',
+    options:[
+      {t:'การหาช่องทางจัดจำหน่าย ตั้งราคา และพิทชิ่งเสนอขายกับลูกค้า',dim:'E'},
+      {t:'การลงมือออกแบบกลไก ต่อวงจร และประกอบชิ้นงานต้นแบบ',dim:'R'},
+    ]},
+
+  // ===== C: Conventional =====
+  {id:'C01',type:'likert',dim:'C',text:'ชอบจัดระเบียบตารางเวลา โฟลเดอร์ในคอมพิวเตอร์ หรือสมุดโน้ตให้เป็นหมวดหมู่'},
+  {id:'C02',type:'likert',dim:'C',text:'รู้สึกสบายใจและทำงานได้ดีเมื่อมีคู่มือ ขั้นตอน หรือกฎเกณฑ์ที่ระบุไว้ชัดเจน'},
+  {id:'C03',type:'likert',dim:'C',text:'รอบคอบ ช่างสังเกต และมักมองเห็นจุดผิดพลาด คำสะกดผิด หรือตัวเลขที่ตกหล่น'},
+  {id:'C04',type:'likert',dim:'C',text:'ชอบการจดบันทึกรายรับ-รายจ่ายส่วนตัว หรือการจัดสรรงบประมาณอย่างเป็นระบบ'},
+  {id:'C05',type:'likert',dim:'C',text:'ให้ความสำคัญกับความแม่นยำ ความถูกต้องตามระเบียบ และการส่งงานตรงเวลาเป๊ะ'},
+  {id:'C06',type:'situational',text:'ได้รับมอบหมายให้เป็นเหรัญญิกดูแลเงินห้อง คุณจะจัดการอย่างไร?',
+    options:[
+      {t:'ทำบัญชี Google Sheets แจกแจงทุกบาท พร้อมเก็บใบเสร็จอย่างเป็นระบบ',primary:'C',secondary:'I'},
+      {t:'คิดโปรโมชันชวนเพื่อนๆ จ่ายเงินห้องให้ครบตามกำหนด',primary:'E',secondary:'S'},
+      {t:'จัดทำกราฟิกสรุปยอดเงินสวยๆ แปะแจ้งในกลุ่มไลน์ห้อง',primary:'A',secondary:'C'},
+      {t:'คอยเตือนเพื่อนอย่างประนีประนอม เข้าใจคนที่มีปัญหาทางการเงิน',primary:'S',secondary:'C'},
+    ]},
+  {id:'C07',type:'situational',text:'ช่วงสัปดาห์ก่อนสอบปลายภาค วิธีการเตรียมตัวของคุณเป็นอย่างไร?',
+    options:[
+      {t:'ทำตารางเวลาอ่านหนังสือเป๊ะๆ ลิสต์หัวข้อที่ต้องเก็บและติ๊กตามแผน',primary:'C',secondary:'I'},
+      {t:'ชวนกลุ่มเพื่อนมานั่งติว สรุป และผลัดกันอธิบายเนื้อหา',primary:'S',secondary:'E'},
+      {t:'สรุปเนื้อหาเป็น Mind Map วาดรูป ใช้ปากกาหลากสี',primary:'A',secondary:'I'},
+      {t:'อ่านเจาะลึกเฉพาะหัวข้อยากๆ ที่ต้องใช้การคิดวิเคราะห์ซับซ้อน',primary:'I',secondary:'C'},
+    ]},
+  {id:'C08',type:'situational',text:'ไฟล์งานกลุ่มใน Google Drive กระจัดกระจายและตั้งชื่อมั่ว คุณจะทำอย่างไร?',
+    options:[
+      {t:'สร้างโฟลเดอร์แยกหมวดหมู่ ตั้งชื่อไฟล์ใหม่ตามเวอร์ชันและวันที่',primary:'C',secondary:'R'},
+      {t:'ทักบอกในกลุ่มแชตให้เพื่อนที่เป็นคนทำไฟล์เข้าไปจัดให้เรียบร้อย',primary:'E',secondary:'S'},
+      {t:'ช่างมัน ตราบใดที่ยังกดค้นหาและเปิดไฟล์ขึ้นมาทำงานได้',primary:'R',secondary:'A'},
+      {t:'ออกแบบหน้าสารบัญรวมลิงก์ไฟล์ให้ดูสวยงามเข้าถึงง่าย',primary:'A',secondary:'C'},
+    ]},
+  {id:'C09',type:'sub',pair:['C','I'],text:'ในการทำรายงานวิชาการ สิ่งที่คุณให้ความใส่ใจมากเป็นพิเศษคืออะไร?',
+    options:[
+      {t:'การจัดฟอร์แมต ฟอนต์ การเว้นวรรค และรูปแบบการอ้างอิงที่ถูกต้องตามระเบียบ',dim:'C'},
+      {t:'ความลึกซึ้งของเนื้อหา ทฤษฎี และข้อถกเถียงทางวิชาการ',dim:'I'},
+    ]},
+  {id:'C10',type:'sub',pair:['C','A'],text:'เมื่อต้องจัดทำงานเอกสารเสนอครู คุณเลือกโฟกัสสิ่งใดมากกว่า?',
+    options:[
+      {t:'ความเป็นระเบียบ เรียบร้อย ถูกต้องตามโครงสร้างและไม่มีข้อผิดพลาด',dim:'C'},
+      {t:'ความคิดสร้างสรรค์ เลย์เอาต์ที่แปลกใหม่สะดุดตา และมีสไตล์เฉพาะตัว',dim:'A'},
+    ]},
+];
+
+const DIMS = ['R','I','A','S','E','C'];
+const DIM_INFO = {
+  R:{name:'Realistic',th:'ปฏิบัติการ/ลงมือทำ',color:'var(--R)',emo:'🔧'},
+  I:{name:'Investigative',th:'ช่างคิด/วิเคราะห์',color:'var(--I)',emo:'🔬'},
+  A:{name:'Artistic',th:'สร้างสรรค์/ศิลปะ',color:'var(--A)',emo:'🎨'},
+  S:{name:'Social',th:'ช่วยเหลือ/สังคม',color:'var(--S)',emo:'🤝'},
+  E:{name:'Enterprising',th:'บริหาร/โน้มน้าว',color:'var(--E)',emo:'📣'},
+  C:{name:'Conventional',th:'จัดการ/ระเบียบ',color:'var(--C)',emo:'📊'},
+};
+
+/* ===== ฐานข้อมูลสายการเรียน (แผนการเรียน ม.ปลาย) ผูกกับ RIASEC ===== */
+const TRACKS = [
+  {name:'วิทย์-คณิต (Science-Math)',code:['I','R'],icon:'🔬',
+   why:'เหมาะกับคนที่ชอบตั้งคำถาม วิเคราะห์เหตุผล และได้ลงมือทดลองจริง',
+   focus:'ฟิสิกส์ · เคมี · ชีววิทยา · คณิตศาสตร์',
+   next:'วิศวกรรมศาสตร์, วิทยาศาสตร์, แพทยศาสตร์, เทคโนโลยีสารสนเทศ'},
+  {name:'ศิลป์-คำนวณ (Arts-Math)',code:['C','E'],icon:'📊',
+   why:'เหมาะกับคนที่จัดการตัวเลขเป็นระบบ และสนใจการบริหารหรือธุรกิจ',
+   focus:'คณิตศาสตร์ · ภาษาอังกฤษ · สังคมศึกษา',
+   next:'บริหารธุรกิจ, บัญชี, เศรษฐศาสตร์, การเงิน'},
+  {name:'ศิลป์-ภาษา (Arts-Language)',code:['S','A'],icon:'🗣️',
+   why:'เหมาะกับคนที่สื่อสารเก่ง เข้าใจผู้คน และชอบงานที่ใช้ภาษา',
+   focus:'ภาษาอังกฤษ · ภาษาที่สาม · สังคมศึกษา',
+   next:'อักษรศาสตร์, นิเทศศาสตร์, ครุศาสตร์, ความสัมพันธ์ระหว่างประเทศ'},
+  {name:'ศิลป์-สังคม (Arts-Social)',code:['S','E'],icon:'🤝',
+   why:'เหมาะกับคนที่สนใจสังคม กฎหมาย และการทำงานกับผู้คน',
+   focus:'สังคมศึกษา · ภาษาไทย · ภาษาอังกฤษ',
+   next:'นิติศาสตร์, รัฐศาสตร์, จิตวิทยา, สังคมสงเคราะห์'},
+  {name:'ศิลป์-ออกแบบ / สายศิลปะ',code:['A','R'],icon:'🎨',
+   why:'เหมาะกับคนที่มีความคิดสร้างสรรค์ และชอบถ่ายทอดผ่านงานภาพหรือสื่อ',
+   focus:'ศิลปะ · การออกแบบ · การสร้างพอร์ตโฟลิโอ',
+   next:'สถาปัตยกรรม, มัณฑนศิลป์, นิเทศศิลป์, ดิจิทัลมีเดีย'},
+  {name:'สายอาชีวะ / ทวิศึกษา (เทคนิค)',code:['R','C'],icon:'🔧',
+   why:'เหมาะกับคนที่เรียนรู้ได้ดีจากการลงมือทำจริง มากกว่าการนั่งอ่านทฤษฎี',
+   focus:'ช่างอุตสาหกรรม · เทคโนโลยี · การปฏิบัติงานจริง',
+   next:'ปวช./ปวส. สายช่าง, เทคโนโลยีอุตสาหกรรม, ต่อยอด ป.ตรี สายเทคนิค'},
+];
+
+/* ===== ฐานข้อมูลคณะ/สายอาชีพ ผูกกับ Holland Code 2-3 ตัวอักษร ===== */
+const FACULTIES = [
+  // ---- สายสังคม / จิตวิทยา / การศึกษา ----
+  {name:'คณะจิตวิทยา / จิตวิทยาการปรึกษา',code:['S','I'],icon:'🧠',
+   fit:'คนที่สังเกตความรู้สึกคนอื่นได้ไว ชอบรับฟัง และอยากเข้าใจว่าทำไมคนถึงคิดหรือทำแบบนั้น',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.เกษตรศาสตร์, ม.เชียงใหม่',
+   careers:'นักจิตวิทยา, นักพัฒนาทรัพยากรบุคคล (HRD), ที่ปรึกษาแนะแนว'},
+  {name:'คณะครุศาสตร์ / ศึกษาศาสตร์',code:['S','A'],icon:'👩‍🏫',
+   fit:'คนที่มีความสุขเวลาสอนแล้วคนอื่นเข้าใจ และชอบคิดวิธีอธิบายเรื่องยากให้ง่าย',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ศรีนครินทรวิโรฒ, ม.เชียงใหม่',
+   careers:'ครู, นักออกแบบหลักสูตร, นักการศึกษา'},
+  {name:'คณะรัฐศาสตร์ / สังคมสงเคราะห์',code:['S','E','I'],icon:'🏛️',
+   fit:'คนที่สนใจปัญหาสังคม อยากมีส่วนเปลี่ยนแปลง และทำงานกับผู้คนได้ดี',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.รามคำแหง',
+   careers:'ข้าราชการ, นักพัฒนาสังคม, นักวิเคราะห์นโยบาย, งานองค์กรระหว่างประเทศ'},
+  {name:'คณะนิติศาสตร์',code:['E','I','C'],icon:'⚖️',
+   fit:'คนที่ชอบอ่านเยอะ จับประเด็นเก่ง โต้แย้งด้วยเหตุผล และให้ความสำคัญกับความถูกต้อง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.รามคำแหง',
+   careers:'ทนายความ, ผู้พิพากษา, อัยการ, นิติกรองค์กร'},
+
+  // ---- สายสุขภาพ ----
+  {name:'คณะแพทยศาสตร์',code:['I','S','R'],icon:'🩺',
+   fit:'คนที่ชอบวิเคราะห์หาสาเหตุอย่างเป็นระบบ อดทนกับการเรียนยาว และอยากช่วยคนโดยตรง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.มหิดล, ม.เชียงใหม่, ม.ขอนแก่น',
+   careers:'แพทย์เฉพาะทาง, แพทย์เวชปฏิบัติทั่วไป, นักวิจัยทางการแพทย์'},
+  {name:'คณะพยาบาลศาสตร์',code:['S','I','R'],icon:'💉',
+   fit:'คนที่ดูแลคนอื่นได้ดี ทำงานเป็นทีมเก่ง และรับมือกับสถานการณ์กดดันได้',
+   unis:'ม.มหิดล, จุฬาลงกรณ์มหาวิทยาลัย, ม.เชียงใหม่, วิทยาลัยพยาบาลในสังกัด สธ.',
+   careers:'พยาบาลวิชาชีพ, พยาบาลเฉพาะทาง, พยาบาลชุมชน'},
+  {name:'คณะเภสัชศาสตร์',code:['I','C','S'],icon:'💊',
+   fit:'คนที่ละเอียดรอบคอบกับตัวเลขและรายละเอียด ชอบเคมี และใส่ใจความแม่นยำสูง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.มหิดล, ม.ศิลปากร, ม.ขอนแก่น',
+   careers:'เภสัชกรโรงพยาบาล, เภสัชกรชุมชน, งานวิจัยและพัฒนายา'},
+  {name:'คณะเทคนิคการแพทย์ / สหเวชศาสตร์',code:['I','C','R'],icon:'🔬',
+   fit:'คนที่ชอบงานแล็บ วิเคราะห์ผลตรวจ และทำงานกับเครื่องมือที่ต้องการความแม่นยำ',
+   unis:'ม.มหิดล, จุฬาลงกรณ์มหาวิทยาลัย, ม.เชียงใหม่, ม.ธรรมศาสตร์',
+   careers:'นักเทคนิคการแพทย์, นักกายภาพบำบัด, นักรังสีเทคนิค'},
+
+  // ---- สายวิศวกรรม / เทคโนโลยี ----
+  {name:'คณะวิศวกรรมศาสตร์ / วิศวกรรมเครื่องกล',code:['R','I'],icon:'⚙️',
+   fit:'คนที่ชอบรื้อดูว่าของทำงานยังไง และสนุกกับการสร้างสิ่งที่ใช้งานได้จริง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, มจธ., ม.เกษตรศาสตร์, สจล.',
+   careers:'วิศวกรเครื่องกล, วิศวกรภาคสนาม, นักออกแบบผลิตภัณฑ์'},
+  {name:'คณะวิศวกรรมคอมพิวเตอร์ / วิทยาการข้อมูล',code:['I','R','C'],icon:'💻',
+   fit:'คนที่ชอบแก้โจทย์ตรรกะ อดทนกับการหาบั๊ก และสนใจว่าข้อมูลบอกอะไรเราได้บ้าง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, มจธ., สจล., ม.เกษตรศาสตร์',
+   careers:'วิศวกรซอฟต์แวร์, นักวิทยาศาสตร์ข้อมูล, วิศวกร AI/ML'},
+  {name:'คณะเทคโนโลยีสารสนเทศ / นวัตกรรมดิจิทัล',code:['I','C','E'],icon:'🖥️',
+   fit:'คนที่อยู่ตรงกลางระหว่างเทคโนโลยีกับธุรกิจ ชอบทั้งระบบและการทำงานกับคน',
+   unis:'สจล., มจธ., ม.มหิดล, ม.ธรรมศาสตร์',
+   careers:'Product Owner, IT Business Analyst, นักพัฒนาระบบ'},
+
+  // ---- สายศิลปะ / ออกแบบ / สื่อ ----
+  {name:'คณะสถาปัตยกรรมศาสตร์',code:['A','I','R'],icon:'📐',
+   fit:'คนที่คิดเป็นภาพสามมิติ ชอบทั้งความสวยงามและการคำนวณให้สร้างได้จริง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ศิลปากร, สจล., มจธ.',
+   careers:'สถาปนิก, นักออกแบบภายใน, ภูมิสถาปนิก'},
+  {name:'คณะศิลปกรรมศาสตร์ / นิเทศศิลป์',code:['A','R'],icon:'🎨',
+   fit:'คนที่สื่อสารผ่านภาพได้ดีกว่าคำพูด และมีสไตล์เป็นของตัวเอง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ศิลปากร, ม.กรุงเทพ',
+   careers:'นักออกแบบกราฟิก, ศิลปิน, ครีเอทีฟไดเรกเตอร์'},
+  {name:'คณะดิจิทัลมีเดียและการออกแบบ',code:['A','I','R'],icon:'🎬',
+   fit:'คนที่ชอบทำคลิป ตัดต่อ เล่าเรื่องด้วยสื่อ และสนใจเทคโนโลยีการผลิตงาน',
+   unis:'ม.ศิลปากร, ม.กรุงเทพ, ม.รังสิต, สจล.',
+   careers:'Motion Designer, UX/UI Designer, Game Artist, ผู้กำกับสื่อดิจิทัล'},
+  {name:'คณะนิเทศศาสตร์ / วารสารศาสตร์',code:['E','S','A'],icon:'📣',
+   fit:'คนที่กล้าพูด เล่าเรื่องเก่ง และอยากทำงานที่ได้เจอผู้คนหลากหลาย',
+   unis:'ม.ธรรมศาสตร์, จุฬาลงกรณ์มหาวิทยาลัย, ม.กรุงเทพ',
+   careers:'นักวางแผนกลยุทธ์สื่อ, นักสื่อสารองค์กร (PR), คอนเทนต์ครีเอเตอร์'},
+  {name:'คณะอักษรศาสตร์ / มนุษยศาสตร์',code:['A','S','I'],icon:'📖',
+   fit:'คนที่รักการอ่านและภาษา สนใจวัฒนธรรม และชอบตีความความหมายเบื้องหลัง',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.เกษตรศาสตร์',
+   careers:'นักแปล, บรรณาธิการ, นักเขียน, งานวิเทศสัมพันธ์'},
+
+  // ---- สายบริหาร / ตัวเลข ----
+  {name:'คณะบริหารธุรกิจ / การตลาด',code:['E','C'],icon:'📈',
+   fit:'คนที่ชอบมองหาโอกาส กล้าเสนอไอเดีย และสนุกกับการโน้มน้าวคน',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.มหิดล, ม.เกษตรศาสตร์',
+   careers:'นักการตลาด, ผู้ประกอบการ, นักวิเคราะห์ธุรกิจ'},
+  {name:'คณะบัญชี / การเงิน',code:['C','I'],icon:'🧾',
+   fit:'คนที่เป็นระเบียบ มองเห็นตัวเลขที่ผิดพลาด และสบายใจกับงานที่มีกฎเกณฑ์ชัด',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.ธรรมศาสตร์, ม.เกษตรศาสตร์',
+   careers:'นักบัญชี, นักวางแผนการเงิน, ผู้สอบบัญชี'},
+
+  // ---- สายลงมือทำ / ภาคสนาม ----
+  {name:'คณะเกษตรศาสตร์ / วนศาสตร์',code:['R','I','S'],icon:'🌱',
+   fit:'คนที่ชอบอยู่กลางแจ้ง สนใจธรรมชาติ และอยากเห็นผลจากสิ่งที่ลงมือทำเอง',
+   unis:'ม.เกษตรศาสตร์, ม.เชียงใหม่, ม.ขอนแก่น, ม.แม่โจ้',
+   careers:'นักวิชาการเกษตร, นักวิจัยพืช/สัตว์, ผู้ประกอบการเกษตรสมัยใหม่'},
+  {name:'คณะวิทยาศาสตร์การกีฬา / พลศึกษา',code:['R','S','E'],icon:'🏃',
+   fit:'คนที่ชอบเคลื่อนไหว สนใจร่างกายมนุษย์ และอยากช่วยให้คนอื่นแข็งแรงขึ้น',
+   unis:'จุฬาลงกรณ์มหาวิทยาลัย, ม.เกษตรศาสตร์, ม.มหิดล, ม.การกีฬาแห่งชาติ',
+   careers:'นักวิทยาศาสตร์การกีฬา, โค้ช, ผู้ฝึกสอนส่วนบุคคล, นักกายภาพการกีฬา'},
+];
+
+/* ============================================================================
+   STATE + LOCAL STORAGE
+   ============================================================================ */
+const LS_USER = 'cc_user';
+const LS_RESULT = 'cc_result';
+const LS_BOOKMARKS = 'cc_bookmarks';
+const LS_PROGRESS = 'cc_progress';   // คำตอบที่ทำค้างไว้ {answers, qIdx}
+let user = null;
+let answers = {};
+let qIdx = 0;
+let lastResult = null;
+
+function loadUser(){ try{ return JSON.parse(localStorage.getItem(LS_USER)); }catch(e){ return null; } }
+function saveUser(u){ localStorage.setItem(LS_USER, JSON.stringify(u)); }
+function loadResult(){ try{ return JSON.parse(localStorage.getItem(LS_RESULT)); }catch(e){ return null; } }
+function saveResult(r){ localStorage.setItem(LS_RESULT, JSON.stringify(r)); }
+function loadBookmarks(){ try{ return JSON.parse(localStorage.getItem(LS_BOOKMARKS))||[]; }catch(e){ return []; } }
+function saveBookmarks(b){ localStorage.setItem(LS_BOOKMARKS, JSON.stringify(b)); }
+function loadProgress(){ try{ return JSON.parse(localStorage.getItem(LS_PROGRESS)); }catch(e){ return null; } }
+/* Guest ไม่บันทึกถาวร — เหมือนผลการประเมิน */
+function saveProgress(){
+  if(!user || user.guest) return;
+  try{ localStorage.setItem(LS_PROGRESS, JSON.stringify({answers, qIdx})); }catch(e){}
+}
+function clearProgress(){ localStorage.removeItem(LS_PROGRESS); }
+
+/* ============================================================================
+   PAGE-001 : AUTH
+   ============================================================================ */
+function doLogin(){
+  const name = document.getElementById('in_name').value.trim();
+  const grade = document.querySelector('input[name="grade"]:checked').value;
+  const errEl = document.getElementById('authErr');
+  if(!name){
+    errEl.textContent = 'กรุณาใส่ชื่อเล่นก่อนนะ'; errEl.classList.add('show'); return;
+  }
+  errEl.classList.remove('show');
+  user = {name, grade, guest:false};
+  saveUser(user);
+  enterApp();
+}
+function doGuest(){
+  user = {name:'ผู้ทดลองใช้', grade:'-', guest:true};
+  enterApp();
+}
+
+function enterApp(){
+  document.getElementById('bottomnav').style.display='flex';
+  lastResult = user.guest ? null : loadResult();
+  const p = user.guest ? null : loadProgress();
+  if(p && p.answers){
+    answers = p.answers;
+    qIdx = Math.min(Math.max(0, p.qIdx|0), QUESTIONS.length-1);
+  }
+  renderDashboard();
+  goPage('dash');
+}
+
+/* ============================================================================
+   NAVIGATION
+   ============================================================================ */
+document.querySelectorAll('[data-go]').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    const target = btn.dataset.go;
+    if(target==='profile'){ showProfileModal(); return; }
+    goPage(target);
+  });
+});
+
+function goPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll(`[data-go="${name}"]`).forEach(b=>b.classList.add('on'));
+  if(name==='quiz') enterQuizPage();
+  if(name==='results') renderResults();
+  if(name==='explorer') renderExplorer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* เข้าหน้าควิซ: เริ่มใหม่ถ้ายังไม่เริ่ม (finishQuiz ล้างคำตอบแล้ว), ทำต่อถ้าค้างอยู่ */
+function enterQuizPage(){
+  if(Object.keys(answers).length === 0){
+    startQuiz();
+  } else {
+    renderQ();
+  }
+}
+
+function showProfileModal(){
+  openModal('👤', 'โปรไฟล์ของคุณ',
+    `ชื่อ: ${user.name}<br>ระดับชั้น: ${user.grade}` +
+    (user.guest ? '<br><br>⚠️ โหมด Guest — ผลจะไม่ถูกบันทึกถาวร' : '<br><br>💾 ข้อมูลบันทึกในเครื่องนี้แล้ว') +
+    `<br><br><button class="btn btn-line" style="font-size:13px;padding:9px 18px;" onclick="doLogout()">🚪 ออกจากระบบ</button>`);
+}
+
+function doLogout(){
+  openConfirm('🚪','ออกจากระบบ?',
+    'ข้อมูลที่บันทึกไว้ในเครื่องนี้ (ชื่อ ผลการประเมิน และคณะที่บันทึก) จะถูกลบทั้งหมด',
+    'ออกจากระบบ', confirmLogout);
+}
+
+function confirmLogout(){
+  localStorage.removeItem(LS_USER);
+  localStorage.removeItem(LS_RESULT);
+  localStorage.removeItem(LS_BOOKMARKS);
+  clearProgress();
+  user=null; answers={}; qIdx=0; lastResult=null;
+  closeModal();
+  document.getElementById('bottomnav').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-auth').classList.add('active');
+  document.getElementById('in_name').value='';
+}
+
+/* ============================================================================
+   PAGE-002 : DASHBOARD (Bento Grid)
+   ============================================================================ */
+function renderDashboard(){
+  document.getElementById('helloTxt').textContent =
+    `สวัสดีคุณ ${user.name}` + (user.grade!=='-' ? ` (${user.grade})` : '');
+  document.getElementById('statusTxt').textContent =
+    user.guest ? '🔓 โหมด Guest (ไม่บันทึกถาวร)' : (lastResult ? '💾 สถานะข้อมูล: บันทึกในเครื่องแล้ว' : '💾 ยังไม่มีผลบันทึก');
+
+  const scoreCard = document.getElementById('dashScoreCard');
+  const facultyCard = document.getElementById('dashFacultyCard');
+  const startBtn = document.getElementById('startQuizBtn');
+
+  const answered = Object.keys(answers).length;
+  const resumeTxt = `▶ ทำต่อ (ตอบแล้ว ${answered}/${QUESTIONS.length} ข้อ)`;
+  if(lastResult){
+    startBtn.textContent = answered ? resumeTxt : '↻ ทำแบบประเมินใหม่อีกครั้ง';
+    const sorted = Object.entries(lastResult.scores).sort((a,b)=>b[1]-a[1]);
+    const top3 = sorted.slice(0,3);
+    scoreCard.innerHTML = `
+      <h3>🎯 สรุปผล Holland Code</h3>
+      <div class="code-badge">
+        <div class="code">${top3.map(x=>x[0]).join(' - ')}</div>
+        <div class="sub">(${top3.map(x=>DIM_INFO[x[0]].name).join(' / ')})</div>
+      </div>
+      <div class="mini-radar" id="miniRadarHolder"></div>
+      <div class="score-inline">${sorted.map(([d,v])=>`<span style="color:${DIM_INFO[d].color}">${d}:${v}%</span>`).join('')}</div>
+      <div class="linkrow" style="text-align:center;"><button onclick="goPage('results')">ดูผลวิเคราะห์เต็ม →</button></div>
+    `;
+    drawRadar('miniRadarHolder', lastResult.scores, 130);
+
+    const matched = matchFaculties(lastResult.scores).slice(0,3);
+    facultyCard.innerHTML = `<h3>🎓 คณะแนะนำที่ตรงกับบุคลิกของคุณ</h3>` +
+      matched.map((f,i)=>`<div class="faculty-mini"><div class="rank">${i+1}</div><div class="nm">${f.name}</div><div class="mt">${f.match}%</div></div>`).join('') +
+      `<div class="linkrow"><button onclick="goPage('explorer')">ดูรายการคณะทั้งหมด →</button></div>`;
+  } else {
+    startBtn.textContent = answered ? resumeTxt : 'เริ่มทำแบบประเมิน →';
+    scoreCard.innerHTML = `<h3>🎯 สรุปผล Holland Code</h3><div class="empty-hint">ยังไม่มีผลการประเมิน — ลองทำแบบทดสอบดูก่อนนะ</div>`;
+    facultyCard.innerHTML = `<h3>🎓 คณะแนะนำที่ตรงกับบุคลิกของคุณ</h3><div class="empty-hint">ทำแบบประเมินให้เสร็จก่อน ระบบจะแนะนำคณะให้อัตโนมัติ</div>`;
+  }
+
+  renderBookmarksWidget();
+}
+
+function renderBookmarksWidget(){
+  const bm = loadBookmarks();
+  const listEl = document.getElementById('bmList');
+  const emptyEl = document.getElementById('bmEmpty');
+  if(bm.length===0){ emptyEl.style.display='block'; listEl.innerHTML=''; return; }
+  emptyEl.style.display='none';
+  listEl.innerHTML = bm.map(name=>`<div class="bm-item"><span class="star">⭐</span>${name}</div>`).join('');
+}
+
+/* ============================================================================
+   PAGE-003 : ASSESSMENT STUDIO — 60 ข้อ
+   ============================================================================ */
+function startQuiz(){
+  qIdx=0; answers={};
+  renderQ();
+}
+function exitQuiz(){ saveProgress(); renderDashboard(); goPage('dash'); }
+
+function renderQ(){
+  saveProgress();   // ทุกครั้งที่ตอบ/เลื่อนข้อ — ปิดแท็บกลางคันก็ไม่หาย
+  const q = QUESTIONS[qIdx];
+  const total = QUESTIONS.length;
+  document.getElementById('qProgress').textContent = `ข้อ ${qIdx+1} จาก ${total}`;
+  document.getElementById('qBar').style.width = (qIdx/total*100)+'%';
+  document.getElementById('qBack').disabled = (qIdx===0);
+
+  const dimForTag = q.type==='likert' ? q.dim : (q.type==='sub' ? q.pair[0] : null);
+  const tagEl = document.getElementById('qDimTag');
+  if(dimForTag){
+    tagEl.style.display='inline-block';
+    tagEl.textContent = 'มิติ: ' + DIM_INFO[dimForTag].name;
+    tagEl.style.background = DIM_INFO[dimForTag].color;
+  } else {
+    tagEl.style.display='inline-block';
+    tagEl.textContent = 'สถานการณ์จำลอง';
+    tagEl.style.background = 'var(--mist)';
+  }
+
+  const saved = answers[q.id];
+  let html='';
+  const typeLabel = {likert:'Likert Scale',situational:'สถานการณ์จำลอง (Situational)',sub:'คำถามคัดแยก (Sub-question)'}[q.type];
+  html += `<span class="tag q-type-tag ${q.type}">${typeLabel}</span>`;
+  html += `<div class="q-text">${q.text}</div>`;
+
+  if(q.type==='likert'){
+    html += `<div class="likert-row">`;
+    [1,2,3,4,5].forEach(v=>{
+      const sel = saved===v ? 'sel':'';
+      html += `<div class="opt ${sel}" onclick="answerLikert(${v})"><span class="dot"></span><span>${v}</span></div>`;
+    });
+    html += `</div><div class="likert-labels"><span>1 ไม่ชอบเลย</span><span>5 ชอบมากที่สุด</span></div>`;
+  } else if(q.type==='situational'){
+    html += `<div class="likert-row">`;
+    q.options.forEach((o,i)=>{
+      const sel = saved===i ? 'sel':'';
+      html += `<div class="opt ${sel}" onclick="answerChoice(${i})"><span class="dot"></span><span>${o.t}</span></div>`;
+    });
+    html += `</div>`;
+  } else if(q.type==='sub'){
+    html += `<div class="likert-row">`;
+    q.options.forEach((o,i)=>{
+      const sel = saved===i ? 'sel':'';
+      html += `<div class="opt ${sel}" onclick="answerChoice(${i})"><span class="dot"></span><span>${o.t}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  document.getElementById('qCard').innerHTML = html;
+  document.getElementById('qNext').disabled = (saved===undefined);
+  document.getElementById('qNext').textContent = (qIdx===total-1) ? 'ดูผลวิเคราะห์ →' : 'ถัดไป →';
+}
+
+function answerLikert(v){ answers[QUESTIONS[qIdx].id]=v; renderQ(); }
+function answerChoice(i){ answers[QUESTIONS[qIdx].id]=i; renderQ(); }
+
+function nextQ(){
+  if(answers[QUESTIONS[qIdx].id]===undefined) return;
+  if(qIdx < QUESTIONS.length-1){ qIdx++; renderQ(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else finishQuiz();
+}
+function prevQ(){ if(qIdx>0){ qIdx--; renderQ(); window.scrollTo({top:0,behavior:'smooth'}); } }
+
+/* ============================================================================
+   SCORING ENGINE — ตามสูตรในเอกสารต้นฉบับ
+   Likert: คะแนนตรงมิติ 1-5
+   Situational: primary +3, secondary +1
+   Sub: ตัวเลือกที่ตรงมิติ +2
+   Normalize: (Raw-Min)/(Max-Min) * 100
+   ============================================================================ */
+function computeMinMax(){
+  const min={}, max={};
+  DIMS.forEach(d=>{ min[d]=0; max[d]=0; });
+  QUESTIONS.forEach(q=>{
+    if(q.type==='likert'){ min[q.dim]+=1; max[q.dim]+=5; }
+    else if(q.type==='situational'){
+      DIMS.forEach(d=>{
+        const hasP=q.options.some(o=>o.primary===d);
+        const hasS=q.options.some(o=>o.secondary===d);
+        if(hasP) max[d]+=3; else if(hasS) max[d]+=1;
+      });
+    } else if(q.type==='sub'){
+      const[d1,d2]=q.pair; max[d1]+=2; max[d2]+=2;
+    }
+  });
+  return {min,max};
+}
+function computeRaw(){
+  const raw={}; DIMS.forEach(d=>raw[d]=0);
+  QUESTIONS.forEach(q=>{
+    const a=answers[q.id]; if(a===undefined) return;
+    if(q.type==='likert'){ raw[q.dim]+=a; }
+    else if(q.type==='situational'){ const o=q.options[a]; raw[o.primary]+=3; if(o.secondary) raw[o.secondary]+=1; }
+    else if(q.type==='sub'){ const o=q.options[a]; raw[o.dim]+=2; }
+  });
+  return raw;
+}
+function normalize(raw,min,max){
+  const n={};
+  DIMS.forEach(d=>{ const r=max[d]-min[d]; n[d]= r>0 ? Math.round((raw[d]-min[d])/r*100) : 0; });
+  return n;
+}
+
+function finishQuiz(){
+  const {min,max} = computeMinMax();
+  const raw = computeRaw();
+  const scores = normalize(raw,min,max);
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const hollandCode = sorted.slice(0,3).map(x=>x[0]).join('');
+  lastResult = {scores, hollandCode, ts:new Date().toISOString()};
+  if(!user.guest) saveResult(lastResult);
+  answers={}; qIdx=0; clearProgress();
+  renderDashboard();
+  goPage('results');
+}
+
+/* ============================================================================
+   PAGE-004 : RESULTS
+   ============================================================================ */
+const PERSONA = {
+  S:'นักประสานงาน พัฒนาคน และขับเคลื่อนองค์กร',I:'นักคิดวิเคราะห์เชิงลึก',R:'นักปฏิบัติมือทำจริง',
+  A:'นักสร้างสรรค์ไร้กรอบ',E:'ผู้นำและนักขับเคลื่อนเป้าหมาย',C:'นักจัดระบบมืออาชีพ',
+};
+const STRENGTHS = {
+  R:'ลงมือทำจริง แก้ปัญหาเชิงกลไกได้ดี',I:'วิเคราะห์เชิงลึกและหาเหตุผลอย่างเป็นระบบ',
+  A:'คิดสร้างสรรค์และสื่อสารผ่านงานศิลปะ',S:'เข้าใจอารมณ์และรับฟังผู้อื่นได้อย่างลึกซึ้ง',
+  E:'กล้าแสดงความคิดเห็นและสื่อสารโน้มน้าวใจได้ดี',C:'รอบคอบ เป็นระบบ และบริหารรายละเอียดได้แม่นยำ',
+};
+const ENV = {
+  R:'งานที่ได้ลงมือปฏิบัติจริงหรืออยู่ภาคสนาม',I:'สภาพแวดล้อมที่เปิดให้คิดวิเคราะห์อย่างอิสระ',
+  A:'พื้นที่ที่เปิดกว้างทางความคิดสร้างสรรค์',S:'คณะ/สาขาที่เน้นการทำงานกลุ่มและช่วยเหลือผู้อื่น',
+  E:'สภาพแวดล้อมที่ได้นำและขับเคลื่อนโครงการ',C:'มีโครงสร้างการเรียนรู้ที่เป็นระบบชัดเจน',
+};
+
+function renderResults(){
+  const body = document.getElementById('resultsBody');
+  if(!lastResult){
+    body.innerHTML = `<div class="card" style="text-align:center;"><div class="empty-hint">ยังไม่มีผลการประเมิน — ไปทำแบบทดสอบก่อนนะ</div>
+      <button class="btn btn-primary" style="margin-top:12px;" onclick="goPage('quiz')">เริ่มทำแบบประเมิน</button></div>`;
+    return;
+  }
+  const scores = lastResult.scores;
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const top3 = sorted.slice(0,3);
+  const topDim = top3[0][0], secondDim = top3[1][0];
+
+  body.innerHTML = `
+    <div class="res-topbar">
+      <div class="code">${lastResult.hollandCode}</div>
+      <div class="label">ฉายา: "${PERSONA[topDim]}"</div>
+    </div>
+    <div class="res-grid">
+      <div class="card">
+        <h3>กราฟใยแมงมุม (Radar Chart 6 มิติ)</h3>
+        <div id="radarHolder"></div>
+      </div>
+      <div class="card">
+        <h3>สรุปคะแนนมาตรฐาน (Normalized)</h3>
+        <div class="score-list">${sorted.map(([d,v],i)=>`
+          <div class="score-row"><span class="sw" style="background:${DIM_INFO[d].color}"></span>
+          <span class="nm">${i+1}. ${DIM_INFO[d].emo} ${DIM_INFO[d].name} (${d})</span><span class="val">${v}%</span></div>
+        `).join('')}</div>
+      </div>
+      <div class="card">
+        <h3>จุดเด่นของคุณ (Strengths)</h3>
+        <ul class="strength-list"><li>${STRENGTHS[topDim]}</li><li>${STRENGTHS[secondDim]}</li></ul>
+      </div>
+      <div class="card">
+        <h3>สภาพแวดล้อมที่ส่งเสริมการเรียนรู้</h3>
+        <ul class="strength-list"><li>${ENV[topDim]}</li><li>${ENV[secondDim]}</li></ul>
+      </div>
+    </div>
+    <div class="track-sec">
+      <h3>📚 สายการเรียนที่ตรงกับบุคลิกของคุณ</h3>
+      <p class="cap">เรียงตามความสอดคล้องกับ Holland Code ของคุณ (${lastResult.hollandCode})</p>
+      ${matchTracks(scores).map((t,i)=>`
+        <div class="track ${i===0?'top':''}">
+          <div class="ico">${t.icon}</div>
+          <div class="body">
+            <div class="hd">
+              <h4>${t.name}</h4>
+              ${i===0?'<span class="best">แนะนำที่สุด</span>':''}
+              <span class="pct">${t.match}%</span>
+            </div>
+            <div class="why">${t.why}</div>
+            <div class="meta">
+              <div><b>วิชาที่ควรเน้น:</b> ${t.focus}</div>
+              <div><b>ต่อยอดสู่:</b> ${t.next}</div>
+            </div>
+            <div class="codes">${t.code.map(d=>`<span style="background:${DIM_INFO[d].color}">${d}</span>`).join('')}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="cta-row">
+      <button class="btn btn-teal btn-block" onclick="goPage('explorer')" style="flex:2;">🎓 ดูคณะที่แมตช์กับคุณ →</button>
+      <button class="btn btn-line" onclick="downloadStoryCard()" style="flex:1;">📥 Story Card</button>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <div class="shadow-cta card" style="border:2px dashed var(--amber);background:linear-gradient(155deg,#fff6e6,#fff);">
+        <span class="tag" style="background:var(--amber);color:var(--navy);">เร็วๆ นี้</span>
+        <h3 style="font-family:'Fraunces',serif;font-size:19px;margin:10px 0 6px;">🎭 Career Shadow</h3>
+        <p style="font-size:13.5px;color:var(--mist);max-width:420px;margin:0 auto 14px;">ลองสัมผัสอาชีพที่แนะนำผ่านสถานการณ์จำลองสั้นๆ — ทดลอง สังเกต และลองทำงานแบบย่อ ก่อนตัดสินใจเลือกเรียนจริง</p>
+        <button class="btn btn-teal" onclick="showComingSoon()">เข้าสู่ Career Shadow →</button>
+      </div>
+    </div>
+  `;
+  drawRadar('radarHolder', scores, 300);
+}
+
+function downloadStoryCard(){
+  openModal('📥','ฟีเจอร์นี้ยังไม่พร้อมใช้งาน','การดาวน์โหลด Story Card สำหรับแชร์โซเชียลอยู่ระหว่างการพัฒนา ขอบคุณที่สนใจนะ! 🙌');
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function showComingSoon(){
+  openModal('🚧','ฟีเจอร์นี้ยังไม่พร้อมใช้งาน','Career Shadow อยู่ระหว่างการพัฒนา — จะเปิดให้นักเรียนได้ลองสัมผัสอาชีพจริงในเวอร์ชันถัดไป ขอบคุณที่สนใจนะ! 🙌');
+}
+
+/* ---------- SVG Radar ---------- */
+function drawRadar(elId, scores, size){
+  const cx=size/2, cy=size/2+8, rMax=size*0.36, n=6;
+  const ang=i=> (Math.PI*2*i/n) - Math.PI/2;
+  const pt=(i,r)=>[cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];
+
+  let grid='';
+  [0.25,0.5,0.75,1].forEach(f=>{
+    let p=DIMS.map((_,i)=>pt(i,rMax*f).join(',')).join(' ');
+    grid+=`<polygon points="${p}" fill="none" stroke="#e2ddd0" stroke-width="1"/>`;
+  });
+  let axes='';
+  DIMS.forEach((_,i)=>{ const[x,y]=pt(i,rMax); axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2ddd0" stroke-width="1"/>`; });
+
+  let poly=DIMS.map((d,i)=>pt(i,rMax*scores[d]/100).join(',')).join(' ');
+  let dots=DIMS.map((d,i)=>{const[x,y]=pt(i,rMax*scores[d]/100);return `<circle cx="${x}" cy="${y}" r="4" fill="${DIM_INFO[d].color}"/>`;}).join('');
+
+  let labels='';
+  DIMS.forEach((d,i)=>{
+    const[x,y]=pt(i,rMax+20);
+    labels+=`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle"
+      font-size="14" font-weight="700" fill="${DIM_INFO[d].color}">${d}</text>`;
+  });
+
+  document.getElementById(elId).innerHTML =
+    `<svg viewBox="0 0 ${size} ${size+16}" width="${size}">${grid}${axes}
+      <polygon points="${poly}" fill="rgba(46,196,182,.25)" stroke="#2ec4b6" stroke-width="2.5"/>
+      ${dots}${labels}</svg>`;
+}
+
+/* ============================================================================
+   PAGE-005 : FACULTY EXPLORER
+   ============================================================================ */
+function matchFaculties(scores){
+  return FACULTIES.map(f=>{
+    // จับคู่ตามคะแนนเฉลี่ยของมิติที่ประกอบเป็นรหัสคณะ (ถ่วงน้ำหนักตามลำดับ)
+    const weights=[1,0.7,0.5];
+    let sum=0, wsum=0;
+    f.code.forEach((d,i)=>{ const w=weights[i]||0.3; sum+= scores[d]*w; wsum+=w; });
+    const match = Math.round(sum/wsum);
+    return {...f, match};
+  }).sort((a,b)=>b.match-a.match);
+}
+
+/* จับคู่สายการเรียน ใช้หลักการถ่วงน้ำหนักเดียวกับการจับคู่คณะ */
+function matchTracks(scores){
+  return TRACKS.map(t=>{
+    const weights=[1,0.7,0.5];
+    let sum=0, wsum=0;
+    t.code.forEach((d,i)=>{ const w=weights[i]||0.3; sum+= scores[d]*w; wsum+=w; });
+    return {...t, match: Math.round(sum/wsum)};
+  }).sort((a,b)=>b.match-a.match);
+}
+
+let expFilterDim = null;   // ตัวกรองมิติ RIASEC (null = ทุกมิติ)
+
+function setExpFilter(d){
+  expFilterDim = (expFilterDim===d) ? null : d;
+  renderExplorer();
+}
+
+function renderExplorer(){
+  const filterEl = document.getElementById('expFilter');
+  const listEl = document.getElementById('facultyList');
+  const bookmarks = loadBookmarks();
+  const hasResult = !!lastResult;
+
+  // ---- แถบตัวกรอง: เลือกดูตามมิติได้เสมอ แม้ยังไม่ทำแบบทดสอบ ----
+  let filterHtml = `<button class="fchip ${expFilterDim===null?'on':''}" onclick="setExpFilter(null)">ทุกมิติ</button>`;
+  DIMS.forEach(d=>{
+    filterHtml += `<button class="fchip ${expFilterDim===d?'on':''}"
+      onclick="setExpFilter('${d}')" style="${expFilterDim===d?`background:${DIM_INFO[d].color};color:#fff;border-color:${DIM_INFO[d].color};`:''}">
+      ${d} · ${DIM_INFO[d].th}</button>`;
+  });
+  if(hasResult){
+    filterHtml += `<span class="fchip static">🎯 รหัสของคุณ: ${lastResult.hollandCode}</span>`;
+  }
+  filterEl.innerHTML = filterHtml;
+
+  // ---- แบนเนอร์: ถ้ายังไม่ทำแบบทดสอบ ชวนทำ แต่ยังดูได้ ----
+  let banner = '';
+  if(!hasResult){
+    banner = `<div class="exp-banner">
+      <div class="t">👀 กำลังดูแบบสำรวจอิสระ</div>
+      <p>คุณเปิดดูได้ทุกคณะเลย ลองกดกรองตามมิติด้านบนเพื่อดูว่าคณะไหนเหมาะกับคนแบบไหน — ถ้าอยากรู้ว่า<b>ตัวคุณเอง</b>ตรงกับคณะไหนมากที่สุด ลองทำแบบประเมินดู</p>
+      <button class="btn btn-primary" style="font-size:14px;padding:11px 20px;" onclick="goPage('quiz')">ทำแบบประเมิน 60 ข้อ →</button>
+    </div>`;
+  }
+
+  // ---- คำเตือนเรื่อง TCAS ----
+  const tcasWarn = `<div class="tcas-warn">
+    <span class="ic">⚠️</span>
+    <div><b>เรื่องรอบรับสมัคร TCAS และเกณฑ์คัดเลือก</b><br>
+    ข้อมูลรอบรับสมัคร คุณสมบัติ และเกณฑ์คะแนน <b>เปลี่ยนแปลงทุกปีและต่างกันในแต่ละมหาวิทยาลัย</b>
+    เราจึงไม่ระบุไว้ในนี้เพื่อไม่ให้เข้าใจผิด กรุณาตรวจสอบจากประกาศล่าสุดของ
+    <b>ทปอ. (mytcas.com)</b> และเว็บไซต์คณะที่สนใจโดยตรงเสมอ ก่อนวางแผนสมัคร</div>
+  </div>`;
+
+  // ---- รายการคณะ ----
+  let list = hasResult ? matchFaculties(lastResult.scores) : FACULTIES.map(f=>({...f, match:null}));
+  if(expFilterDim) list = list.filter(f=> f.code.includes(expFilterDim));
+
+  if(list.length===0){
+    listEl.innerHTML = banner + tcasWarn + `<div class="card" style="text-align:center;"><div class="empty-hint">ไม่พบคณะที่ตรงกับมิตินี้ ลองเลือกมิติอื่นดูนะ</div></div>`;
+    return;
+  }
+
+  const countLine = `<p class="exp-count">พบ ${list.length} คณะ${expFilterDim?` ที่เกี่ยวข้องกับมิติ ${expFilterDim} (${DIM_INFO[expFilterDim].th})`:''}${hasResult?' · เรียงตามความสอดคล้องกับคุณ':''}</p>`;
+
+  listEl.innerHTML = banner + tcasWarn + countLine + list.map((f,i)=>{
+    const saved = bookmarks.includes(f.name);
+    const safeName = f.name.replace(/'/g,"\\'");
+    return `
+    <div class="card fac-card">
+      <div class="fac-head">
+        <h3>${f.icon||'🏛️'} ${f.name}</h3>
+        <button class="save ${saved?'on':''}" onclick="toggleBookmark('${safeName}')">${saved?'⭐ บันทึกแล้ว':'☆ บันทึก'}</button>
+      </div>
+      ${f.match!==null ? `<div class="match-row"><div class="match-bar"><i style="width:${f.match}%"></i></div><div class="match-pct">${f.match}%</div></div>` : ''}
+      <div class="fac-fit"><b>เหมาะกับ:</b> ${f.fit}</div>
+      <div class="fac-code">${f.code.map(d=>`<span style="background:${DIM_INFO[d].color}" title="${DIM_INFO[d].th}">${d}</span>`).join('')}
+        <span class="code-hint">${f.code.map(d=>DIM_INFO[d].th).join(' + ')}</span></div>
+      <div class="fac-meta">
+        <div><b>มหาวิทยาลัยตัวอย่าง:</b> ${f.unis}</div>
+        <div><b>สายอาชีพเป้าหมาย:</b> ${f.careers}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBookmark(name){
+  let bm = loadBookmarks();
+  if(bm.includes(name)) bm = bm.filter(x=>x!==name);
+  else bm.push(name);
+  saveBookmarks(bm);
+  renderExplorer();
+  renderBookmarksWidget();
+}
+
+/* ============================================================================
+   MODAL
+   ============================================================================ */
+function openModal(ic,title,body){
+  document.getElementById('modalIc').textContent=ic;
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('modalOk').style.display='';
+  document.getElementById('modalActions').style.display='none';
+  document.getElementById('modal').classList.add('show');
+}
+
+/* กล่องยืนยันในแอป — ไม่ใช้ confirm() ของเบราว์เซอร์
+   เพราะบางเบราว์เซอร์/แอปดูไฟล์บนมือถือบล็อก confirm() ทำให้ปุ่มกดแล้วไม่ทำงาน */
+function openConfirm(ic,title,body,confirmText,onConfirm){
+  document.getElementById('modalIc').textContent=ic;
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('modalOk').style.display='none';
+  const actions = document.getElementById('modalActions');
+  actions.style.display='flex';
+  const btn = document.getElementById('modalConfirm');
+  btn.textContent = confirmText || 'ยืนยัน';
+  btn.onclick = function(){ closeModal(); onConfirm(); };
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+  document.getElementById('modalOk').style.display='';
+  document.getElementById('modalActions').style.display='none';
+}
+
+/* ============================================================================
+   INIT — ถ้ามี user เดิมใน localStorage ให้ล็อกอินอัตโนมัติ
+   ============================================================================ */
+(function init(){
+  const saved = loadUser();
+  if(saved){ user = saved; enterApp(); }
+})();
+</script>
+</body>
+</html>
