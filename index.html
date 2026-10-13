@@ -23,6 +23,7 @@
     --sel:#e6f7f4; --ic-line:#22303f; --btn-sh:#0e2a47;
     --tape:rgba(255,183,3,.5); --tape2:rgba(46,196,182,.42); --tape3:rgba(200,116,232,.38);
     --sc1:#fff0bf; --sc2:#d3f3ee;
+    --bar:#2f74d0; --bar-mute:#a9b4c2;   /* กราฟ: สีเน้น / สีลดความสำคัญ — ผ่าน validate_palette.js แล้ว */
     --mx:46px; --top-h:60px;
     color-scheme:light;
   }
@@ -31,6 +32,7 @@
     --ink:#ece7dc; --mist:#9fb0c3; --card:#1f2a38; --line:#33425a; --shadow:rgba(0,0,0,.45);
     --sel:#173f3c; --teal-ink:#5fe0d3; --ic-line:#e9e4d8; --btn-sh:#000;
     --sc1:#4a3c12; --sc2:#123f3a;
+    --bar:#6ea6ff; --bar-mute:#56657b;
     color-scheme:dark;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -218,7 +220,45 @@
     65%{transform:translateY(12px) rotate(1deg);opacity:1;}to{transform:none;opacity:1;}}
   @keyframes propDrop{from{transform:translateY(-60px) rotate(calc(var(--r) - 40deg));opacity:0;}to{transform:rotate(var(--r));opacity:1;}}
   @media(prefers-reduced-motion:reduce){.fall-out,.drop-in,.fall-out .prop,.drop-in .prop{animation:none;}}
-  #page-stats .res-hero .ic{width:84px;height:84px;}
+  /* ---------- ตลาดแรงงาน: การ์ดละ 1 แหล่งข้อมูล ---------- */
+  .stats-grid{display:grid;gap:26px 18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));align-items:start;}
+  .stat-card{display:flex;flex-direction:column;gap:14px;}
+  .src-tag{align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;background:rgba(255,183,3,.2);color:var(--ink);}
+  .src-tag.real{background:var(--sel);color:var(--teal-ink);}
+  .stat-q{font:700 18px/1.4 'Mali',sans-serif;}
+  .hero-fig{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .hero-fig b{font:700 46px/1 'IBM Plex Sans Thai',sans-serif;}
+  .hero-fig span{color:var(--mist);font-size:14px;}
+  .hbars{display:flex;flex-direction:column;}
+  .hbar-row{display:grid;grid-template-columns:minmax(96px,38%) 1fr 66px;gap:10px;align-items:center;padding:5px 0;}
+  .hbar-head{font-size:12px;color:var(--mist);padding-bottom:6px;margin-bottom:2px;border-bottom:1px solid var(--line);}
+  .hbar-lbl{display:flex;flex-direction:column;font-size:13.5px;font-weight:600;line-height:1.3;}
+  .hbar-lbl .trend{font-size:12px;font-weight:500;color:var(--mist);}
+  .hbar-track{position:relative;height:18px;display:flex;align-items:center;}
+  .hbar-track em{font-size:12px;font-style:normal;color:var(--mist);}
+  .hbar{display:block;height:14px;border-radius:0 4px 4px 0;background:var(--bar);}
+  .hbar.mute{background:var(--bar-mute);}
+  .hbar-val{text-align:right;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .avg-line{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--ink);opacity:.55;}
+  .avg-key{display:flex;align-items:center;gap:6px;}
+  .avg-key i{width:2px;height:12px;background:var(--ink);opacity:.55;}
+  .dnotes{display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px dashed var(--line);}
+  .dnotes .meta b{color:var(--ink);margin-right:2px;}
+  /* ---------- การ์ดคณะ: ตำแหน่งที่อุตสาหกรรมเป้าหมายต้องการ ---------- */
+  .jobs{padding-top:10px;border-top:1px dashed var(--line);}
+  .jobs-h{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;}
+  .jobs-h .ic{width:22px;height:22px;}
+  .jobs-h .icon-btn{margin-left:auto;width:36px;height:36px;}
+  .jobs-h .icon-btn .ic{width:20px;height:20px;}
+  .job{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .job:last-child{border-bottom:0;}
+  .job-nm{display:flex;flex-direction:column;font-size:14px;line-height:1.35;}
+  .job-nm small{font-size:11.5px;color:var(--mist);}
+  .job b{white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .job b small{font-weight:500;color:var(--mist);}
+  .jobs-empty{font-size:13px;color:var(--mist);margin-top:4px;}
+  .jobs-src{display:flex;gap:6px;align-items:flex-start;margin-top:8px;font-size:12px;color:var(--mist);line-height:1.5;}
+  .jobs-src .ic{width:16px;height:16px;margin-top:1px;}
   .q-text{font-size:19px;font-weight:600;line-height:1.5;margin-bottom:24px;}
   .faces{display:flex;justify-content:space-between;gap:6px;}
   .face{flex:1;max-width:76px;aspect-ratio:1;padding:0;border:0;background:none;border-radius:50%;cursor:pointer;
@@ -404,11 +444,11 @@
 </section>
 
 <!-- ===== หน้า 5 : ตลาดแรงงาน (หน้าว่าง — รอรวบรวมข้อมูล)
-     แหล่งข้อมูลที่ใช้ได้: สำนักงานสถิติแห่งชาติ (สสช.), กระทรวงแรงงาน — ทุกตัวเลขต้องระบุแหล่ง+ปี ห้ามแต่งตัวเลข (ดู CLAUDE.md กฎข้อ 2) ===== -->
+     แหล่งข้อมูลที่ใช้ได้: สสช., กระทรวงแรงงาน, สอวช. — ทุกตัวเลขต้องระบุแหล่ง+ปี ห้ามแต่งตัวเลข
+     นำเสนอตาม CLAUDE.md กฎข้อ 2 และ 7 (แยกแหล่ง/จุดประสงค์ อธิบายให้นักเรียนเข้าใจ) ===== -->
 <section class="page sheet" id="page-stats" data-no="5">
   <h2 class="page-h" data-ic="market"><span>ตลาดแรงงาน</span></h2>
-  <div class="note taped res-hero" data-ic="market"><p class="muted">กำลังรวบรวมข้อมูล</p></div>
-  <p class="fine" data-ic="info"><span>แหล่งข้อมูล: สำนักงานสถิติแห่งชาติ · กระทรวงแรงงาน</span></p>
+  <div id="statsBody"></div>
 </section>
 
 <!-- ===== หน้า 6 : ข้อมูลของฉัน (ไม่บังคับกรอก) ===== -->
@@ -823,6 +863,65 @@ const FACULTIES = [
 ];
 
 /* ============================================================================
+   ข้อมูลตลาดแรงงาน — ห้ามแก้ตัวเลขด้วยมือ ที่มาอยู่ใน data/labor-market/ (กฎข้อ 2, 7 ใน CLAUDE.md)
+   ============================================================================ */
+
+/* สอวช. — ตำแหน่งงานสำคัญใน 10 อุตสาหกรรมเป้าหมาย ความต้องการสะสม 2568–2572
+   จาก extracted/nxpo_critical_positions_2568-2572.csv · จับคู่คณะ↔ตำแหน่งโดยทีมผู้พัฒนา (ไม่ใช่การจับคู่ของ สอวช.)
+   คัดเฉพาะตำแหน่งที่ตรงกับคณะ ตัดตำแหน่งที่ไม่ต้องใช้ปริญญาออก · [ตำแหน่งไทย, อังกฤษ, อุตสาหกรรม, จำนวนคน] */
+const FACULTY_JOBS = {
+  'คณะจิตวิทยา / จิตวิทยาการปรึกษา':[['เจ้าหน้าที่พัฒนาทรัพยากรบุคคล','Human Resource Development Officer','สร้างสรรค์',147]],
+  'คณะครุศาสตร์ / ศึกษาศาสตร์':[],
+  'คณะรัฐศาสตร์ / สังคมสงเคราะห์':[],
+  'คณะนิติศาสตร์':[['ผู้เชี่ยวชาญด้านสิทธิบัตร','Patent Specialist','ดิจิทัล',70]],
+  'คณะแพทยศาสตร์':[['นักวิจัยการแพทย์','Medical Researcher','การแพทย์',545],['แพทย์','Physician','การแพทย์',276],['จิตแพทย์','Psychiatrist','การแพทย์',276]],
+  'คณะพยาบาลศาสตร์':[['พยาบาล','Nurse','การแพทย์',21708]],
+  'คณะเภสัชศาสตร์':[['เภสัชกร','Pharmacist','การแพทย์',8189],['นักวิจัยเภสัชกรรม','Pharmaceutical Researcher','การแพทย์',276]],
+  'คณะเทคนิคการแพทย์ / สหเวชศาสตร์':[['นักกายภาพบำบัด','Physical Therapist','การแพทย์',6906],['เทคนิคการแพทย์','Medical Technician','การแพทย์',6450],['นักจุลชีววิทยา','Microbiologist','การแพทย์',553]],
+  'คณะวิศวกรรมศาสตร์ / วิศวกรรมเครื่องกล':[['วิศวกรเมคคาทรอนิกส์','Mechatronics Engineer','อิเล็กทรอนิกส์/หุ่นยนต์',61124],['วิศวกรเครื่องกล','Mechanical Engineer','อิเล็กทรอนิกส์/หุ่นยนต์',13258],['วิศวกรเครื่องกล','Mechanical Engineer','การบิน/โลจิสติกส์',8274],['วิศวกรอุตสาหการ','Industrial Engineer','ยานยนต์',6151]],
+  'คณะวิศวกรรมคอมพิวเตอร์ / วิทยาการข้อมูล':[['ผู้พัฒนาซอฟต์แวร์','Software Developer','ดิจิทัล',17913],['นักวิเคราะห์ข้อมูล','Data Analyst','ดิจิทัล',12881],['วิศวกรข้อมูล','Data Engineer','ดิจิทัล',8855],['วิศวกรซอฟต์แวร์','Software Engineer','อิเล็กทรอนิกส์/หุ่นยนต์',6617]],
+  'คณะเทคโนโลยีสารสนเทศ / นวัตกรรมดิจิทัล':[['ผู้เชี่ยวชาญด้านการสนับสนุนไอที','IT Support Specialist','ดิจิทัล',7360],['นักพัฒนาเว็บและแอปพลิเคชัน','Web and Application Developer','ดิจิทัล',4748],['ผู้ดูแลระบบเครือข่าย','Network Administrator','ดิจิทัล',3729],['นักวิเคราะห์ธุรกิจดิจิทัล','Digital Business Analyst','ดิจิทัล',2049]],
+  'คณะสถาปัตยกรรมศาสตร์':[['สถาปนิก','Architect','สร้างสรรค์',571]],
+  'คณะศิลปกรรมศาสตร์ / นิเทศศิลป์':[['นักออกแบบกราฟิก','Graphic Designer','สร้างสรรค์',9369],['นักออกแบบ','Designer','สร้างสรรค์',2665],['นักออกแบบผลิตภัณฑ์','Product Designer','สร้างสรรค์',1837],['นักออกแบบสื่อดิจิทัล','Digital Media Designer','สร้างสรรค์',762]],
+  'คณะดิจิทัลมีเดียและการออกแบบ':[['ผู้สร้างสรรค์เนื้อหา','Content Creator','สร้างสรรค์',10100],['นักออกแบบแอนิเมชันสามมิติ','3D Animator','สร้างสรรค์',3427],['นักออกแบบผลิตภัณฑ์ดิจิทัล','Digital Product Designer','ดิจิทัล',2001],['นักออกแบบสื่อดิจิทัล','Digital Media Designer','สร้างสรรค์',762]],
+  'คณะนิเทศศาสตร์ / วารสารศาสตร์':[['ผู้สร้างสรรค์เนื้อหา','Content Creator','สร้างสรรค์',10100],['นักเขียนและบรรณาธิการ','Copywriter and Editor','สร้างสรรค์',9750],['นักการตลาดดิจิทัล','Digital Marketing','สร้างสรรค์',3072],['นักสื่อสารดิจิทัล','Digital Communications Specialist','ดิจิทัล',815]],
+  'คณะอักษรศาสตร์ / มนุษยศาสตร์':[['นักเขียนและบรรณาธิการ','Copywriter and Editor','สร้างสรรค์',9750]],
+  'คณะบริหารธุรกิจ / การตลาด':[['นักการตลาดและการขาย','Marketing and Sales','ยานยนต์',5885],['นักการตลาดอาหาร','Food Marketing','อาหาร',4343],['นักวิเคราะห์ธุรกิจด้านเทคโนโลยีและนวัตกรรม','Technology and Innovation Business Analyst','อาหาร',4281],['นักการตลาดดิจิทัล','Digital Marketing','ท่องเที่ยว/สุขภาพ',4248]],
+  'คณะบัญชี / การเงิน':[['ผู้ตรวจสอบภายใน','Internal Audit','BCG',772],['พนักงานบัญชี','Accounting Officer','สร้างสรรค์',381],['พนักงานบัญชี','Accounting Officer','อาหาร',143],['พนักงานบัญชี','Accountant Officer','ท่องเที่ยว/สุขภาพ',123]],
+  'คณะเกษตรศาสตร์ / วนศาสตร์':[['นักวิทยาศาสตร์การเกษตร','Agricultural Scientist','เกษตร/ชีวภาพ',1368],['นักวิทยาศาสตร์เทคโนโลยีชีวภาพทางการเกษตร','Agricultural Biotechnology Scientist','เกษตร/ชีวภาพ',967],['นักวิจัยเทคโนโลยีการเกษตร','Agricultural Technology Researcher','เกษตร/ชีวภาพ',196],['นักปฐพีวิทยา','Pedologist','เกษตร/ชีวภาพ',118]],
+  // ชื่อไทยตามรายงาน ("นักวิทยาศาสตร์การกีฬา") แม้ชื่ออังกฤษในรายงานคือ Sports Medicine Physician
+  'คณะวิทยาศาสตร์การกีฬา / พลศึกษา':[['นักวิทยาศาสตร์การกีฬา','Sports Medicine Physician','การแพทย์',1105]],
+};
+
+/* กระทรวงแรงงาน (ประมาณการ) — รายงานอุปสงค์และอุปทานแรงงาน ระดับประเทศ ปี 2568 ตารางที่ 28, 33
+   newGrads = ผู้เข้าสู่ตลาดแรงงานใหม่ ปี 2569 (คน) · jobTrend = อัตราเติบโตเฉลี่ยของความต้องการแรงงานวุฒินั้น 2569–2573 (%/ปี)
+   null = รายงานไม่มีข้อมูลส่วนนั้น */
+const GRADS_VS_JOBS = [
+  {level:'ต่ำกว่าประถมศึกษา', newGrads:16705,  jobTrend:null},
+  {level:'ประถมศึกษา',       newGrads:10301,  jobTrend:-0.1},
+  {level:'ม.3',              newGrads:15137,  jobTrend:-0.1},
+  {level:'ม.6',              newGrads:76386,  jobTrend:-0.2},
+  {level:'ปวช.',             newGrads:22508,  jobTrend:-0.3},
+  {level:'ปวส. / อนุปริญญา',  newGrads:null,   jobTrend:-0.3},
+  {level:'ปริญญาตรี',         newGrads:391107, jobTrend:-0.7},
+  {level:'สูงกว่าปริญญาตรี',   newGrads:null,   jobTrend:-1.1},
+];
+const NEW_GRADS_TOTAL_2569 = 532144;
+
+/* สสช. (ข้อมูลจริง) — อัตราการว่างงาน จำแนกตามระดับการศึกษา ปี 2567 เฉลี่ย 4 ไตรมาส
+   จาก extracted/nso_unemployment_rate_by_education_annual_2564-2568.csv · hi = กลุ่มอุดมศึกษา (เน้นสี) */
+const UNEMP_BY_EDU_2567 = [
+  {level:'ประถมศึกษา',                          rate:0.54},
+  {level:'มัธยมศึกษาตอนต้น',                     rate:0.90},
+  {level:'ม.ปลาย สายสามัญ',                      rate:1.04},
+  {level:'ม.ปลาย สายอาชีวศึกษา (ปวช.)',            rate:1.39},
+  {level:'อุดมศึกษา สายวิชาชีพ',                   rate:1.82, hi:true},
+  {level:'อุดมศึกษา สายวิชาการ',                   rate:1.98, hi:true},
+  {level:'อุดมศึกษา สายวิชาการศึกษา (ครู)',          rate:2.12, hi:true},
+];
+const UNEMP_ALL_2567 = 0.99;
+
+/* ============================================================================
    ไอคอน — วาดเองด้วย SVG (ได้แรงบันดาลใจจากอีโมจิ แต่เป็นของเราเอง)
    เส้นขอบใช้ --ic-line (เปลี่ยนตามธีม), .k = เส้นเข้มคงที่, .w = เส้นขาว
    ============================================================================ */
@@ -981,7 +1080,7 @@ function clearProgress(){ localStorage.removeItem(LS_PROGRESS); }
 const ORDER = ['dash','quiz','results','explorer','stats','me'];   // ลำดับหน้าในสมุด → ใช้ตัดสินทิศการพลิก
 const RENDER = {
   dash:()=>renderDashboard(), quiz:()=>enterQuizPage(), results:()=>renderResults(),
-  explorer:()=>renderExplorer(), stats:()=>{}, me:()=>renderMe(),
+  explorer:()=>renderExplorer(), stats:()=>renderStats(), me:()=>renderMe(),
 };
 let curPage = null;
 
@@ -1491,10 +1590,101 @@ function renderExplorer(){
         <div class="meta">${codeTiles(f.code.join(''),'sm')}<span>${f.code.map(d=>DIM_INFO[d].th).join(' + ')}</span></div>
         <p class="meta" title="มหาวิทยาลัยตัวอย่าง">${ic('school')}<span>${f.unis}</span></p>
         <p class="meta" title="สายอาชีพเป้าหมาย">${ic('brief')}<span>${f.careers}</span></p>
+        ${renderFacultyJobs(f.name)}
       </details>`;
     }).join('') + `</div>`;
 
   if(canHover()) document.querySelectorAll('#facultyList details.fac').forEach(hoverOpen);
+}
+
+/* ============================================================================
+   หน้า 5 : ตลาดแรงงาน — การ์ดละ 1 แหล่งข้อมูล (ห้ามรวมต่างแหล่งในกราฟเดียว · กฎข้อ 7)
+   ทุกการ์ด: คำถาม → กราฟ → หมายความว่า / ครอบคลุม / ข้อควรรู้ / ที่มา
+   ============================================================================ */
+const fmt = n => n.toLocaleString('th-TH');
+function dataNotes(rows){
+  return `<div class="dnotes">${rows.map(([icon,label,text])=>
+    `<p class="meta">${ic(icon)}<span><b>${label}</b> ${text}</span></p>`).join('')}</div>`;
+}
+function renderStats(){
+  // การ์ด 1: กระทรวงแรงงาน (ประมาณการ) — แท่ง = คนจบใหม่ปี 2569 · ป้าย = แนวโน้มงานของวุฒินั้น (คนละหน่วย จึงไม่วางบนแกนเดียวกัน)
+  const maxG = Math.max(...GRADS_VS_JOBS.map(r=>r.newGrads||0));
+  const bachelor = GRADS_VS_JOBS.find(r=>r.level==='ปริญญาตรี');
+  const share = Math.round(bachelor.newGrads / NEW_GRADS_TOTAL_2569 * 100);
+  const card1 = `
+    <section class="note taped stat-card">
+      <span class="src-tag">ประมาณการ · กระทรวงแรงงาน</span>
+      <h3 class="stat-q">คนจบใหม่ปีละกี่คน และงานของวุฒินั้นเพิ่มหรือลด</h3>
+      <div class="hero-fig"><b>${share}%</b><span>ของคนจบใหม่ปี 2569 เป็นวุฒิปริญญาตรี</span></div>
+      <div class="hbars" role="table" aria-label="ผู้จบใหม่ปี 2569 และแนวโน้มงาน จำแนกตามวุฒิ">
+        <div class="hbar-row hbar-head" role="row"><span role="columnheader">วุฒิ · แนวโน้มงาน/ปี</span><span role="columnheader">คนจบใหม่ ปี 2569</span><span></span></div>
+        ${GRADS_VS_JOBS.map(r=>`
+        <div class="hbar-row" role="row" title="${r.level}: ${r.newGrads?fmt(r.newGrads)+' คนจบใหม่':'ไม่มีข้อมูลคนจบใหม่'} · งาน ${r.jobTrend===null?'ไม่มีข้อมูล':r.jobTrend+'%/ปี'}">
+          <span class="hbar-lbl" role="cell">${r.level}
+            <small class="trend">${r.jobTrend===null?'งาน —':`งาน ${r.jobTrend<0?'↓':'↑'}${Math.abs(r.jobTrend)}%`}</small></span>
+          <span class="hbar-track" role="cell">${r.newGrads?`<i class="hbar${r.level==='ปริญญาตรี'?'':' mute'}" style="width:${Math.max(r.newGrads/maxG*100,0.8)}%"></i>`:'<em>ไม่มีข้อมูล</em>'}</span>
+          <span class="hbar-val" role="cell">${r.newGrads?fmt(r.newGrads):'—'}</span>
+        </div>`).join('')}
+      </div>
+      ${dataNotes([
+        ['spark','หมายความว่า',`แต่ละปีจะมีคนจบ ป.ตรี เข้าหางานเกือบ 4 แสนคน มากที่สุดทุกวุฒิ ขณะที่จำนวนงานที่ใช้วุฒิ ป.ตรี ลดลงเร็วกว่าวุฒิที่ต่ำกว่า — การแข่งขันจึงสูง รายงานสรุปว่านายจ้างจ้างงานตามทักษะมากขึ้นกว่าดูวุฒิ`],
+        ['globe','ครอบคลุม','ทั้งประเทศ · แท่ง = คนจบใหม่ที่คาดว่าเข้าตลาดแรงงานปี 2569 · ป้าย "งาน" = แนวโน้มจำนวนงานที่ใช้วุฒินั้น เฉลี่ยต่อปี 2569–2573'],
+        ['warn','ข้อควรรู้','งานลดลงไม่ได้แปลว่าไม่รับคน ยังมีตำแหน่งแทนคนเกษียณหรือลาออกที่รายงานไม่ได้แยกไว้ · ปวส. และสูงกว่า ป.ตรี ไม่มีตัวเลขคนจบใหม่ในรายงาน'],
+        ['book','ที่มา','กระทรวงแรงงาน (กองเศรษฐกิจการแรงงาน) รายงานผลการวิเคราะห์ข้อมูลอุปสงค์และอุปทานแรงงาน ระดับประเทศ ปี 2568 ตารางที่ 28, 33'],
+      ])}
+    </section>`;
+
+  // การ์ด 2: สสช. (ข้อมูลจริง) — เน้นสีกลุ่มอุดมศึกษา เส้นแนวตั้ง = ค่าเฉลี่ยทั้งประเทศ
+  const maxR = Math.max(...UNEMP_BY_EDU_2567.map(r=>r.rate));
+  const avgPos = UNEMP_ALL_2567 / maxR * 100;
+  const card2 = `
+    <section class="note taped stat-card">
+      <span class="src-tag real">ข้อมูลจริง · สสช.</span>
+      <h3 class="stat-q">จบวุฒิไหน ว่างงานมากกว่า</h3>
+      <div class="hbars" role="table" aria-label="อัตราการว่างงาน ปี 2567 จำแนกตามวุฒิ">
+        <div class="hbar-row hbar-head" role="row"><span role="columnheader">วุฒิ</span>
+          <span role="columnheader" class="avg-key"><i></i>เฉลี่ยทั้งประเทศ ${UNEMP_ALL_2567}%</span><span></span></div>
+        ${UNEMP_BY_EDU_2567.map(r=>`
+        <div class="hbar-row" role="row" title="${r.level}: ว่างงาน ${r.rate}%">
+          <span class="hbar-lbl" role="cell">${r.level}</span>
+          <span class="hbar-track" role="cell"><i class="hbar${r.hi?'':' mute'}" style="width:${r.rate/maxR*100}%"></i><s class="avg-line" style="left:${avgPos}%"></s></span>
+          <span class="hbar-val" role="cell">${r.rate.toFixed(2)}%</span>
+        </div>`).join('')}
+      </div>
+      ${dataNotes([
+        ['spark','หมายความว่า','ใน 100 คนที่จบอุดมศึกษาและพร้อมทำงาน มีราว 2 คนที่ยังหางานไม่ได้ สูงกว่าค่าเฉลี่ยทั้งประเทศ (ไม่ถึง 1 คน) ประมาณสองเท่า'],
+        ['globe','ครอบคลุม','คนอายุ 15 ปีขึ้นไปทั้งประเทศ · ปี 2567 เฉลี่ย 4 ไตรมาส'],
+        ['warn','ข้อควรรู้','รวมทุกสาขาวิชา ไม่ได้บอกว่าคณะไหนหางานยากกว่า · ปี 2568 (ม.ค.–ก.ย.) ยังเป็นแบบเดียวกัน: อุดมศึกษา 1.4–1.8% ภาพรวม 0.85%'],
+        ['book','ที่มา','สำนักงานสถิติแห่งชาติ การสำรวจภาวะการทำงานของประชากร'],
+      ])}
+    </section>`;
+
+  document.getElementById('statsBody').innerHTML = `<div class="stats-grid">${card1}${card2}</div>
+    <p class="fine">${ic('info')}<span>ข้อมูลแต่ละการ์ดมาจากคนละแหล่ง วัดคนละอย่าง จึงแยกกันไว้ · ตำแหน่งงานรายคณะดูได้ที่หน้า "คณะ"</span></p>`;
+}
+
+/* ตำแหน่งที่อุตสาหกรรมเป้าหมายต้องการ (สอวช.) ในการ์ดคณะ
+   ไม่มีแท่งกราฟ: ขนาดตลาดแต่ละคณะต่างกันมาก แท่งเทียบข้ามการ์ดจะชวนเข้าใจผิด */
+function renderFacultyJobs(name){
+  const jobs = FACULTY_JOBS[name] || [];
+  const head = `<div class="jobs-h">${ic('target')}<span>อุตสาหกรรมเป้าหมายต้องการ · 2568–2572</span>
+    <button class="icon-btn" onclick="event.preventDefault();showJobsInfo()" aria-label="ข้อมูลนี้คืออะไร">${ic('info')}</button></div>`;
+  const src = `<p class="jobs-src">${ic('book')}<span>ที่มา: สอวช. — การสำรวจความต้องการบุคลากรทักษะสูงในอุตสาหกรรมเป้าหมาย พ.ศ. 2568–2572</span></p>`;
+  if(!jobs.length) return `<div class="jobs">${head}<p class="jobs-empty">ไม่มีตำแหน่งของคณะนี้ในรายงาน — รายงานสำรวจเฉพาะ 10 อุตสาหกรรมเป้าหมาย ไม่ได้แปลว่าไม่มีงาน</p>${src}</div>`;
+  return `<div class="jobs">${head}${jobs.map(([th,en,ind,n])=>`
+    <div class="job" title="${en} · อุตสาหกรรม${ind}">
+      <span class="job-nm">${th}<small>${ind}</small></span>
+      <b>${n.toLocaleString('th-TH')}<small> คน</small></b>
+    </div>`).join('')}${src}</div>`;
+}
+function showJobsInfo(){
+  openModal('target','อุตสาหกรรมเป้าหมายต้องการ', `
+    <ul class="icon-list">
+      <li>${ic('spark')}<span><b>หมายความว่า</b> จำนวนคนที่บริษัทคาดว่าต้องการในตำแหน่งนี้ รวม 5 ปี (2568–2572)</span></li>
+      <li>${ic('globe')}<span><b>ครอบคลุม</b> เฉพาะ 10 อุตสาหกรรมที่ประเทศไทยตั้งใจผลักดัน เช่น ดิจิทัล การแพทย์ ยานยนต์สมัยใหม่ — ไม่ใช่งานทั้งหมดในประเทศ</span></li>
+      <li>${ic('warn')}<span><b>ข้อควรรู้</b> ตัวเลขน้อยหรือไม่มี ไม่ได้แปลว่าอาชีพนั้นไม่มีงาน · เป็นการสำรวจความต้องการ ไม่ใช่ตำแหน่งที่เปิดรับจริง · การจับคู่คณะกับตำแหน่งทำโดยทีมผู้พัฒนา</span></li>
+      <li>${ic('book')}<span><b>ที่มา</b> สอวช. การสำรวจความต้องการบุคลากรทักษะสูงในอุตสาหกรรมเป้าหมาย พ.ศ. 2568–2572 (สำรวจองค์กร 300+ แห่ง)</span></li>
+    </ul>`);
 }
 
 /* เอาเมาส์ชี้การ์ดคณะ = เปิดดูข้อมูล, เอาออก = ปิด — เฉพาะเครื่องที่มีเมาส์
