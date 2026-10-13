@@ -6,9 +6,8 @@
 <title>Career Compass — เข็มทิศค้นหาตัวตน</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23fff' stroke='%230e2a47' stroke-width='2'/%3E%3Cpath d='M16 8 10.6 10.6 13.4 13.4z' fill='%23ff6b6b'/%3E%3Cpath d='M8 16 13.4 13.4 10.6 10.6z' fill='%234d96ff'/%3E%3C/svg%3E">
 <script>
-  /* ตั้งธีมก่อนวาดหน้า กันจอกะพริบ — ใช้ค่าที่ผู้ใช้เลือกไว้ ไม่งั้นตามระบบ */
-  try{ document.documentElement.dataset.theme = localStorage.getItem('cc_theme') ||
-    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+  /* ตั้งธีมก่อนวาดหน้า กันจอกะพริบ — ใช้ค่าที่ผู้ใช้เลือกไว้ ไม่งั้นเริ่มที่โหมดสว่าง */
+  try{ document.documentElement.dataset.theme = localStorage.getItem('cc_theme') || 'light'; }
   catch(e){ document.documentElement.dataset.theme = 'light'; }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
