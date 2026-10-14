@@ -148,9 +148,8 @@
   .btn-link{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--teal-ink);
     font-weight:700;font-size:15px;cursor:pointer;padding:8px 0;--ic-line:var(--teal-ink);}
   .btn-link .ic{width:18px;height:18px;}
-  .soon{position:relative;}
-  .soon::after{content:"เร็วๆ นี้";position:absolute;top:-10px;right:-6px;font-size:10.5px;font-weight:700;
-    background:var(--A);color:#fff;padding:1px 8px;border-radius:10px;}
+  .story-img{display:block;width:100%;max-height:52vh;object-fit:contain;margin:0 auto 14px;border-radius:12px;
+    box-shadow:0 4px 14px var(--shadow);}
 
   .bar{height:8px;background:var(--rule);border-radius:8px;overflow:hidden;}
   .bar>i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--teal),var(--amber));transition:width .3s;}
@@ -1469,14 +1468,112 @@ function renderResults(){
 
     <div class="actions">
       <button class="btn btn-primary" onclick="goPage('explorer')">${ic('grad')}<span>ดูคณะที่ตรงกับฉัน</span></button>
-      <button class="btn btn-ghost soon" onclick="downloadStoryCard()">${ic('download')}<span>Story Card</span></button>    </div>
+      <button class="btn btn-ghost" onclick="downloadStoryCard()">${ic('download')}<span>Story Card</span></button>
+    </div>
     <p class="fine">${ic('info')}<span>เครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา และไม่ใช่คำตัดสินอนาคตของคุณ</span></p>
   `;
   drawRadar('radarHolder', scores, 300);
 }
 
-function downloadStoryCard(){
-  openModal('download','Story Card','เร็วๆ นี้ — รูปสรุปผลไว้แชร์โซเชียล');
+/* ---------- Story Card: รูปสรุปผล 1080×1920 (สัดส่วนสตอรี่) วาดด้วย canvas ----------
+   ใช้สีโหมดสว่างเสมอ (รูปที่แชร์ออกไปควรหน้าตาเดียวกันทุกเครื่อง) — ไม่ใส่ชื่อโรงเรียน (PDPA) */
+const STORY = {cover:'#0e2a47', paper:'#fffdf6', rule:'#e3ebf5', margin:'#ffb4b4', ink:'#0e2a47',
+  mist:'#5c7290', line:'#e4dfd2', teal:'#2ec4b6',
+  R:'#ff6b6b', I:'#4d96ff', A:'#c874e8', S:'#2ec4b6', E:'#ffb703', C:'#4ec27a'};
+
+/* ตัดบรรทัดตามช่องว่าง (ข้อความไทยในแอปเว้นวรรคระหว่างวลีอยู่แล้ว) */
+function wrapText(ctx, text, maxW){
+  const lines=[]; let cur='';
+  text.split(' ').forEach(w=>{
+    const t = cur ? cur+' '+w : w;
+    if(cur && ctx.measureText(t).width > maxW){ lines.push(cur); cur=w; } else cur=t;
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+async function buildStoryCard(){
+  const W=1080, H=1920, cx=580;   // cx = กึ่งกลางพื้นที่เขียน (ขวาของเส้นขอบแดง)
+  const PLEX="'IBM Plex Sans Thai',sans-serif", MALI="'Mali',sans-serif", FR="'Fraunces',serif";
+  try{ await Promise.all([`900 110px ${FR}`,`700 48px ${MALI}`,`600 32px ${PLEX}`].map(f=>document.fonts.load(f))); }catch(e){}
+
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const g=cv.getContext('2d');
+  const scores=lastResult.scores, code=lastResult.hollandCode;
+  const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+
+  // ปกสมุด + หน้ากระดาษ (เส้นบรรทัด เส้นขอบแดง รูเจาะ)
+  g.fillStyle=STORY.cover; g.fillRect(0,0,W,H);
+  g.fillStyle=STORY.paper; g.beginPath(); g.roundRect(60,60,W-120,H-120,36); g.fill();
+  g.save(); g.clip();
+  g.fillStyle=STORY.rule; for(let y=124;y<H-60;y+=64) g.fillRect(60,y,W-120,2);
+  g.fillStyle=STORY.margin; g.fillRect(138,60,4,H-120);
+  g.restore();
+  g.fillStyle=STORY.cover; [300,960,1620].forEach(y=>{ g.beginPath(); g.arc(100,y,16,0,Math.PI*2); g.fill(); });
+
+  g.textAlign='center'; g.textBaseline='alphabetic';
+  g.fillStyle=STORY.ink; g.font=`900 60px ${FR}`; g.fillText('Career Compass',cx,200);
+  g.fillStyle=STORY.mist; g.font=`600 36px ${MALI}`; g.fillText('เข็มทิศค้นหาตัวตน',cx,256);
+  const who=[user.name,user.grade].filter(Boolean).join(' · ');
+  if(who){ g.fillStyle=STORY.ink; g.font=`600 34px ${PLEX}`; g.fillText(who,cx,320); }
+
+  // Holland Code 3 ตัว
+  const tw=170, gap=30, x0=cx-(tw*3+gap*2)/2;
+  [...code].forEach((d,i)=>{
+    const x=x0+i*(tw+gap);
+    g.fillStyle=STORY[d]; g.beginPath(); g.roundRect(x,370,tw,tw,32); g.fill();
+    g.fillStyle='#fff'; g.font=`900 110px ${FR}`; g.textBaseline='middle'; g.fillText(d,x+tw/2,370+tw/2+6);
+    g.fillStyle=STORY.mist; g.font=`500 26px ${PLEX}`; g.textBaseline='alphabetic';
+    g.fillText(DIM_INFO[d].th,x+tw/2,600);
+  });
+
+  // คำจำกัดความ
+  g.fillStyle=STORY.ink; g.font=`700 48px ${MALI}`;
+  wrapText(g,`“${PERSONA[sorted[0][0]]}”`,820).forEach((l,i)=>g.fillText(l,cx,690+i*62));
+
+  // กราฟเรดาร์ (หลักการเดียวกับ drawRadar)
+  const ry=1070, rMax=190, ang=i=>Math.PI*2*i/6-Math.PI/2, pt=(i,r)=>[cx+r*Math.cos(ang(i)), ry+r*Math.sin(ang(i))];
+  const poly=(r)=>{ g.beginPath(); DIMS.forEach((d,i)=>{ const p=pt(i,r(d)); i?g.lineTo(...p):g.moveTo(...p); }); g.closePath(); };
+  g.strokeStyle=STORY.line; g.lineWidth=2;
+  [0.25,0.5,0.75,1].forEach(f=>{ poly(()=>rMax*f); g.stroke(); });
+  DIMS.forEach((_,i)=>{ g.beginPath(); g.moveTo(cx,ry); g.lineTo(...pt(i,rMax)); g.stroke(); });
+  poly(d=>rMax*scores[d]/100); g.fillStyle='rgba(46,196,182,.25)'; g.fill();
+  g.strokeStyle=STORY.teal; g.lineWidth=5; g.stroke();
+  g.textBaseline='middle'; g.font=`900 44px ${FR}`;
+  DIMS.forEach((d,i)=>{
+    const [x,y]=pt(i,rMax*scores[d]/100); g.fillStyle=STORY[d]; g.beginPath(); g.arc(x,y,9,0,Math.PI*2); g.fill();
+    g.fillText(d,...pt(i,rMax+42));
+  });
+
+  // แถบคะแนน 6 มิติ
+  sorted.forEach(([d,v],i)=>{
+    const y=1350+i*54;
+    g.fillStyle=STORY[d]; g.font=`900 36px ${FR}`; g.textAlign='center'; g.fillText(d,230,y);
+    g.fillStyle=STORY.rule; g.beginPath(); g.roundRect(270,y-10,580,20,10); g.fill();
+    if(v>0){ g.fillStyle=STORY[d]; g.beginPath(); g.roundRect(270,y-10,Math.max(20,580*v/100),20,10); g.fill(); }
+    g.fillStyle=STORY.ink; g.font=`600 30px ${PLEX}`; g.textAlign='right'; g.fillText(v+'%',960,y);
+  });
+
+  // สายการเรียนที่ตรงที่สุด + ข้อความกำกับ (ต้องมีเสมอ)
+  g.textAlign='center'; g.textBaseline='alphabetic';
+  g.fillStyle=STORY.ink; g.font=`600 32px ${PLEX}`;
+  g.fillText('สายการเรียนที่ใกล้เคียง: '+matchTracks(scores)[0].name,cx,1710);
+  g.fillStyle=STORY.mist; g.font=`500 24px ${PLEX}`;
+  wrapText(g,'เครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา และไม่ใช่คำตัดสินอนาคต',820)
+    .forEach((l,i)=>g.fillText(l,cx,1774+i*34));
+  return cv.toDataURL('image/png');
+}
+
+/* แสดงรูปในกล่อง + ปุ่มบันทึก — บางแอปบนมือถือบล็อกการดาวน์โหลด จึงให้กดค้างที่รูปเพื่อบันทึกได้ด้วย */
+async function downloadStoryCard(){
+  if(!lastResult) return;
+  let url;
+  try{ url = await buildStoryCard(); }
+  catch(e){ openModal('download','Story Card','สร้างรูปไม่สำเร็จในเบราว์เซอร์นี้'); return; }
+  openModal('download','Story Card', `
+    <img class="story-img" src="${url}" alt="Story Card ผล ${lastResult.hollandCode}">
+    <a class="btn btn-primary" href="${url}" download="career-compass-${lastResult.hollandCode}.png">${ic('download')}<span>บันทึกรูป</span></a>
+    <p class="fine" style="justify-content:center;margin-top:10px">${ic('info')}<span>มือถือ: กดค้างที่รูปเพื่อบันทึก</span></p>`);
 }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c =>
