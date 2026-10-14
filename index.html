@@ -1469,9 +1469,7 @@ function renderResults(){
 
     <div class="actions">
       <button class="btn btn-primary" onclick="goPage('explorer')">${ic('grad')}<span>ดูคณะที่ตรงกับฉัน</span></button>
-      <button class="btn btn-ghost soon" onclick="downloadStoryCard()">${ic('download')}<span>Story Card</span></button>
-      <button class="btn btn-ghost soon" onclick="showComingSoon()">${ic('masks')}<span>Career Shadow</span></button>
-    </div>
+      <button class="btn btn-ghost soon" onclick="downloadStoryCard()">${ic('download')}<span>Story Card</span></button>    </div>
     <p class="fine">${ic('info')}<span>เครื่องมือช่วยสำรวจตัวเอง ไม่ใช่การวินิจฉัยทางจิตวิทยา และไม่ใช่คำตัดสินอนาคตของคุณ</span></p>
   `;
   drawRadar('radarHolder', scores, 300);
@@ -1479,9 +1477,6 @@ function renderResults(){
 
 function downloadStoryCard(){
   openModal('download','Story Card','เร็วๆ นี้ — รูปสรุปผลไว้แชร์โซเชียล');
-}
-function showComingSoon(){
-  openModal('masks','Career Shadow','เร็วๆ นี้ — ลองสัมผัสอาชีพผ่านสถานการณ์จำลองสั้นๆ ก่อนตัดสินใจเลือกเรียน');
 }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c =>
